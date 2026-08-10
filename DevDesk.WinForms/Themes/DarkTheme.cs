@@ -1,0 +1,23 @@
+namespace DevDesk.WinForms.Themes;
+
+public static class DarkTheme
+{
+    public static AppColors Create() => new(
+        Background: Color.FromArgb(0x0B, 0x0F, 0x14),
+        Surface: Color.FromArgb(0x11, 0x16, 0x1D),
+        SurfaceAlt: Color.FromArgb(0x17, 0x1D, 0x26),
+        Border: Color.FromArgb(0x26, 0x30, 0x3B),
+        TextPrimary: Color.FromArgb(0xF3, 0xF6, 0xF9),
+        TextSecondary: Color.FromArgb(0x9A, 0xA6, 0xB2),
+        TextMuted: Color.FromArgb(0x66, 0x73, 0x82),
+        Accent: Color.FromArgb(0x5B, 0x8C, 0xFF),
+        AccentHover: Color.FromArgb(0x4A, 0x7A, 0xE8),
+        Success: Color.FromArgb(0x3C, 0xCB, 0x7F),
+        Warning: Color.FromArgb(0xF4, 0xB7, 0x40),
+        Error: Color.FromArgb(0xF0, 0x5D, 0x6C),
+        SidebarBg: Color.FromArgb(0x0E, 0x13, 0x1A),
+        TopBarBg: Color.FromArgb(0x11, 0x16, 0x1D),
+        InputBg: Color.FromArgb(0x0B, 0x0F, 0x14),
+        HoverBg: Color.FromArgb(0x17, 0x1D, 0x26),
+        SelectedBg: Color.FromArgb(0x1A, 0x2A, 0x4A));
+}

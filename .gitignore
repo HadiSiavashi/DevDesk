@@ -1,0 +1,57 @@
+## Build
+bin/
+obj/
+[Bb]uild/
+[Ll]og/
+[Ll]ogs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Visual Studio
+.vs/
+*.rsuser
+*.DotSettings.user
+
+## NuGet
+*.nupkg
+**/packages/*
+!**/packages/build/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## Secrets / local config
+**/appsettings.Development.json
+**/appsettings.Local.json
+**/secrets.json
+*.pfx
+*.key
+
+## Databases
+*.mdf
+*.ldf
+*.db
+*.sqlite
+**/Backups/
+
+## OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+## Test / coverage
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+## Serilog / app logs
+logs/
+*.log
+
+## Rider / VS Code
+.idea/
+.vscode/
+*.swp
