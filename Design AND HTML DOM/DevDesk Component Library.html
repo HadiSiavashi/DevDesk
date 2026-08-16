@@ -1,0 +1,385 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>DevDesk - Component Library</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed": "#dae2ff",
+                        "on-primary-container": "#002665",
+                        "tertiary": "#ffb874",
+                        "surface-container-low": "#111d26",
+                        "surface-container-high": "#202b35",
+                        "on-secondary-fixed": "#171c23",
+                        "on-primary-fixed-variant": "#0040a0",
+                        "surface-variant": "#2b3640",
+                        "surface": "#09151d",
+                        "surface-container-lowest": "#040f18",
+                        "primary-container": "#5b8cff",
+                        "on-background": "#d8e4f1",
+                        "on-surface-variant": "#c3c6d6",
+                        "secondary-container": "#474c54",
+                        "background": "#09151d",
+                        "on-tertiary-fixed": "#2d1600",
+                        "error-container": "#93000a",
+                        "on-secondary": "#2c3138",
+                        "secondary": "#c2c6d0",
+                        "on-surface": "#d8e4f1",
+                        "primary": "#b2c5ff",
+                        "on-tertiary-container": "#412200",
+                        "surface-container": "#15212a",
+                        "on-error-container": "#ffdad6",
+                        "surface-tint": "#b2c5ff",
+                        "error": "#ffb4ab",
+                        "secondary-fixed-dim": "#c2c6d0",
+                        "surface-bright": "#2f3a44",
+                        "on-tertiary-fixed-variant": "#6a3b00",
+                        "inverse-surface": "#d8e4f1",
+                        "tertiary-fixed": "#ffdcbf",
+                        "on-tertiary": "#4b2800",
+                        "on-primary-fixed": "#001847",
+                        "inverse-on-surface": "#26323b",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "tertiary-container": "#d47b00",
+                        "on-secondary-container": "#b7bcc6",
+                        "on-error": "#690005",
+                        "on-primary": "#002c72",
+                        "secondary-fixed": "#dee2ed",
+                        "on-secondary-fixed-variant": "#42474f",
+                        "inverse-primary": "#1857c8",
+                        "tertiary-fixed-dim": "#ffb874",
+                        "outline-variant": "#434653",
+                        "surface-container-highest": "#2b3640",
+                        "surface-dim": "#09151d",
+                        "outline": "#8d909f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xl": "24px",
+                        "xxl": "32px",
+                        "sm": "8px",
+                        "sidebar_width": "240px",
+                        "lg": "16px",
+                        "xs": "4px",
+                        "gutter": "16px",
+                        "md": "12px"
+                    },
+                    "fontFamily": {
+                        "metadata": ["Geist"],
+                        "section-title": ["Geist"],
+                        "mono-timer": ["JetBrains Mono"],
+                        "page-title": ["Geist"],
+                        "mono-code": ["JetBrains Mono"],
+                        "body": ["Geist"]
+                    },
+                    "fontSize": {
+                        "metadata": ["11px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "section-title": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "mono-timer": ["14px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "page-title": ["19px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "mono-code": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "body": ["13px", { "lineHeight": "18px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #26303B;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #434653;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body min-h-screen rtl:dir-rtl ltr:dir-ltr">
+<!-- Top Navigation Anchor (Shared Component Semantic Interpretation) -->
+<header class="bg-surface border-b border-outline-variant h-[48px] flex justify-between items-center w-full px-lg rtl:flex-row-reverse transition-colors duration-150 ease-in-out fixed top-0 left-0 right-0 z-50">
+<div class="flex items-center gap-md">
+<span class="font-page-title text-page-title text-on-surface">DevDesk</span>
+<span class="text-on-surface-variant text-body ml-sm rtl:mr-sm rtl:ml-0 border-l border-outline-variant pl-sm rtl:pl-0 rtl:border-r rtl:border-l-0 rtl:pr-sm">Component Library</span>
+</div>
+<div class="flex items-center gap-sm">
+<button class="p-xs hover:bg-surface-container-high rounded text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined text-[18px]">timer</span>
+</button>
+<button class="p-xs hover:bg-surface-container-high rounded text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined text-[18px]">notifications</span>
+</button>
+<button class="ml-sm rtl:mr-sm rtl:ml-0 bg-primary-container text-on-primary-container hover:bg-primary-fixed transition-colors flex items-center justify-center p-xs rounded">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+</header>
+<div class="flex pt-[48px] h-screen overflow-hidden">
+<!-- Sidebar Shell Suppressed per mandate (Library is not a top-level destination, it's a documentation view) -->
+<!-- Main Content Canvas -->
+<main class="flex-1 overflow-y-auto p-xl bg-background">
+<div class="max-w-5xl mx-auto space-y-xxl pb-xxl">
+<div class="pb-lg border-b border-outline-variant">
+<h1 class="font-page-title text-page-title text-on-surface mb-xs">Design System Guide</h1>
+<p class="font-body text-body text-on-surface-variant">Core tokens and components for the DevDesk environment.</p>
+</div>
+<!-- Grid Layout for Specs -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-xl">
+<!-- Typography -->
+<section class="bg-surface-container-low border border-outline-variant rounded-lg p-lg">
+<h2 class="font-section-title text-section-title text-primary mb-lg pb-sm border-b border-outline-variant">Typography Scale</h2>
+<div class="space-y-lg">
+<div class="flex justify-between items-baseline border-b border-surface-container-highest pb-sm">
+<div>
+<span class="font-metadata text-metadata text-on-surface-variant block mb-xs">Page Title (Geist, 19px, W600)</span>
+<div class="font-page-title text-page-title text-on-surface">Settings &amp; Preferences</div>
+</div>
+</div>
+<div class="flex justify-between items-baseline border-b border-surface-container-highest pb-sm">
+<div>
+<span class="font-metadata text-metadata text-on-surface-variant block mb-xs">Section Title (Geist, 14px, W600)</span>
+<div class="font-section-title text-section-title text-on-surface">Account Information</div>
+</div>
+</div>
+<div class="flex justify-between items-baseline border-b border-surface-container-highest pb-sm">
+<div>
+<span class="font-metadata text-metadata text-on-surface-variant block mb-xs">Body (Geist, 13px, W400)</span>
+<div class="font-body text-body text-on-surface">Manage your daily tasks and focus sessions here.</div>
+</div>
+</div>
+<div class="flex justify-between items-baseline border-b border-surface-container-highest pb-sm">
+<div>
+<span class="font-metadata text-metadata text-on-surface-variant block mb-xs">Metadata (Geist, 11px, W400)</span>
+<div class="font-metadata text-metadata text-on-surface-variant">Last synced 2 mins ago</div>
+</div>
+</div>
+<div class="flex justify-between items-baseline border-b border-surface-container-highest pb-sm">
+<div>
+<span class="font-metadata text-metadata text-on-surface-variant block mb-xs">Mono Code (JetBrains, 12px)</span>
+<div class="font-mono-code text-mono-code text-tertiary">npm run build --prod</div>
+</div>
+</div>
+<div class="flex justify-between items-baseline">
+<div>
+<span class="font-metadata text-metadata text-on-surface-variant block mb-xs">Mono Timer (JetBrains, 14px, W500)</span>
+<div class="font-mono-timer text-mono-timer text-primary-fixed">25:00</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Color Swatches -->
+<section class="bg-surface-container-low border border-outline-variant rounded-lg p-lg">
+<h2 class="font-section-title text-section-title text-primary mb-lg pb-sm border-b border-outline-variant">Color Palette</h2>
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-md">
+<!-- Backgrounds -->
+<div class="space-y-xs">
+<div class="h-12 w-full rounded border border-outline-variant bg-background"></div>
+<div class="font-metadata text-metadata text-on-surface-variant">Background (L0)</div>
+</div>
+<div class="space-y-xs">
+<div class="h-12 w-full rounded border border-outline-variant bg-surface-container-low"></div>
+<div class="font-metadata text-metadata text-on-surface-variant">Surface Low (L1)</div>
+</div>
+<div class="space-y-xs">
+<div class="h-12 w-full rounded border border-outline-variant bg-surface"></div>
+<div class="font-metadata text-metadata text-on-surface-variant">Surface (L2)</div>
+</div>
+<!-- Accents -->
+<div class="space-y-xs mt-md">
+<div class="h-12 w-full rounded border border-outline-variant bg-primary-container flex items-center justify-center">
+<span class="font-body text-body text-on-primary-container">Text</span>
+</div>
+<div class="font-metadata text-metadata text-on-surface-variant">Primary Cont.</div>
+</div>
+<div class="space-y-xs mt-md">
+<div class="h-12 w-full rounded border border-outline-variant bg-secondary-container flex items-center justify-center">
+<span class="font-body text-body text-on-secondary-container">Text</span>
+</div>
+<div class="font-metadata text-metadata text-on-surface-variant">Secondary Cont.</div>
+</div>
+<div class="space-y-xs mt-md">
+<div class="h-12 w-full rounded border border-outline-variant bg-error-container flex items-center justify-center">
+<span class="font-body text-body text-on-error-container">Text</span>
+</div>
+<div class="font-metadata text-metadata text-on-surface-variant">Error Cont.</div>
+</div>
+<!-- Texts -->
+<div class="space-y-xs mt-md">
+<div class="h-12 w-full rounded border border-outline-variant bg-surface flex items-center justify-center">
+<span class="font-body text-body text-on-surface">Abc</span>
+</div>
+<div class="font-metadata text-metadata text-on-surface-variant">On Surface</div>
+</div>
+<div class="space-y-xs mt-md">
+<div class="h-12 w-full rounded border border-outline-variant bg-surface flex items-center justify-center">
+<span class="font-body text-body text-on-surface-variant">Abc</span>
+</div>
+<div class="font-metadata text-metadata text-on-surface-variant">On Surface Var</div>
+</div>
+<div class="space-y-xs mt-md">
+<div class="h-12 w-full rounded border border-outline-variant bg-surface flex items-center justify-center">
+<span class="font-body text-body text-primary-fixed">Abc</span>
+</div>
+<div class="font-metadata text-metadata text-on-surface-variant">Primary Fixed</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Interactive Elements -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-xl">
+<!-- Buttons & Inputs -->
+<section class="bg-surface-container-low border border-outline-variant rounded-lg p-lg">
+<h2 class="font-section-title text-section-title text-primary mb-lg pb-sm border-b border-outline-variant">Controls &amp; Inputs</h2>
+<div class="space-y-xl">
+<!-- Buttons -->
+<div>
+<h3 class="font-metadata text-metadata text-on-surface-variant mb-md">Buttons</h3>
+<div class="flex flex-wrap gap-md items-center">
+<!-- Primary -->
+<button class="bg-primary-container text-on-primary-container font-body text-body px-lg py-[6px] rounded hover:bg-primary-fixed transition-colors flex items-center gap-xs">
+<span>Deploy Action</span>
+</button>
+<!-- Primary with Shortcut -->
+<button class="bg-primary-container text-on-primary-container font-body text-body pl-lg pr-sm py-[6px] rounded hover:bg-primary-fixed transition-colors flex items-center gap-md">
+<span>Commit</span>
+<kbd class="font-mono-code text-[10px] bg-[#001847] text-primary-fixed px-1.5 py-0.5 rounded opacity-80 border border-[#002665]">⌘Enter</kbd>
+</button>
+<!-- Secondary -->
+<button class="bg-transparent border border-outline-variant text-on-surface font-body text-body px-lg py-[6px] rounded hover:bg-surface-container-highest transition-colors">
+                                        Cancel
+                                    </button>
+<!-- Ghost / Text -->
+<button class="bg-transparent text-on-surface-variant font-body text-body px-md py-[6px] rounded hover:text-on-surface hover:bg-surface-container-highest transition-colors">
+                                        Skip
+                                    </button>
+</div>
+</div>
+<!-- Inputs -->
+<div>
+<h3 class="font-metadata text-metadata text-on-surface-variant mb-md">Form Inputs</h3>
+<div class="space-y-md max-w-sm">
+<!-- Standard Input -->
+<div>
+<label class="font-metadata text-metadata text-on-surface-variant block mb-xs">Project Name</label>
+<input class="w-full bg-background border border-outline-variant rounded px-sm py-[6px] font-body text-body text-on-surface placeholder:text-on-surface-variant focus:border-primary-container focus:ring-1 focus:ring-primary-container focus:outline-none transition-all" placeholder="e.g. Apollo Interface" type="text">
+</div>
+<!-- Input with Icon -->
+<div>
+<label class="font-metadata text-metadata text-on-surface-variant block mb-xs">Search Commands</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-sm rtl:right-sm rtl:left-auto top-1/2 -translate-y-1/2 text-[16px] text-on-surface-variant">search</span>
+<input class="w-full bg-background border border-outline-variant rounded pl-xl rtl:pr-xl rtl:pl-sm pr-sm py-[6px] font-body text-body text-on-surface placeholder:text-on-surface-variant focus:border-primary-container focus:ring-1 focus:ring-primary-container focus:outline-none transition-all" placeholder="Search..." type="text">
+<div class="absolute right-xs rtl:left-xs rtl:right-auto top-1/2 -translate-y-1/2 flex gap-xs">
+<kbd class="font-mono-code text-[10px] bg-surface-container-high text-on-surface-variant px-1.5 py-0.5 rounded border border-outline-variant">⌘K</kbd>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Complex Components -->
+<section class="bg-surface-container-low border border-outline-variant rounded-lg p-lg">
+<h2 class="font-section-title text-section-title text-primary mb-lg pb-sm border-b border-outline-variant">Domain Components</h2>
+<div class="space-y-xl">
+<!-- Task Row -->
+<div>
+<h3 class="font-metadata text-metadata text-on-surface-variant mb-md">Task List Item</h3>
+<div class="bg-surface border border-outline-variant rounded flex flex-col divide-y divide-outline-variant">
+<!-- Active Task -->
+<div class="flex items-center p-sm gap-md hover:bg-surface-container-highest transition-colors group cursor-default">
+<div class="relative flex items-center justify-center">
+<input class="w-4 h-4 bg-background border-outline-variant rounded-sm checked:bg-primary-container checked:border-primary-container focus:ring-1 focus:ring-primary-container focus:ring-offset-background focus:ring-offset-1 transition-all cursor-pointer" type="checkbox">
+</div>
+<div class="flex-1 min-w-0">
+<div class="font-body text-body text-on-surface truncate">Migrate legacy auth tokens</div>
+</div>
+<div class="flex items-center gap-sm shrink-0">
+<!-- Tag -->
+<span class="bg-surface-container-high text-on-surface-variant font-metadata text-metadata px-1.5 py-0.5 rounded flex items-center gap-1">
+<div class="w-1.5 h-1.5 rounded-full bg-tertiary"></div>
+                                                Backend
+                                            </span>
+<!-- Due -->
+<span class="font-mono-code text-mono-code text-error flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+                                                Overdue
+                                            </span>
+</div>
+</div>
+<!-- Completed Task -->
+<div class="flex items-center p-sm gap-md bg-background opacity-60 group cursor-default">
+<div class="relative flex items-center justify-center">
+<input checked="" class="w-4 h-4 bg-background border-outline-variant rounded-sm checked:bg-primary-container checked:border-primary-container focus:ring-1 focus:ring-primary-container focus:ring-offset-background focus:ring-offset-1 transition-all cursor-pointer" type="checkbox">
+</div>
+<div class="flex-1 min-w-0">
+<div class="font-body text-body text-on-surface-variant line-through truncate">Update documentation structure</div>
+</div>
+<div class="flex items-center gap-sm shrink-0">
+<span class="bg-surface-container-high text-on-surface-variant font-metadata text-metadata px-1.5 py-0.5 rounded">Docs</span>
+</div>
+</div>
+</div>
+</div>
+<!-- States -->
+<div>
+<h3 class="font-metadata text-metadata text-on-surface-variant mb-md">System States</h3>
+<div class="space-y-md">
+<!-- Error Alert -->
+<div class="bg-[#1D0C0D] border border-error-container rounded p-sm flex items-start gap-sm">
+<span class="material-symbols-outlined text-error text-[18px] mt-0.5">error</span>
+<div>
+<div class="font-section-title text-section-title text-on-error-container">Sync Failed</div>
+<div class="font-body text-body text-error mt-xs opacity-80">Unable to connect to the remote server. Check your connection.</div>
+</div>
+</div>
+<!-- Loading Skeleton -->
+<div class="border border-outline-variant rounded p-sm space-y-sm bg-surface">
+<div class="flex items-center gap-md">
+<div class="w-4 h-4 rounded-sm bg-surface-container-highest animate-pulse"></div>
+<div class="h-4 w-1/3 bg-surface-container-highest rounded animate-pulse"></div>
+<div class="flex-1"></div>
+<div class="h-4 w-16 bg-surface-container-highest rounded animate-pulse"></div>
+</div>
+<div class="flex items-center gap-md">
+<div class="w-4 h-4 rounded-sm bg-surface-container-highest animate-pulse"></div>
+<div class="h-4 w-2/3 bg-surface-container-highest rounded animate-pulse"></div>
+<div class="flex-1"></div>
+<div class="h-4 w-12 bg-surface-container-highest rounded animate-pulse"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+</div>
+</body></html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>DevDesk - Calendar Week View</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#d8e4f1",
+                        "tertiary-container": "#d47b00",
+                        "surface-bright": "#2f3a44",
+                        "on-secondary-fixed-variant": "#42474f",
+                        "tertiary-fixed": "#ffdcbf",
+                        "outline": "#8d909f",
+                        "on-surface": "#d8e4f1",
+                        "on-tertiary-container": "#412200",
+                        "primary": "#b2c5ff",
+                        "error": "#ffb4ab",
+                        "surface-container-high": "#202b35",
+                        "tertiary": "#ffb874",
+                        "on-tertiary": "#4b2800",
+                        "on-error": "#690005",
+                        "surface-dim": "#09151d",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-lowest": "#040f18",
+                        "background": "#09151d",
+                        "inverse-on-surface": "#26323b",
+                        "secondary": "#c2c6d0",
+                        "error-container": "#93000a",
+                        "on-background": "#d8e4f1",
+                        "secondary-fixed-dim": "#c2c6d0",
+                        "surface-container-low": "#111d26",
+                        "surface": "#09151d",
+                        "on-secondary-fixed": "#171c23",
+                        "inverse-primary": "#1857c8",
+                        "secondary-fixed": "#dee2ed",
+                        "on-surface-variant": "#c3c6d6",
+                        "tertiary-fixed-dim": "#ffb874",
+                        "on-primary": "#002c72",
+                        "on-primary-container": "#002665",
+                        "surface-tint": "#b2c5ff",
+                        "on-tertiary-fixed-variant": "#6a3b00",
+                        "on-secondary": "#2c3138",
+                        "primary-fixed": "#dae2ff",
+                        "secondary-container": "#474c54",
+                        "outline-variant": "#434653",
+                        "on-primary-fixed-variant": "#0040a0",
+                        "on-secondary-container": "#b7bcc6",
+                        "primary-container": "#5b8cff",
+                        "surface-variant": "#2b3640",
+                        "on-tertiary-fixed": "#2d1600",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "surface-container": "#15212a",
+                        "on-primary-fixed": "#001847",
+                        "surface-container-highest": "#2b3640"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xxl": "32px",
+                        "sm": "8px",
+                        "lg": "16px",
+                        "xs": "4px",
+                        "sidebar_width": "240px",
+                        "md": "12px",
+                        "xl": "24px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "body": ["Segoe UI", "sans-serif"],
+                        "mono-code": ["JetBrains Mono", "monospace"],
+                        "metadata": ["Segoe UI", "sans-serif"],
+                        "mono-timer": ["JetBrains Mono", "monospace"],
+                        "page-title": ["Segoe UI", "sans-serif"],
+                        "section-title": ["Segoe UI", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "body": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "mono-code": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "metadata": ["11px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "mono-timer": ["14px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "page-title": ["19px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "section-title": ["14px", { "lineHeight": "20px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0B0F14; color: #d8e4f1; }
+        .time-grid-line { border-bottom: 1px solid #26303B; height: 60px; }
+        .day-column { border-right: 1px solid #26303B; position: relative; }
+        .day-column:last-child { border-right: none; }
+        .event-block { position: absolute; left: 4px; right: 4px; border-radius: 4px; padding: 4px 8px; overflow: hidden; font-size: 11px; line-height: 14px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1); }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden bg-background">
+<!-- SideNavBar -->
+<nav class="w-[200px] h-screen fixed left-0 top-0 border-r border-outline-variant bg-surface-container-low dark:bg-surface-container-low flex flex-col py-lg gap-sm z-20 transition-all duration-150 text-primary dark:text-primary font-body text-body">
+<div class="px-lg pb-sm">
+<div class="font-page-title text-page-title text-primary">DevDesk</div>
+<div class="text-xs text-on-surface-variant mt-xs">Local-first Workspace</div>
+</div>
+<div class="flex-1 mt-sm flex flex-col gap-xs">
+<a class="flex items-center gap-md px-lg py-sm text-on-surface-variant hover:bg-surface-container-highest cursor-pointer transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">home</span>
+<span>Primary</span>
+</a>
+<a class="flex items-center gap-md px-lg py-sm bg-secondary-container text-on-secondary-container border-l-2 border-primary cursor-pointer transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">work</span>
+<span>Work</span>
+</a>
+<a class="flex items-center gap-md px-lg py-sm text-on-surface-variant hover:bg-surface-container-highest cursor-pointer transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">code</span>
+<span>Developer</span>
+</a>
+<a class="flex items-center gap-md px-lg py-sm text-on-surface-variant hover:bg-surface-container-highest cursor-pointer transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">analytics</span>
+<span>Insights</span>
+</a>
+<a class="flex items-center gap-md px-lg py-sm text-on-surface-variant hover:bg-surface-container-highest cursor-pointer transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+<span>System</span>
+</a>
+</div>
+<div class="mt-auto flex flex-col gap-xs">
+<a class="flex items-center gap-md px-lg py-sm text-on-surface-variant hover:bg-surface-container-highest cursor-pointer transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">help</span>
+<span>Help</span>
+</a>
+<a class="flex items-center gap-md px-lg py-sm text-on-surface-variant hover:bg-surface-container-highest cursor-pointer transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">logout</span>
+<span>Logout</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="ml-[200px] flex-1 flex flex-col h-screen bg-[#0B0F14]">
+<!-- TopNavBar -->
+<header class="h-[48px] w-full flex items-center border-b border-outline-variant bg-surface dark:bg-surface text-primary dark:text-primary font-body text-body flex justify-between px-lg z-10">
+<div class="flex items-center gap-md">
+<span class="font-page-title text-page-title font-semibold text-on-surface">DevDesk</span>
+</div>
+<div class="flex items-center gap-lg">
+<button class="bg-primary-container text-[#F3F6F9] px-md py-xs rounded hover:bg-primary-container/90 transition-colors flex items-center gap-xs text-xs font-semibold cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined text-[16px]">add</span>
+                    Quick Add
+                </button>
+<div class="flex gap-sm">
+<button class="text-on-surface-variant hover:bg-surface-container-highest transition-colors p-xs rounded cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-highest transition-colors p-xs rounded cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Calendar Header Area -->
+<div class="bg-surface border-b border-outline-variant px-lg py-md flex items-center justify-between z-10 shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
+<div class="flex items-center gap-lg">
+<h1 class="font-page-title text-page-title text-on-surface font-semibold">Oct 22 – Oct 28, 2023</h1>
+<div class="flex border border-outline-variant rounded-lg overflow-hidden h-8">
+<button class="px-md bg-surface-container-highest text-on-surface border-r border-outline-variant hover:bg-surface-variant transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="px-md bg-surface text-on-surface hover:bg-surface-container-highest transition-colors font-semibold text-sm">Today</button>
+<button class="px-md bg-surface-container-highest text-on-surface border-l border-outline-variant hover:bg-surface-variant transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<select class="bg-surface border border-outline-variant rounded-lg text-on-surface text-sm py-1 px-3 focus:border-primary focus:ring-0">
+<option>Week</option>
+<option>Month</option>
+<option>Day</option>
+</select>
+</div>
+</div>
+<!-- Week View Grid container -->
+<div class="flex-1 flex flex-col overflow-hidden bg-[#0B0F14]">
+<!-- Days Header row -->
+<div class="flex border-b border-outline-variant bg-[#11161D] pl-[60px]">
+<div class="flex-1 text-center py-xs border-r border-outline-variant">
+<div class="text-xs text-on-surface-variant font-semibold uppercase tracking-wider">Sun</div>
+<div class="text-lg font-bold text-on-surface mt-1">22</div>
+</div>
+<div class="flex-1 text-center py-xs border-r border-outline-variant bg-[#1A2A4A]/20"> <!-- Today highlight -->
+<div class="text-xs text-primary font-semibold uppercase tracking-wider">Mon</div>
+<div class="text-lg font-bold text-primary mt-1 flex items-center justify-center">
+<span class="w-8 h-8 rounded-full bg-primary-container text-[#F3F6F9] flex items-center justify-center">23</span>
+</div>
+</div>
+<div class="flex-1 text-center py-xs border-r border-outline-variant">
+<div class="text-xs text-on-surface-variant font-semibold uppercase tracking-wider">Tue</div>
+<div class="text-lg font-bold text-on-surface mt-1">24</div>
+</div>
+<div class="flex-1 text-center py-xs border-r border-outline-variant">
+<div class="text-xs text-on-surface-variant font-semibold uppercase tracking-wider">Wed</div>
+<div class="text-lg font-bold text-on-surface mt-1">25</div>
+</div>
+<div class="flex-1 text-center py-xs border-r border-outline-variant">
+<div class="text-xs text-on-surface-variant font-semibold uppercase tracking-wider">Thu</div>
+<div class="text-lg font-bold text-on-surface mt-1">26</div>
+</div>
+<div class="flex-1 text-center py-xs border-r border-outline-variant">
+<div class="text-xs text-on-surface-variant font-semibold uppercase tracking-wider">Fri</div>
+<div class="text-lg font-bold text-on-surface mt-1">27</div>
+</div>
+<div class="flex-1 text-center py-xs border-r border-outline-variant">
+<div class="text-xs text-on-surface-variant font-semibold uppercase tracking-wider">Sat</div>
+<div class="text-lg font-bold text-on-surface mt-1">28</div>
+</div>
+</div>
+<!-- Scrollable Time Grid -->
+<div class="flex-1 overflow-y-auto relative scrollbar-hide">
+<div class="flex relative min-h-[1440px]"> <!-- 24 hours * 60px -->
+<!-- Time Labels Column -->
+<div class="w-[60px] flex flex-col border-r border-outline-variant bg-[#0B0F14] sticky left-0 z-10 text-xs text-on-surface-variant font-mono-code items-end pr-2 pt-2">
+<div class="h-[60px] relative"><span class="absolute top-[-8px] right-2">1 AM</span></div>
+<div class="h-[60px] relative"><span class="absolute top-[-8px] right-2">2 AM</span></div>
+<div class="h-[60px] relative"><span class="absolute top-[-8px] right-2">3 AM</span></div>
+<div class="h-[60px] relative"><span class="absolute top-[-8px] right-2">4 AM</span></div>
+<div class="h-[60px] relative"><span class="absolute top-[-8px] right-2">5 AM</span></div>
+<div class="h-[60px] relative"><span class="absolute top-[-8px] right-2">6 AM</span></div>
+<div class="h-[60px] relative"><span class="absolute top-[-8px] right-2">7 AM</span></div>
+<div class="h-[60px] relative"><span class="absolute top-[-8px] right-2">8 AM</span></div>
+<div class="h-[60px] relative text-on-surface font-semibold"><span class="absolute top-[-8px] right-2">9 AM</span></div>
+<div class="h-[60px] relative text-on-surface font-semibold"><span class="absolute top-[-8px] right-2">10 AM</span></div>
+<div class="h-[60px] relative text-on-surface font-semibold"><span class="absolute top-[-8px] right-2">11 AM</span></div>
+<div class="h-[60px] relative text-on-surface font-semibold"><span class="absolute top-[-8px] right-2">12 PM</span></div>
+<div class="h-[60px] relative text-on-surface font-semibold"><span class="absolute top-[-8px] right-2">1 PM</span></div>
+<div class="h-[60px] relative text-on-surface font-semibold"><span class="absolute top-[-8px] right-2">2 PM</span></div>
+<div class="h-[60px] relative text-on-surface font-semibold"><span class="absolute top-[-8px] right-2">3 PM</span></div>
+<div class="h-[60px] relative text-on-surface font-semibold"><span class="absolute top-[-8px] right-2">4 PM</span></div>
+<div class="h-[60px] relative text-on-surface font-semibold"><span class="absolute top-[-8px] right-2">5 PM</span></div>
+<div class="h-[60px] relative"><span class="absolute top-[-8px] right-2">6 PM</span></div>
+<div class="h-[60px] relative"><span class="absolute top-[-8px] right-2">7 PM</span></div>
+<div class="h-[60px] relative"><span class="absolute top-[-8px] right-2">8 PM</span></div>
+<div class="h-[60px] relative"><span class="absolute top-[-8px] right-2">9 PM</span></div>
+<div class="h-[60px] relative"><span class="absolute top-[-8px] right-2">10 PM</span></div>
+<div class="h-[60px] relative"><span class="absolute top-[-8px] right-2">11 PM</span></div>
+</div>
+<!-- Grid Background Lines -->
+<div class="absolute top-0 left-[60px] right-0 bottom-0 pointer-events-none flex flex-col z-0">
+<div class="time-grid-line"></div><div class="time-grid-line"></div><div class="time-grid-line"></div><div class="time-grid-line"></div>
+<div class="time-grid-line"></div><div class="time-grid-line"></div><div class="time-grid-line"></div><div class="time-grid-line"></div>
+<div class="time-grid-line"></div><div class="time-grid-line"></div><div class="time-grid-line"></div><div class="time-grid-line"></div>
+<div class="time-grid-line"></div><div class="time-grid-line"></div><div class="time-grid-line"></div><div class="time-grid-line"></div>
+<div class="time-grid-line"></div><div class="time-grid-line"></div><div class="time-grid-line"></div><div class="time-grid-line"></div>
+<div class="time-grid-line"></div><div class="time-grid-line"></div><div class="time-grid-line"></div><div class="time-grid-line"></div>
+</div>
+<!-- Current Time Indicator -->
+<div class="absolute left-[60px] right-0 h-[2px] bg-primary z-20 pointer-events-none flex items-center" style="top: 630px;"> <!-- Example 10:30 AM -->
+<div class="w-[8px] h-[8px] rounded-full bg-primary -ml-[4px]"></div>
+</div>
+<!-- Columns for Events -->
+<div class="flex-1 flex relative z-10">
+<!-- Sunday -->
+<div class="flex-1 day-column"></div>
+<!-- Monday (Today) -->
+<div class="flex-1 day-column bg-[#1A2A4A]/10">
+<!-- Meeting: 9:00 AM - 10:00 AM (top: 540px, height: 60px) -->
+<div class="event-block bg-[#172d47] border-l-2 border-primary text-[#F3F6F9]" style="top: 540px; height: 60px;">
+<div class="font-semibold truncate">Daily Standup</div>
+<div class="text-[10px] text-primary mt-[2px] flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">videocam</span> 9:00 - 10:00</div>
+</div>
+<!-- Focus Block: 10:30 AM - 12:30 PM (top: 630px, height: 120px) -->
+<div class="event-block bg-[#221a38] border-l-2 border-[#b28cf2] text-[#F3F6F9]" style="top: 630px; height: 120px;">
+<div class="font-semibold truncate">Deep Work: Architecture</div>
+<div class="text-[10px] text-[#d1bcf9] mt-[2px] flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">center_focus_strong</span> 10:30 - 12:30</div>
+<p class="text-[10px] text-on-surface-variant mt-1 leading-tight line-clamp-2">Drafting initial system diagrams for v2.0</p>
+</div>
+<!-- Task Deadline: 2:00 PM (top: 840px, height: 30px) -->
+<div class="event-block bg-surface-container-highest border border-error/30 text-on-surface flex items-center" style="top: 840px; height: 30px;">
+<span class="w-2 h-2 rounded-full bg-error mr-2"></span>
+<span class="font-semibold truncate">Submit PR #442</span>
+</div>
+</div>
+<!-- Tuesday -->
+<div class="flex-1 day-column">
+<!-- Meeting: 1:00 PM - 2:00 PM (top: 780px, height: 60px) -->
+<div class="event-block bg-[#172d47] border-l-2 border-primary text-[#F3F6F9]" style="top: 780px; height: 60px;">
+<div class="font-semibold truncate">Sync with Design</div>
+<div class="text-[10px] text-primary mt-[2px]">1:00 - 2:00</div>
+</div>
+</div>
+<!-- Wednesday -->
+<div class="flex-1 day-column">
+<!-- Focus Block: 9:00 AM - 11:30 AM (top: 540px, height: 150px) -->
+<div class="event-block bg-[#221a38] border-l-2 border-[#b28cf2] text-[#F3F6F9]" style="top: 540px; height: 150px;">
+<div class="font-semibold truncate">Code Review Backlog</div>
+<div class="text-[10px] text-[#d1bcf9] mt-[2px] flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">center_focus_strong</span> 9:00 - 11:30</div>
+</div>
+</div>
+<!-- Thursday -->
+<div class="flex-1 day-column">
+<!-- Task: 10:00 AM (top: 600px, height: 30px) -->
+<div class="event-block bg-surface-container-highest border border-tertiary-container/50 text-on-surface flex items-center" style="top: 600px; height: 30px;">
+<span class="material-symbols-outlined text-[14px] text-tertiary-container mr-1">task_alt</span>
+<span class="truncate">Update dependencies</span>
+</div>
+</div>
+<!-- Friday -->
+<div class="flex-1 day-column">
+<!-- Meeting: 3:00 PM - 4:00 PM (top: 900px, height: 60px) -->
+<div class="event-block bg-[#1a382d] border-l-2 border-[#68e0a3] text-[#F3F6F9]" style="top: 900px; height: 60px;">
+<div class="font-semibold truncate">Sprint Retrospective</div>
+<div class="text-[10px] text-[#a1efc5] mt-[2px]">3:00 - 4:00</div>
+</div>
+</div>
+<!-- Saturday -->
+<div class="flex-1 day-column"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Simple script to scroll to roughly 8am on load for better presentation
+        document.addEventListener('DOMContentLoaded', () => {
+            const scrollContainer = document.querySelector('.overflow-y-auto');
+            if (scrollContainer) {
+                // 8 AM is roughly 8 * 60 = 480px down
+                scrollContainer.scrollTop = 450; 
+            }
+        });
+    </script>
+</body></html>

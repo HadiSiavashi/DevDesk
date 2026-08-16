@@ -1,0 +1,308 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>DevDesk - Snippet Editor</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Minimalist scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #26303B;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #434653;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#2d1600",
+                        "surface-tint": "#b2c5ff",
+                        "primary": "#b2c5ff",
+                        "on-surface-variant": "#c3c6d6",
+                        "error": "#ffb4ab",
+                        "surface-container": "#15212a",
+                        "on-background": "#d8e4f1",
+                        "outline-variant": "#434653",
+                        "surface-container-high": "#202b35",
+                        "surface-variant": "#2b3640",
+                        "on-secondary-container": "#b7bcc6",
+                        "on-secondary": "#2c3138",
+                        "surface-dim": "#09151d",
+                        "on-primary-container": "#002665",
+                        "on-primary-fixed": "#001847",
+                        "secondary-fixed": "#dee2ed",
+                        "inverse-on-surface": "#26323b",
+                        "inverse-surface": "#d8e4f1",
+                        "on-surface": "#d8e4f1",
+                        "secondary-container": "#474c54",
+                        "on-tertiary-container": "#412200",
+                        "inverse-primary": "#1857c8",
+                        "on-primary": "#002c72",
+                        "on-error": "#690005",
+                        "secondary": "#c2c6d0",
+                        "error-container": "#93000a",
+                        "background": "#09151d",
+                        "tertiary-fixed-dim": "#ffb874",
+                        "on-secondary-fixed-variant": "#42474f",
+                        "tertiary-fixed": "#ffdcbf",
+                        "surface-container-lowest": "#040f18",
+                        "on-secondary-fixed": "#171c23",
+                        "on-tertiary-fixed-variant": "#6a3b00",
+                        "surface": "#09151d",
+                        "secondary-fixed-dim": "#c2c6d0",
+                        "primary-fixed": "#dae2ff",
+                        "outline": "#8d909f",
+                        "surface-container-highest": "#2b3640",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-container": "#d47b00",
+                        "surface-bright": "#2f3a44",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "on-tertiary": "#4b2800",
+                        "primary-container": "#5b8cff",
+                        "surface-container-low": "#111d26",
+                        "on-primary-fixed-variant": "#0040a0",
+                        "tertiary": "#ffb874"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "lg": "16px",
+                        "sm": "8px",
+                        "md": "12px",
+                        "xxl": "32px",
+                        "sidebar_width": "240px",
+                        "xl": "24px",
+                        "gutter": "16px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "page-title": ["Geist"],
+                        "mono-code": ["JetBrains Mono"],
+                        "body": ["Geist"],
+                        "mono-timer": ["JetBrains Mono"],
+                        "metadata": ["Geist"],
+                        "section-title": ["Geist"]
+                    },
+                    "fontSize": {
+                        "page-title": ["19px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "mono-code": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "body": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "mono-timer": ["14px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "metadata": ["11px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "section-title": ["14px", { "lineHeight": "20px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body h-screen w-screen overflow-hidden flex flex-col">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-lg w-full h-12 bg-background dark:bg-background border-b border-outline-variant flat no shadows flex-shrink-0 z-50">
+<div class="flex items-center gap-sm">
+<button aria-label="Back" class="text-on-surface hover:text-primary transition-colors focus:outline-none flex items-center justify-center h-8 w-8 rounded hover:bg-surface-variant cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined text-[20px]" data-icon="arrow_back">arrow_back</span>
+</button>
+<span class="font-page-title text-page-title font-semibold text-on-surface ml-sm">DevDesk</span>
+</div>
+<div class="flex items-center gap-md">
+<button class="flex items-center gap-xs px-md py-sm bg-[#5B8CFF] text-[#F3F6F9] font-body font-medium rounded text-sm hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#5B8CFF] focus:ring-offset-2 focus:ring-offset-background h-8 cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined text-[16px]" data-icon="save">save</span>
+<span>Deploy</span>
+</button>
+<div class="flex items-center gap-xs border-l border-outline-variant pl-md ml-xs h-8">
+<button aria-label="terminal" class="text-on-surface-variant hover:text-on-surface transition-colors focus:outline-none flex items-center justify-center h-8 w-8 rounded hover:bg-surface-variant cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined text-[20px]" data-icon="terminal">terminal</span>
+</button>
+<button aria-label="bug_report" class="text-on-surface-variant hover:text-on-surface transition-colors focus:outline-none flex items-center justify-center h-8 w-8 rounded hover:bg-surface-variant cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined text-[20px]" data-icon="bug_report">bug_report</span>
+</button>
+<button aria-label="settings" class="text-on-surface-variant hover:text-on-surface transition-colors focus:outline-none flex items-center justify-center h-8 w-8 rounded hover:bg-surface-variant cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
+</button>
+</div>
+<div class="w-8 h-8 rounded-full bg-surface-variant overflow-hidden border border-outline-variant ml-xs flex-shrink-0 cursor-pointer active:opacity-80 hover:border-primary transition-colors">
+<img alt="User profile photo" class="w-full h-full object-cover" data-alt="A small, professional headshot photo of a software developer looking focused, set against a dark grey background with subtle cool blue edge lighting, matching a dark mode UI aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUK-9BqvNvrsdktqK7jP6fBcMH6Mv7jzDGyGyXgoHQLPizKFRjRinD2sN_YPg8FfBKiF5y48fEVfJ_coMWUDLqPzkp0wl02RJOeIC7lrLM7OaYz561ihmzEKcEIIpoBRS8JdPzh-pa9O4HmtXh-7KBx1xG1FuOaO7by0dKTKXk2sJgT8HuhgonNnFuDKe24a--aAfttCgz7FNpVPTcK304ZXk3NR9Adl8NdkGbYUuXKf2ck6BCY5_5xA">
+</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- Main Content Canvas - Snippet Editor -->
+<main class="flex-1 flex flex-col h-full bg-background relative overflow-hidden">
+<!-- Editor Header / Metadata -->
+<div class="flex flex-col gap-sm p-lg border-b border-outline-variant bg-surface-container-low shrink-0">
+<div class="flex items-center justify-between">
+<input class="bg-transparent border-none text-on-surface font-page-title text-page-title p-0 m-0 focus:ring-0 w-full placeholder-on-surface-variant" placeholder="Snippet Title..." type="text" value="fetch_user_data_optimized.ts">
+<div class="flex items-center gap-sm ml-lg shrink-0">
+<button class="flex items-center gap-xs px-md py-xs border border-outline-variant rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors font-body text-[13px] h-8">
+<span class="material-symbols-outlined text-[16px]">content_copy</span>
+<span>Copy</span>
+<kbd class="ml-xs bg-surface-variant px-1 py-0.5 rounded text-[11px] font-mono-code text-on-surface border border-outline-variant">Ctrl+C</kbd>
+</button>
+</div>
+</div>
+<div class="flex items-center gap-md mt-xs">
+<div class="flex items-center">
+<select class="bg-surface border border-outline-variant rounded text-on-surface font-body text-[13px] py-1 pl-sm pr-lg h-7 focus:ring-1 focus:ring-primary focus:border-primary appearance-none cursor-pointer">
+<option selected="" value="typescript">TypeScript</option>
+<option value="javascript">JavaScript</option>
+<option value="python">Python</option>
+<option value="css">CSS</option>
+<option value="html">HTML</option>
+<option value="json">JSON</option>
+</select>
+<div class="pointer-events-none -ml-5 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">arrow_drop_down</span>
+</div>
+</div>
+<div class="flex items-center gap-sm text-on-surface-variant font-metadata text-metadata">
+<span class="flex items-center gap-xs"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span> Public</span>
+<span>•</span>
+<span>Last edited 2h ago</span>
+</div>
+</div>
+</div>
+<!-- Code Editor Area -->
+<div class="flex-1 bg-[#171D26] relative flex w-full">
+<!-- Line Numbers -->
+<div class="w-12 bg-surface-container-low border-r border-outline-variant flex flex-col items-end py-lg px-xs font-mono-code text-mono-code text-outline-variant select-none">
+<span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+</div>
+<!-- Editor Canvas -->
+<textarea class="flex-1 bg-transparent border-none p-lg font-mono-code text-mono-code text-on-surface resize-none focus:ring-0 whitespace-pre font-mono leading-relaxed" placeholder="Write your snippet here..." spellcheck="false">/**
+ * Optimized fetch function for user data with caching
+ * and automatic retry logic.
+ */
+import { UserData, CacheConfig } from '@core/types';
+import { getCache, setCache } from '@utils/cache';
+
+const CACHE_KEY = 'user_data_current';
+const MAX_RETRIES = 3;
+
+export async function fetchUserData(
+  userId: string,
+  forceRefresh = false
+): Promise&lt;UserData&gt; {
+  // Check cache first if not forced
+  if (!forceRefresh) {
+    const cached = await getCache&lt;UserData&gt;(`${CACHE_KEY}_${userId}`);
+    if (cached) {
+      console.log('Cache hit for user data');
+      return cached;
+    }
+  }
+
+  let attempt = 0;
+  while (attempt &lt; MAX_RETRIES) {
+    try {
+      const response = await fetch(`/api/v1/users/${userId}`, {
+        headers: {
+          'Cache-Control': 'no-cache',
+          'X-Request-ID': crypto.randomUUID()
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data: UserData = await response.json();
+      
+      // Update cache asynchronously
+      setCache(`${CACHE_KEY}_${userId}`, data, { ttl: 3600 }).catch(console.error);
+      
+      return data;
+    } catch (error) {
+      attempt++;
+      console.warn(`Attempt ${attempt} failed:`, error);
+      if (attempt === MAX_RETRIES) {
+        throw new Error(`Failed to fetch user data after ${MAX_RETRIES} attempts`);
+      }
+      // Exponential backoff
+      await new Promise(r =&gt; setTimeout(r, 1000 * Math.pow(2, attempt - 1)));
+    }
+  }
+}
+</textarea>
+<!-- Floating Editor Actions -->
+<div class="absolute bottom-lg right-lg flex items-center bg-surface-container-high border border-outline-variant rounded p-xs gap-xs shadow-lg">
+<button class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-variant rounded transition-colors" title="Format Document">
+<span class="material-symbols-outlined text-[18px]">format_align_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-variant rounded transition-colors" title="Toggle Word Wrap">
+<span class="material-symbols-outlined text-[18px]">wrap_text</span>
+</button>
+<div class="w-px h-5 bg-outline-variant mx-xs"></div>
+<button class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-variant rounded transition-colors" title="Find (Ctrl+F)">
+<span class="material-symbols-outlined text-[18px]">search</span>
+</button>
+</div>
+</div>
+<!-- Status Bar -->
+<div class="h-6 bg-surface-container-highest border-t border-outline-variant flex items-center justify-between px-md text-metadata font-metadata text-on-surface-variant shrink-0">
+<div class="flex items-center gap-md">
+<span class="flex items-center gap-xs"><span class="material-symbols-outlined text-[14px]">error</span> 0 Errors</span>
+<span class="flex items-center gap-xs"><span class="material-symbols-outlined text-[14px]">warning</span> 0 Warnings</span>
+</div>
+<div class="flex items-center gap-md">
+<span>Ln 42, Col 1</span>
+<span>UTF-8</span>
+<span>TypeScript</span>
+</div>
+</div>
+</main>
+</div>
+</body></html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DevDesk - Global Overlays &amp; System Components</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-surface-variant": "#c3c6d6",
+                        "on-primary": "#002c72",
+                        "secondary-container": "#474c54",
+                        "on-error": "#690005",
+                        "primary": "#b2c5ff",
+                        "secondary-fixed-dim": "#c2c6d0",
+                        "surface-container-highest": "#2b3640",
+                        "background": "#09151d",
+                        "primary-container": "#5b8cff",
+                        "surface-variant": "#2b3640",
+                        "tertiary-fixed": "#ffdcbf",
+                        "surface-container-high": "#202b35",
+                        "on-surface": "#d8e4f1",
+                        "on-tertiary-container": "#412200",
+                        "error-container": "#93000a",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "on-tertiary-fixed": "#2d1600",
+                        "inverse-surface": "#d8e4f1",
+                        "on-secondary-container": "#b7bcc6",
+                        "secondary": "#c2c6d0",
+                        "on-primary-fixed-variant": "#0040a0",
+                        "error": "#ffb4ab",
+                        "outline": "#8d909f",
+                        "primary-fixed": "#dae2ff",
+                        "surface-container": "#15212a",
+                        "on-background": "#d8e4f1",
+                        "surface-tint": "#b2c5ff",
+                        "on-error-container": "#ffdad6",
+                        "surface-dim": "#09151d",
+                        "on-tertiary-fixed-variant": "#6a3b00",
+                        "surface-bright": "#2f3a44",
+                        "surface-container-lowest": "#040f18",
+                        "tertiary": "#ffb874",
+                        "inverse-on-surface": "#26323b",
+                        "tertiary-fixed-dim": "#ffb874",
+                        "outline-variant": "#434653",
+                        "tertiary-container": "#d47b00",
+                        "on-primary-fixed": "#001847",
+                        "on-secondary": "#2c3138",
+                        "on-primary-container": "#002665",
+                        "inverse-primary": "#1857c8",
+                        "surface-container-low": "#111d26",
+                        "surface": "#09151d",
+                        "secondary-fixed": "#dee2ed",
+                        "on-secondary-fixed-variant": "#42474f",
+                        "on-secondary-fixed": "#171c23",
+                        "on-tertiary": "#4b2800"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    spacing: {
+                        "md": "12px",
+                        "sidebar_width": "240px",
+                        "gutter": "16px",
+                        "sm": "8px",
+                        "xs": "4px",
+                        "xl": "24px",
+                        "xxl": "32px",
+                        "lg": "16px"
+                    },
+                    fontFamily: {
+                        "body": ["Geist"],
+                        "page-title": ["Geist"],
+                        "mono-code": ["JetBrains Mono"],
+                        "metadata": ["Geist"],
+                        "mono-timer": ["JetBrains Mono"],
+                        "section-title": ["Geist"]
+                    },
+                    fontSize: {
+                        "body": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "page-title": ["19px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "mono-code": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "metadata": ["11px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "mono-timer": ["14px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "section-title": ["14px", { "lineHeight": "20px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #0B0F14; }
+        .kbd-hint { @apply font-mono-code text-metadata text-on-surface-variant border border-outline-variant rounded px-1 py-[2px] bg-surface-container-high; }
+        .surface-level-2 { @apply bg-[#11161D] border border-[#26303B] rounded-lg; }
+        .surface-level-3 { @apply bg-[#171D26] border border-[#26303B] rounded-lg shadow-[0_12px_24px_rgba(0,0,0,0.3)]; }
+    </style>
+</head>
+<body class="text-on-surface font-body p-xl grid grid-cols-2 gap-xxl min-h-screen">
+<!-- Section: Overlays & Modals -->
+<div class="space-y-xxl">
+<!-- Command Palette -->
+<div class="relative">
+<h2 class="font-section-title text-section-title text-on-surface mb-md">1. Command Palette</h2>
+<div class="surface-level-3 w-[600px] overflow-hidden flex flex-col">
+<div class="flex items-center px-lg py-md border-b border-[#26303B] bg-[#0B0F14]">
+<span class="material-symbols-outlined text-on-surface-variant mr-md">search</span>
+<input class="flex-1 bg-transparent border-none outline-none text-on-surface placeholder:text-on-surface-variant font-body focus:ring-0 p-0" placeholder="Search tasks, projects, or commands..." type="text" value="Re"/>
+<span class="kbd-hint">Esc</span>
+</div>
+<div class="p-sm flex flex-col gap-xs max-h-[300px] overflow-y-auto">
+<!-- Group: Tasks -->
+<div class="px-sm pt-sm pb-xs text-metadata text-on-surface-variant uppercase tracking-wider font-semibold">Tasks</div>
+<div class="flex items-center gap-md p-sm bg-[#1A2A4A] border-l-2 border-[#5B8CFF] rounded-r cursor-pointer">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<div class="flex-1 flex flex-col">
+<span class="text-body text-on-surface font-medium">Review Q3 Marketing Deck</span>
+<span class="text-metadata text-on-surface-variant">Marketing Project • Due Today</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[16px]">keyboard_return</span>
+</div>
+<div class="flex items-center gap-md p-sm hover:bg-[#171D26] rounded cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">check_circle</span>
+<div class="flex-1 flex flex-col">
+<span class="text-body text-on-surface">Refactor User Auth Flow</span>
+<span class="text-metadata text-on-surface-variant">Core App • Due Tomorrow</span>
+</div>
+</div>
+<!-- Group: Projects -->
+<div class="px-sm pt-md pb-xs text-metadata text-on-surface-variant uppercase tracking-wider font-semibold">Projects</div>
+<div class="flex items-center gap-md p-sm hover:bg-[#171D26] rounded cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-tertiary">folder</span>
+<div class="flex-1 flex flex-col">
+<span class="text-body text-on-surface">Redesign System Components</span>
+<span class="text-metadata text-on-surface-variant">Design System</span>
+</div>
+</div>
+</div>
+<div class="px-lg py-sm border-t border-[#26303B] bg-[#0E131A] flex items-center justify-between text-metadata text-on-surface-variant">
+<div class="flex items-center gap-sm">
+<span class="flex items-center gap-xs"><span class="kbd-hint">↑</span><span class="kbd-hint">↓</span> to navigate</span>
+<span class="flex items-center gap-xs"><span class="kbd-hint">↵</span> to select</span>
+</div>
+<span>3 results</span>
+</div>
+</div>
+</div>
+<!-- Quick Add -->
+<div>
+<h2 class="font-section-title text-section-title text-on-surface mb-md">2. Quick Add</h2>
+<div class="surface-level-3 w-[500px] p-lg flex flex-col gap-sm">
+<div class="flex items-center gap-sm border border-[#26303B] bg-[#0B0F14] rounded-lg p-sm focus-within:border-[#5B8CFF] focus-within:shadow-[0_0_0_2px_rgba(91,140,255,0.2)] transition-all">
+<input class="flex-1 bg-transparent border-none outline-none text-body text-on-surface placeholder:text-on-surface-variant p-0" placeholder="Add task..." type="text" value="Update dependencies #dev !high today"/>
+</div>
+<div class="flex items-center gap-sm mt-xs">
+<span class="inline-flex items-center px-2 py-1 bg-[#171D26] text-[#9AA6B2] text-metadata rounded">#dev</span>
+<span class="inline-flex items-center px-2 py-1 bg-error-container text-on-error-container text-metadata rounded">!high</span>
+<span class="inline-flex items-center px-2 py-1 bg-[#171D26] text-[#9AA6B2] text-metadata rounded">today</span>
+</div>
+<div class="flex items-center gap-md text-metadata text-on-surface-variant mt-sm">
+<span># project</span>
+<span>! priority</span>
+<span>@ user</span>
+<span>date/time</span>
+<div class="flex-1"></div>
+<span class="kbd-hint">Enter</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Section: Notifications & Trays -->
+<div class="space-y-xxl">
+<!-- Toasts -->
+<div>
+<h2 class="font-section-title text-section-title text-on-surface mb-md">5. Toasts (System Notifications)</h2>
+<div class="flex flex-col gap-md w-[320px]">
+<!-- Success -->
+<div class="surface-level-3 p-md flex items-start gap-md border-l-2 border-l-[#5B8CFF]">
+<span class="material-symbols-outlined text-[#5B8CFF]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<div class="flex-1">
+<p class="font-section-title text-section-title text-on-surface">Task Completed</p>
+<p class="text-body text-on-surface-variant">Review Q3 Marketing Deck</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[18px] cursor-pointer hover:text-on-surface">close</span>
+</div>
+<!-- Error -->
+<div class="surface-level-3 p-md flex items-start gap-md border-l-2 border-l-error">
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">error</span>
+<div class="flex-1">
+<p class="font-section-title text-section-title text-on-surface">Sync Failed</p>
+<p class="text-body text-on-surface-variant">Could not connect to server.</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[18px] cursor-pointer hover:text-on-surface">close</span>
+</div>
+</div>
+</div>
+<!-- Confirm Dialog -->
+<div>
+<h2 class="font-section-title text-section-title text-on-surface mb-md">4. Confirm Dialog</h2>
+<div class="surface-level-3 w-[400px] p-xl flex flex-col gap-lg">
+<div>
+<h3 class="font-page-title text-page-title text-on-surface mb-xs">Delete Project?</h3>
+<p class="text-body text-on-surface-variant">Are you sure you want to delete "Q3 Marketing"? This action cannot be undone and will remove all associated tasks.</p>
+</div>
+<div class="flex justify-end gap-sm">
+<button class="px-lg py-sm border border-[#26303B] rounded-lg text-on-surface hover:bg-[#171D26] transition-colors font-body">Cancel</button>
+<button class="px-lg py-sm bg-error text-on-error rounded-lg hover:bg-error/90 transition-colors font-body font-medium shadow-sm">Delete</button>
+</div>
+</div>
+</div>
+</div>
+</body></html>

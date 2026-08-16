@@ -1,0 +1,412 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>DevDesk - Analytics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-primary": "#002c72",
+                      "on-primary-fixed": "#001847",
+                      "secondary": "#c2c6d0",
+                      "on-secondary-fixed": "#171c23",
+                      "surface-bright": "#2f3a44",
+                      "on-tertiary": "#4b2800",
+                      "surface-container-highest": "#2b3640",
+                      "background": "#09151d",
+                      "tertiary-container": "#d47b00",
+                      "on-surface": "#d8e4f1",
+                      "surface-container-low": "#111d26",
+                      "secondary-fixed": "#dee2ed",
+                      "tertiary-fixed-dim": "#ffb874",
+                      "inverse-on-surface": "#26323b",
+                      "inverse-primary": "#1857c8",
+                      "surface-container": "#15212a",
+                      "surface": "#09151d",
+                      "primary-fixed": "#dae2ff",
+                      "outline-variant": "#434653",
+                      "on-error-container": "#ffdad6",
+                      "on-background": "#d8e4f1",
+                      "on-primary-fixed-variant": "#0040a0",
+                      "tertiary": "#ffb874",
+                      "surface-dim": "#09151d",
+                      "on-tertiary-fixed": "#2d1600",
+                      "primary": "#b2c5ff",
+                      "surface-variant": "#2b3640",
+                      "on-secondary-container": "#b7bcc6",
+                      "primary-fixed-dim": "#b2c5ff",
+                      "on-tertiary-container": "#412200",
+                      "on-secondary-fixed-variant": "#42474f",
+                      "tertiary-fixed": "#ffdcbf",
+                      "on-tertiary-fixed-variant": "#6a3b00",
+                      "on-secondary": "#2c3138",
+                      "error": "#ffb4ab",
+                      "surface-container-lowest": "#040f18",
+                      "on-primary-container": "#002665",
+                      "on-error": "#690005",
+                      "secondary-fixed-dim": "#c2c6d0",
+                      "surface-container-high": "#202b35",
+                      "error-container": "#93000a",
+                      "inverse-surface": "#d8e4f1",
+                      "outline": "#8d909f",
+                      "on-surface-variant": "#c3c6d6",
+                      "primary-container": "#5b8cff",
+                      "secondary-container": "#474c54",
+                      "surface-tint": "#b2c5ff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "lg": "16px",
+                      "gutter": "16px",
+                      "sm": "8px",
+                      "xs": "4px",
+                      "xl": "24px",
+                      "xxl": "32px",
+                      "sidebar_width": "240px",
+                      "md": "12px"
+              },
+              "fontFamily": {
+                      "mono-timer": [
+                              "JetBrains Mono"
+                      ],
+                      "body": [
+                              "Geist"
+                      ],
+                      "section-title": [
+                              "Geist"
+                      ],
+                      "mono-code": [
+                              "JetBrains Mono"
+                      ],
+                      "metadata": [
+                              "Geist"
+                      ],
+                      "page-title": [
+                              "Geist"
+                      ]
+              },
+              "fontSize": {
+                      "mono-timer": [
+                              "14px",
+                              {
+                                      "lineHeight": "14px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body": [
+                              "13px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "section-title": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "mono-code": [
+                              "12px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "metadata": [
+                              "11px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "page-title": [
+                              "19px",
+                              {
+                                      "lineHeight": "24px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        body { background-color: #0B0F14; color: #d8e4f1; }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #26303B; border-radius: 10px; }
+    </style>
+</head>
+<body class="font-body flex h-screen overflow-hidden bg-[#0B0F14] text-on-surface">
+<!-- SideNavBar -->
+<nav class="bg-surface-container-low dark:bg-surface-container-low text-primary dark:text-primary-fixed-dim font-section-title text-section-title docked h-full w-[240px] rtl:right-0 ltr:left-0 border-r border-outline-variant dark:border-outline-variant rtl:border-l rtl:border-r-0 flat no shadows transition-all duration-200 ease-in-out flex flex-col h-screen py-md overflow-y-auto shrink-0 hidden md:flex" style="background-color: #0E131A;">
+<div class="px-lg pb-md mb-md border-b border-outline-variant">
+<h1 class="font-page-title text-page-title font-bold text-on-surface">DevDesk</h1>
+<p class="font-metadata text-metadata text-on-surface-variant">Productivity Engine</p>
+</div>
+<ul class="flex-1 space-y-xs px-sm">
+<li><a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-colors duration-150" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">dashboard</span> Dashboard</a></li>
+<li><a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-colors duration-150" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">sunny</span> My Day</a></li>
+<li><a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-colors duration-150" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">check_circle</span> Tasks</a></li>
+<li><a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-colors duration-150" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">timer</span> Focus</a></li>
+<li><a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-colors duration-150" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">account_tree</span> Projects</a></li>
+<li><a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-colors duration-150" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">calendar_today</span> Calendar</a></li>
+<li><a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-colors duration-150" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">description</span> Notes</a></li>
+<li><a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-colors duration-150" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">emoji_events</span> Goals</a></li>
+<li><a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-colors duration-150" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">repeat</span> Habits</a></li>
+<li><a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-colors duration-150" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">code</span> Snippets</a></li>
+<li><a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-colors duration-150" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">bookmark</span> Bookmarks</a></li>
+<li><a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-colors duration-150" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">dns</span> Environments</a></li>
+<li><a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-colors duration-150" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">menu_book</span> Knowledge</a></li>
+<li><a class="flex items-center gap-md px-md py-sm rounded bg-[#1A2A4A] border-l-2 border-[#5B8CFF] text-on-surface transition-colors duration-150" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">analytics</span> Analytics</a></li>
+<li><a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-colors duration-150" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">event_note</span> Daily Plan</a></li>
+<li><a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-colors duration-150" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">rate_review</span> Daily Review</a></li>
+<li><a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-colors duration-150" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">settings</span> Settings</a></li>
+</ul>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col min-w-0 bg-[#0B0F14]">
+<!-- TopNavBar -->
+<header class="bg-surface dark:bg-surface text-primary dark:text-primary-fixed font-body text-body docked full-width top-0 h-[48px] border-b border-[#26303B] flat no shadows transition-colors duration-150 ease-in-out flex justify-between items-center w-full px-lg rtl:flex-row-reverse shrink-0">
+<div class="flex items-center md:hidden">
+<h2 class="font-page-title text-page-title font-bold text-on-surface">DevDesk</h2>
+</div>
+<div class="hidden md:flex items-center w-64 bg-[#0B0F14] border border-[#26303B] rounded px-sm py-xs focus-within:border-[#5B8CFF]">
+<span class="material-symbols-outlined text-outline text-[18px] mr-sm">search</span>
+<input class="bg-transparent border-none outline-none text-body font-body text-on-surface w-full h-full p-0 focus:ring-0" placeholder="Search..." type="text">
+</div>
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant hover:bg-surface-container-high p-xs rounded transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">timer</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-high p-xs rounded transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<button class="bg-[#5B8CFF] text-[#F3F6F9] px-sm py-xs rounded-DEFAULT flex items-center gap-xs font-section-title text-body hover:bg-opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-[18px]">add</span> Create
+                </button>
+</div>
+</header>
+<!-- Page Canvas -->
+<main class="flex-1 overflow-y-auto p-lg">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-xl gap-md">
+<div>
+<h1 class="font-page-title text-page-title font-bold text-on-surface">Analytics</h1>
+<!-- Sub-navigation / Tabs (Optional Improvement) -->
+<div class="flex items-center mt-sm gap-lg border-b border-[#26303B] pb-xs relative group cursor-help">
+<span class="absolute -top-6 left-0 bg-[#171D26] border border-[#26303B] px-xs py-1 text-[10px] text-on-surface-variant rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Optional Improvement</span>
+<button class="text-[#5B8CFF] border-b-2 border-[#5B8CFF] pb-xs font-section-title text-section-title -mb-[2px]">Overview</button>
+<button class="text-on-surface-variant hover:text-on-surface pb-xs font-section-title text-section-title transition-colors">Productivity</button>
+<button class="text-on-surface-variant hover:text-on-surface pb-xs font-section-title text-section-title transition-colors">Reports</button>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<div class="flex items-center bg-[#0B0F14] border border-[#26303B] rounded px-sm py-xs text-body font-body text-on-surface-variant cursor-pointer hover:border-outline-variant transition-colors">
+<span class="material-symbols-outlined text-[16px] mr-xs">calendar_month</span>
+<span>Last 14 Days</span>
+<span class="material-symbols-outlined text-[16px] ml-sm">expand_more</span>
+</div>
+<button class="bg-transparent border border-[#26303B] text-on-surface px-sm py-xs rounded hover:bg-[#171D26] transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">download</span>
+</button>
+</div>
+</div>
+<!-- Summary Cards (Bento Grid Style) -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-gutter mb-xl">
+<!-- Card 1 -->
+<div class="bg-[#11161D] border border-[#26303B] rounded-[6px] p-md flex flex-col justify-between">
+<div class="flex justify-between items-start mb-md">
+<span class="text-on-surface-variant font-metadata text-metadata uppercase tracking-wider">Total Tasks Completed</span>
+<span class="material-symbols-outlined text-outline-variant text-[18px]">check_circle</span>
+</div>
+<div class="flex items-end justify-between">
+<span class="font-mono-timer text-[24px] font-medium text-[#F3F6F9]">142</span>
+<span class="text-[#5B8CFF] font-metadata text-metadata flex items-center"><span class="material-symbols-outlined text-[12px]">arrow_upward</span> 12%</span>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-[#11161D] border border-[#26303B] rounded-[6px] p-md flex flex-col justify-between">
+<div class="flex justify-between items-start mb-md">
+<span class="text-on-surface-variant font-metadata text-metadata uppercase tracking-wider">Total Focus Minutes</span>
+<span class="material-symbols-outlined text-outline-variant text-[18px]">timer</span>
+</div>
+<div class="flex items-end justify-between">
+<span class="font-mono-timer text-[24px] font-medium text-[#F3F6F9]">2,840</span>
+<span class="text-[#5B8CFF] font-metadata text-metadata flex items-center"><span class="material-symbols-outlined text-[12px]">arrow_upward</span> 5%</span>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-[#11161D] border border-[#26303B] rounded-[6px] p-md flex flex-col justify-between">
+<div class="flex justify-between items-start mb-md">
+<span class="text-on-surface-variant font-metadata text-metadata uppercase tracking-wider">Avg Productivity Score</span>
+<span class="material-symbols-outlined text-outline-variant text-[18px]">trending_up</span>
+</div>
+<div class="flex items-end justify-between">
+<span class="font-mono-timer text-[24px] font-medium text-[#F3F6F9]">8.4</span>
+<span class="text-outline-variant font-metadata text-metadata flex items-center">out of 10</span>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-[#11161D] border border-[#26303B] rounded-[6px] p-md flex flex-col justify-between">
+<div class="flex justify-between items-start mb-md">
+<span class="text-on-surface-variant font-metadata text-metadata uppercase tracking-wider">Est vs Actual Mins</span>
+<span class="material-symbols-outlined text-outline-variant text-[18px]">compare_arrows</span>
+</div>
+<div class="flex flex-col gap-xs w-full">
+<div class="flex justify-between font-mono-code text-[11px] text-on-surface-variant">
+<span>Est: 3200</span>
+<span>Act: 2840</span>
+</div>
+<div class="w-full bg-[#0B0F14] h-[4px] rounded-full overflow-hidden flex">
+<div class="bg-[#26303B] h-full" style="width: 53%;"></div>
+<div class="bg-[#5B8CFF] h-full" style="width: 47%;"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Charts Section -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Main Trend Chart (Spans 2 columns) -->
+<div class="lg:col-span-2 bg-[#11161D] border border-[#26303B] rounded-[6px] p-md flex flex-col">
+<h3 class="font-section-title text-section-title text-on-surface mb-sm">Tasks Completed per Day</h3>
+<div class="flex-1 min-h-[200px] flex items-end justify-between gap-[2px] pt-md relative">
+<!-- Y-axis labels mock -->
+<div class="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-[10px] font-mono-code text-on-surface-variant py-md">
+<span>20</span><span>15</span><span>10</span><span>5</span><span>0</span>
+</div>
+<div class="ml-xl flex-1 flex items-end justify-between gap-[2px] h-full border-b border-[#26303B]">
+<!-- Bars -->
+<div class="w-full bg-[#26303B] hover:bg-[#5B8CFF] transition-colors rounded-t-sm" style="height: 40%;" title="Day 1"></div>
+<div class="w-full bg-[#26303B] hover:bg-[#5B8CFF] transition-colors rounded-t-sm" style="height: 60%;" title="Day 2"></div>
+<div class="w-full bg-[#26303B] hover:bg-[#5B8CFF] transition-colors rounded-t-sm" style="height: 30%;" title="Day 3"></div>
+<div class="w-full bg-[#5B8CFF] rounded-t-sm" style="height: 80%;" title="Day 4 (Peak)"></div>
+<div class="w-full bg-[#26303B] hover:bg-[#5B8CFF] transition-colors rounded-t-sm" style="height: 50%;" title="Day 5"></div>
+<div class="w-full bg-[#26303B] hover:bg-[#5B8CFF] transition-colors rounded-t-sm" style="height: 70%;" title="Day 6"></div>
+<div class="w-full bg-[#26303B] hover:bg-[#5B8CFF] transition-colors rounded-t-sm" style="height: 45%;" title="Day 7"></div>
+<div class="w-full bg-[#26303B] hover:bg-[#5B8CFF] transition-colors rounded-t-sm" style="height: 90%;" title="Day 8"></div>
+<div class="w-full bg-[#26303B] hover:bg-[#5B8CFF] transition-colors rounded-t-sm" style="height: 65%;" title="Day 9"></div>
+<div class="w-full bg-[#26303B] hover:bg-[#5B8CFF] transition-colors rounded-t-sm" style="height: 35%;" title="Day 10"></div>
+<div class="w-full bg-[#26303B] hover:bg-[#5B8CFF] transition-colors rounded-t-sm" style="height: 55%;" title="Day 11"></div>
+<div class="w-full bg-[#26303B] hover:bg-[#5B8CFF] transition-colors rounded-t-sm" style="height: 75%;" title="Day 12"></div>
+<div class="w-full bg-[#26303B] hover:bg-[#5B8CFF] transition-colors rounded-t-sm" style="height: 40%;" title="Day 13"></div>
+<div class="w-full bg-[#26303B] hover:bg-[#5B8CFF] transition-colors rounded-t-sm" style="height: 85%;" title="Day 14"></div>
+</div>
+</div>
+</div>
+<!-- Secondary Trend Chart -->
+<div class="bg-[#11161D] border border-[#26303B] rounded-[6px] p-md flex flex-col">
+<h3 class="font-section-title text-section-title text-on-surface mb-sm">Focus Minutes per Day</h3>
+<!-- Sparkline Mock using SVG path -->
+<div class="flex-1 min-h-[200px] relative w-full flex items-end border-b border-[#26303B]">
+<svg class="w-full h-3/4 stroke-[#5B8CFF] fill-none" preserveAspectRatio="none" stroke-width="2" viewBox="0 0 100 50">
+<path d="M0,40 L10,35 L20,45 L30,20 L40,30 L50,10 L60,25 L70,15 L80,30 L90,5 L100,20"></path>
+</svg>
+<div class="absolute bottom-0 left-0 w-full h-3/4 bg-gradient-to-t from-[rgba(91,140,255,0.1)] to-transparent pointer-events-none" style="clip-path: polygon(0 80%, 10% 70%, 20% 90%, 30% 40%, 40% 60%, 50% 20%, 60% 50%, 70% 30%, 80% 60%, 90% 10%, 100% 40%, 100% 100%, 0 100%);"></div>
+</div>
+</div>
+<!-- Breakdown: Status -->
+<div class="bg-[#11161D] border border-[#26303B] rounded-[6px] p-md flex flex-col">
+<h3 class="font-section-title text-section-title text-on-surface mb-lg">Tasks by Status</h3>
+<div class="flex-1 flex flex-col justify-center gap-sm">
+<!-- Horizontal Bar -->
+<div class="flex flex-col gap-xs">
+<div class="flex justify-between font-metadata text-metadata text-on-surface-variant">
+<span>Done</span>
+<span class="font-mono-code text-on-surface">65%</span>
+</div>
+<div class="w-full bg-[#0B0F14] h-[6px] rounded-full overflow-hidden">
+<div class="bg-[#5B8CFF] h-full" style="width: 65%;"></div>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<div class="flex justify-between font-metadata text-metadata text-on-surface-variant">
+<span>In Progress</span>
+<span class="font-mono-code text-on-surface">20%</span>
+</div>
+<div class="w-full bg-[#0B0F14] h-[6px] rounded-full overflow-hidden">
+<div class="bg-[#434653] h-full" style="width: 20%;"></div>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<div class="flex justify-between font-metadata text-metadata text-on-surface-variant">
+<span>To Do</span>
+<span class="font-mono-code text-on-surface">15%</span>
+</div>
+<div class="w-full bg-[#0B0F14] h-[6px] rounded-full overflow-hidden">
+<div class="bg-[#26303B] h-full" style="width: 15%;"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Breakdown: Priority -->
+<div class="bg-[#11161D] border border-[#26303B] rounded-[6px] p-md flex flex-col">
+<h3 class="font-section-title text-section-title text-on-surface mb-lg">Tasks by Priority</h3>
+<div class="flex-1 flex flex-col justify-center gap-sm">
+<div class="flex items-center gap-sm">
+<span class="font-metadata text-metadata text-on-surface-variant w-12">High</span>
+<div class="flex-1 bg-[#0B0F14] h-[16px] rounded-sm overflow-hidden flex items-center">
+<div class="bg-[#5B8CFF] h-full text-[10px] font-mono-code flex items-center px-xs text-[#0B0F14]" style="width: 45%;">45</div>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<span class="font-metadata text-metadata text-on-surface-variant w-12">Med</span>
+<div class="flex-1 bg-[#0B0F14] h-[16px] rounded-sm overflow-hidden flex items-center">
+<div class="bg-[#434653] h-full text-[10px] font-mono-code flex items-center px-xs text-on-surface" style="width: 72%;">72</div>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<span class="font-metadata text-metadata text-on-surface-variant w-12">Low</span>
+<div class="flex-1 bg-[#0B0F14] h-[16px] rounded-sm overflow-hidden flex items-center">
+<div class="bg-[#26303B] h-full text-[10px] font-mono-code flex items-center px-xs text-on-surface" style="width: 25%;">25</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Breakdown: Project -->
+<div class="bg-[#11161D] border border-[#26303B] rounded-[6px] p-md flex flex-col">
+<h3 class="font-section-title text-section-title text-on-surface mb-lg">Focus by Project</h3>
+<div class="flex-1 flex flex-col justify-center gap-sm">
+<div class="flex items-center gap-sm">
+<span class="font-metadata text-metadata text-on-surface-variant truncate w-20" title="DevDesk Redesign">DevDesk</span>
+<div class="flex-1 bg-[#0B0F14] h-[8px] rounded-sm overflow-hidden">
+<div class="bg-[#5B8CFF] h-full" style="width: 55%;"></div>
+</div>
+<span class="font-mono-code text-[10px] text-on-surface-variant w-8 text-right">55%</span>
+</div>
+<div class="flex items-center gap-sm">
+<span class="font-metadata text-metadata text-on-surface-variant truncate w-20" title="API Migration">API Mig</span>
+<div class="flex-1 bg-[#0B0F14] h-[8px] rounded-sm overflow-hidden">
+<div class="bg-[#434653] h-full" style="width: 30%;"></div>
+</div>
+<span class="font-mono-code text-[10px] text-on-surface-variant w-8 text-right">30%</span>
+</div>
+<div class="flex items-center gap-sm">
+<span class="font-metadata text-metadata text-on-surface-variant truncate w-20" title="Admin Panel">Admin</span>
+<div class="flex-1 bg-[#0B0F14] h-[8px] rounded-sm overflow-hidden">
+<div class="bg-[#26303B] h-full" style="width: 15%;"></div>
+</div>
+<span class="font-mono-code text-[10px] text-on-surface-variant w-8 text-right">15%</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

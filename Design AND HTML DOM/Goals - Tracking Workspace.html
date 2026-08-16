@@ -1,0 +1,410 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>DevDesk - Goals</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface": "#09151d",
+                      "inverse-primary": "#1857c8",
+                      "secondary-fixed": "#dee2ed",
+                      "error": "#ffb4ab",
+                      "surface-tint": "#b2c5ff",
+                      "on-background": "#d8e4f1",
+                      "on-surface": "#d8e4f1",
+                      "on-secondary": "#2c3138",
+                      "outline-variant": "#434653",
+                      "on-primary-fixed": "#001847",
+                      "on-surface-variant": "#c3c6d6",
+                      "tertiary-fixed-dim": "#ffb874",
+                      "surface-container-high": "#202b35",
+                      "on-secondary-fixed": "#171c23",
+                      "surface-variant": "#2b3640",
+                      "on-tertiary": "#4b2800",
+                      "surface-container-lowest": "#040f18",
+                      "surface-dim": "#09151d",
+                      "on-tertiary-container": "#412200",
+                      "secondary-fixed-dim": "#c2c6d0",
+                      "secondary-container": "#474c54",
+                      "background": "#09151d",
+                      "secondary": "#c2c6d0",
+                      "on-error-container": "#ffdad6",
+                      "on-error": "#690005",
+                      "inverse-surface": "#d8e4f1",
+                      "tertiary-fixed": "#ffdcbf",
+                      "tertiary": "#ffb874",
+                      "on-tertiary-fixed-variant": "#6a3b00",
+                      "on-primary": "#002c72",
+                      "on-primary-container": "#002665",
+                      "primary": "#b2c5ff",
+                      "surface-bright": "#2f3a44",
+                      "outline": "#8d909f",
+                      "on-primary-fixed-variant": "#0040a0",
+                      "inverse-on-surface": "#26323b",
+                      "on-secondary-container": "#b7bcc6",
+                      "surface-container-highest": "#2b3640",
+                      "on-secondary-fixed-variant": "#42474f",
+                      "tertiary-container": "#d47b00",
+                      "primary-container": "#5b8cff",
+                      "on-tertiary-fixed": "#2d1600",
+                      "primary-fixed-dim": "#b2c5ff",
+                      "primary-fixed": "#dae2ff",
+                      "error-container": "#93000a",
+                      "surface-container-low": "#111d26",
+                      "surface-container": "#15212a"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "sm": "8px",
+                      "sidebar_width": "240px",
+                      "lg": "16px",
+                      "xxl": "32px",
+                      "gutter": "16px",
+                      "xl": "24px",
+                      "xs": "4px",
+                      "md": "12px"
+              },
+              "fontFamily": {
+                      "mono-code": [
+                              "JetBrains Mono"
+                      ],
+                      "metadata": [
+                              "Geist"
+                      ],
+                      "mono-timer": [
+                              "JetBrains Mono"
+                      ],
+                      "page-title": [
+                              "Geist"
+                      ],
+                      "section-title": [
+                              "Geist"
+                      ],
+                      "body": [
+                              "Geist"
+                      ]
+              },
+              "fontSize": {
+                      "mono-code": [
+                              "12px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "metadata": [
+                              "11px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "mono-timer": [
+                              "14px",
+                              {
+                                      "lineHeight": "14px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "page-title": [
+                              "19px",
+                              {
+                                      "lineHeight": "24px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "section-title": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body": [
+                              "13px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        body {
+            background-color: #0B0F14;
+            color: #d8e4f1;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #26303B;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #434653;
+        }
+        
+        .progress-bar {
+            height: 4px;
+            background-color: #26303B;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .progress-value {
+            height: 100%;
+            background-color: #5B8CFF;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="font-body text-body antialiased flex h-screen overflow-hidden">
+<!-- SideNavBar -->
+<nav class="bg-surface-container-low dark:bg-surface-container-low text-primary dark:text-primary font-body text-body text-page-title font-page-title text-on-surface dark:text-on-surface fixed left-0 top-0 h-full w-sidebar_width border-r border-outline-variant dark:border-outline-variant flex flex-col h-screen w-sidebar_width z-20">
+<!-- Header -->
+<div class="p-lg border-b border-outline-variant dark:border-outline-variant flex items-center gap-md">
+<div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center shrink-0">
+<img alt="User Profile" class="w-full h-full object-cover rounded-full" data-alt="A small abstract minimalist geometric logo for a developer workspace app. Deep navy and sharp electric blue lines on a dark background. Corporate, clean, high-tech aesthetic. Subtle lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdLEhdmPo00TpaRsiHg1559c-6PYji8w28ZzWW2aZMKRt-OCumdWrDjJ1uIbvLov3POZGD4GZQjJHJG4HYEMzL5joThspo9JaCxREL7-qE0Vw2-GERQzTiPAaZbhyNMq9ppnnYiKpQNCmYT1pbwHDJ6c2J8B5zQawfSHse5KSiBTHRz04Rxaur6ab9yBXuI9rNe0z5NG2gZMehJxhe72zt-LeTSb9Keh7HUJt5A0Bz4vCExRESBlsJMg">
+</div>
+<div class="flex flex-col overflow-hidden">
+<span class="text-on-surface font-page-title text-page-title truncate">DevDesk</span>
+<span class="text-on-surface-variant font-metadata text-metadata truncate">Developer Workspace</span>
+</div>
+</div>
+<!-- CTA -->
+<div class="p-lg">
+<button class="w-full bg-primary-container text-on-primary-container font-section-title text-section-title py-sm px-md rounded flex items-center justify-center gap-sm hover:bg-surface-variant dark:hover:bg-surface-variant transition-colors duration-150 ease-in-out border border-transparent">
+<span class="material-symbols-outlined" style="font-size: 18px;">add</span>
+                 New Entry
+            </button>
+</div>
+<!-- Main Tabs -->
+<div class="flex-1 overflow-y-auto py-sm">
+<ul class="flex flex-col gap-xs px-sm">
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant dark:hover:bg-surface-variant transition-colors duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined" style="font-size: 18px;">assignment</span>
+<span>Tasks</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant dark:hover:bg-surface-variant transition-colors duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined" style="font-size: 18px;">description</span>
+<span>Notes</span>
+</a>
+</li>
+<li>
+<!-- Active State -->
+<a class="flex items-center gap-md px-md py-sm rounded bg-secondary-container dark:bg-secondary-container text-primary dark:text-primary border-l-2 border-primary hover:bg-surface-variant dark:hover:bg-surface-variant transition-colors duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined" style="font-size: 18px;">ads_click</span>
+<span>Goals</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant dark:hover:bg-surface-variant transition-colors duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined" style="font-size: 18px;">repeat</span>
+<span>Habits</span>
+</a>
+</li>
+</ul>
+</div>
+<!-- Footer Tabs -->
+<div class="p-sm border-t border-outline-variant dark:border-outline-variant mt-auto">
+<ul class="flex flex-col gap-xs">
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant dark:hover:bg-surface-variant transition-colors duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined" style="font-size: 18px;">settings</span>
+<span>Settings</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant dark:hover:bg-surface-variant transition-colors duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined" style="font-size: 18px;">help_outline</span>
+<span>Support</span>
+</a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-surface text-primary dark:text-primary font-section-title text-section-title text-page-title font-page-title font-bold text-on-surface dark:text-on-surface fixed top-0 right-0 h-14 w-[calc(100%-240px)] border-b border-outline-variant dark:border-outline-variant flex items-center justify-between px-xl h-14 w-full ml-sidebar_width z-10 pl-[calc(240px+24px)]">
+<!-- Left Side: Product Name & Search -->
+<div class="flex items-center gap-xl h-full">
+<span class="text-on-surface">DevDesk</span>
+<div class="relative hidden lg:flex items-center">
+<span class="material-symbols-outlined absolute left-sm text-on-surface-variant" style="font-size: 16px;">search</span>
+<input class="bg-[#0B0F14] border border-[#26303B] text-on-surface font-body text-body rounded pl-xl py-xs focus:outline-none focus:border-primary-container focus:ring-0 transition-colors w-64 h-8 placeholder-on-surface-variant/50" placeholder="Search..." type="text">
+</div>
+<!-- Navigation Links -->
+<nav class="hidden md:flex h-full items-center gap-lg ml-lg">
+<a class="h-full flex items-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary cursor-pointer transition-opacity duration-200" href="#">Dashboard</a>
+<a class="h-full flex items-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary cursor-pointer transition-opacity duration-200" href="#">Analytics</a>
+<a class="h-full flex items-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary cursor-pointer transition-opacity duration-200" href="#">Archive</a>
+</nav>
+</div>
+<!-- Right Side: Actions -->
+<div class="flex items-center gap-md">
+<button class="bg-primary-container text-on-primary-container font-section-title text-section-title px-md py-xs rounded flex items-center gap-xs hover:bg-opacity-90 transition-opacity">
+                Sync
+             </button>
+<div class="flex items-center gap-sm border-l border-outline-variant pl-md ml-sm">
+<button class="text-on-surface-variant hover:text-primary transition-colors cursor-pointer w-8 h-8 flex items-center justify-center rounded hover:bg-surface-variant">
+<span class="material-symbols-outlined" style="font-size: 20px;">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors cursor-pointer w-8 h-8 flex items-center justify-center rounded hover:bg-surface-variant lg:hidden">
+<span class="material-symbols-outlined" style="font-size: 20px;">search</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors cursor-pointer w-8 h-8 flex items-center justify-center rounded hover:bg-surface-variant">
+<span class="material-symbols-outlined" style="font-size: 20px;">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 ml-[240px] mt-14 p-lg overflow-y-auto relative bg-[#0B0F14]">
+<div class="max-w-5xl mx-auto flex flex-col h-full gap-lg">
+<!-- Page Header -->
+<div class="flex items-center justify-between shrink-0">
+<div>
+<h1 class="text-page-title font-page-title text-on-surface">Goals</h1>
+<p class="text-metadata font-metadata text-on-surface-variant mt-xs">Long-term objectives and targets.</p>
+</div>
+<div class="flex items-center gap-sm">
+<div class="bg-surface-container-low border border-[#26303B] rounded px-md py-xs flex items-center gap-sm hidden md:flex">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span class="text-metadata font-metadata text-on-surface">3 Active</span>
+<span class="w-px h-3 bg-[#26303B] mx-xs"></span>
+<span class="text-metadata font-metadata text-on-surface-variant">1 Completed</span>
+</div>
+</div>
+</div>
+<!-- List Header (Columns) -->
+<div class="grid grid-cols-[minmax(200px,1fr)_120px_100px_150px_60px] gap-md px-md py-xs border-b border-[#26303B] text-metadata font-metadata text-on-surface-variant uppercase tracking-wider shrink-0 mt-lg">
+<div>Goal</div>
+<div>Category</div>
+<div>Target</div>
+<div>Progress</div>
+<div class="text-right">Actions</div>
+</div>
+<!-- Goals List -->
+<div class="flex flex-col gap-0 flex-1 overflow-y-auto">
+<!-- Row 1 -->
+<div class="grid grid-cols-[minmax(200px,1fr)_120px_100px_150px_60px] gap-md px-md py-sm items-center hover:bg-[#171D26] group border-b border-[#26303B]/50 transition-colors h-[40px]">
+<div class="font-body text-body text-on-surface truncate pr-sm">Master Advanced React Patterns</div>
+<div>
+<span class="inline-flex px-xs py-[2px] rounded bg-[#171D26] text-[#9AA6B2] text-metadata font-metadata border border-[#26303B]/30">Learning</span>
+</div>
+<div class="font-mono-code text-mono-code text-on-surface-variant">Q3 2024</div>
+<div class="flex items-center gap-sm">
+<div class="progress-bar flex-1">
+<div class="progress-value" style="width: 65%;"></div>
+</div>
+<span class="font-mono-code text-mono-code text-on-surface w-8 text-right">65%</span>
+</div>
+<div class="flex items-center justify-end gap-xs opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-on-surface-variant hover:text-primary w-6 h-6 flex items-center justify-center rounded hover:bg-surface-variant">
+<span class="material-symbols-outlined" style="font-size: 16px;">edit</span>
+</button>
+<button class="text-on-surface-variant hover:text-error w-6 h-6 flex items-center justify-center rounded hover:bg-surface-variant">
+<span class="material-symbols-outlined" style="font-size: 16px;">delete</span>
+</button>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="grid grid-cols-[minmax(200px,1fr)_120px_100px_150px_60px] gap-md px-md py-sm items-center hover:bg-[#171D26] group border-b border-[#26303B]/50 transition-colors h-[40px]">
+<div class="font-body text-body text-on-surface truncate pr-sm">Reduce App Bundle Size by 20%</div>
+<div>
+<span class="inline-flex px-xs py-[2px] rounded bg-[#171D26] text-[#9AA6B2] text-metadata font-metadata border border-[#26303B]/30">Performance</span>
+</div>
+<div class="font-mono-code text-mono-code text-on-surface-variant">May 15</div>
+<div class="flex items-center gap-sm">
+<div class="progress-bar flex-1">
+<div class="progress-value" style="width: 30%;"></div>
+</div>
+<span class="font-mono-code text-mono-code text-on-surface w-8 text-right">30%</span>
+</div>
+<div class="flex items-center justify-end gap-xs opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-on-surface-variant hover:text-primary w-6 h-6 flex items-center justify-center rounded hover:bg-surface-variant">
+<span class="material-symbols-outlined" style="font-size: 16px;">edit</span>
+</button>
+<button class="text-on-surface-variant hover:text-error w-6 h-6 flex items-center justify-center rounded hover:bg-surface-variant">
+<span class="material-symbols-outlined" style="font-size: 16px;">delete</span>
+</button>
+</div>
+</div>
+<!-- Row 3 -->
+<div class="grid grid-cols-[minmax(200px,1fr)_120px_100px_150px_60px] gap-md px-md py-sm items-center hover:bg-[#171D26] group border-b border-[#26303B]/50 transition-colors h-[40px]">
+<div class="font-body text-body text-on-surface truncate pr-sm">Write 10 Technical Blog Posts</div>
+<div>
+<span class="inline-flex px-xs py-[2px] rounded bg-[#171D26] text-[#9AA6B2] text-metadata font-metadata border border-[#26303B]/30">Career</span>
+</div>
+<div class="font-mono-code text-mono-code text-on-surface-variant">Dec 31</div>
+<div class="flex items-center gap-sm">
+<div class="progress-bar flex-1">
+<div class="progress-value" style="width: 10%;"></div>
+</div>
+<span class="font-mono-code text-mono-code text-on-surface w-8 text-right">10%</span>
+</div>
+<div class="flex items-center justify-end gap-xs opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-on-surface-variant hover:text-primary w-6 h-6 flex items-center justify-center rounded hover:bg-surface-variant">
+<span class="material-symbols-outlined" style="font-size: 16px;">edit</span>
+</button>
+<button class="text-on-surface-variant hover:text-error w-6 h-6 flex items-center justify-center rounded hover:bg-surface-variant">
+<span class="material-symbols-outlined" style="font-size: 16px;">delete</span>
+</button>
+</div>
+</div>
+<!-- Row 4 (Completed) -->
+<div class="grid grid-cols-[minmax(200px,1fr)_120px_100px_150px_60px] gap-md px-md py-sm items-center hover:bg-[#171D26] group border-b border-[#26303B]/50 transition-colors h-[40px] opacity-60">
+<div class="font-body text-body text-on-surface-variant truncate pr-sm line-through">Setup CI/CD Pipeline</div>
+<div>
+<span class="inline-flex px-xs py-[2px] rounded bg-[#171D26] text-[#9AA6B2] text-metadata font-metadata border border-[#26303B]/30">Infrastructure</span>
+</div>
+<div class="font-mono-code text-mono-code text-on-surface-variant">Jan 10</div>
+<div class="flex items-center gap-sm">
+<div class="progress-bar flex-1">
+<div class="progress-value bg-on-surface-variant" style="width: 100%;"></div>
+</div>
+<span class="font-mono-code text-mono-code text-on-surface-variant w-8 text-right">100%</span>
+</div>
+<div class="flex items-center justify-end gap-xs opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-on-surface-variant hover:text-error w-6 h-6 flex items-center justify-center rounded hover:bg-surface-variant">
+<span class="material-symbols-outlined" style="font-size: 16px;">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Empty State (Hidden by default, structure provided as requested) -->
+<div class="hidden flex-col items-center justify-center h-full w-full py-xxl opacity-50">
+<span class="material-symbols-outlined text-[#434653] mb-md" style="font-size: 48px; font-weight: 200;">ads_click</span>
+<p class="text-section-title font-section-title text-on-surface-variant">No goals set</p>
+<p class="text-body font-body text-[#8d909f] mt-xs text-center max-w-sm">Define long-term objectives to track your progress over time.</p>
+<button class="mt-lg bg-transparent border border-[#26303B] text-on-surface font-section-title text-section-title py-sm px-lg rounded hover:bg-[#171D26] transition-colors">
+                    Add First Goal
+                </button>
+</div>
+</div>
+</main>
+</body></html>

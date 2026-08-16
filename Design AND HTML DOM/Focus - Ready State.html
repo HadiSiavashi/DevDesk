@@ -1,0 +1,280 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>DevDesk - Focus</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed-variant": "#6a3b00",
+                        "surface-variant": "#2b3640",
+                        "secondary": "#c2c6d0",
+                        "surface-container-low": "#111d26",
+                        "surface-bright": "#2f3a44",
+                        "on-error": "#690005",
+                        "tertiary-container": "#d47b00",
+                        "primary": "#b2c5ff",
+                        "outline-variant": "#434653",
+                        "inverse-primary": "#1857c8",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "on-primary-fixed": "#001847",
+                        "background": "#09151d",
+                        "on-tertiary-fixed": "#2d1600",
+                        "primary-container": "#5b8cff",
+                        "on-primary-fixed-variant": "#0040a0",
+                        "surface-tint": "#b2c5ff",
+                        "on-primary": "#002c72",
+                        "secondary-fixed": "#dee2ed",
+                        "inverse-surface": "#d8e4f1",
+                        "on-background": "#d8e4f1",
+                        "tertiary-fixed": "#ffdcbf",
+                        "outline": "#8d909f",
+                        "on-surface-variant": "#c3c6d6",
+                        "surface-container": "#15212a",
+                        "inverse-on-surface": "#26323b",
+                        "tertiary": "#ffb874",
+                        "on-error-container": "#ffdad6",
+                        "surface-dim": "#09151d",
+                        "on-secondary-container": "#b7bcc6",
+                        "secondary-container": "#474c54",
+                        "error": "#ffb4ab",
+                        "on-surface": "#d8e4f1",
+                        "on-tertiary": "#4b2800",
+                        "surface-container-lowest": "#040f18",
+                        "surface-container-high": "#202b35",
+                        "primary-fixed": "#dae2ff",
+                        "on-secondary-fixed": "#171c23",
+                        "error-container": "#93000a",
+                        "surface-container-highest": "#2b3640",
+                        "on-tertiary-container": "#412200",
+                        "on-secondary": "#2c3138",
+                        "on-secondary-fixed-variant": "#42474f",
+                        "on-primary-container": "#002665",
+                        "tertiary-fixed-dim": "#ffb874",
+                        "surface": "#09151d",
+                        "secondary-fixed-dim": "#c2c6d0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xl": "24px",
+                        "gutter": "16px",
+                        "md": "12px",
+                        "sm": "8px",
+                        "sidebar_width": "240px",
+                        "xxl": "32px",
+                        "xs": "4px",
+                        "lg": "16px"
+                    },
+                    "fontFamily": {
+                        "section-title": ["Geist"],
+                        "page-title": ["Geist"],
+                        "mono-code": ["JetBrains Mono"],
+                        "mono-timer": ["JetBrains Mono"],
+                        "body": ["Geist"],
+                        "metadata": ["Geist"]
+                    },
+                    "fontSize": {
+                        "section-title": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "page-title": ["19px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "mono-code": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "mono-timer": ["14px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "body": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "metadata": ["11px", { "lineHeight": "16px", "fontWeight": "400" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #0B0F14;
+            color: #d8e4f1;
+        }
+        
+        /* Custom large timer font size that isn't in config but requested */
+        .text-giant-timer {
+            font-size: 56px;
+            line-height: 1;
+            letter-spacing: 0.02em;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body class="h-screen w-full flex overflow-hidden selection:bg-primary/30">
+<!-- SideNavBar -->
+<nav class="w-sidebar_width h-full fixed left-0 top-0 bg-surface-container-low dark:bg-surface-container-low border-r border-outline-variant flex flex-col py-lg space-y-xs z-40 transition-all duration-150">
+<div class="px-lg pb-md mb-md border-b border-outline-variant flex items-center space-x-sm">
+<span class="material-symbols-outlined text-primary font-bold">code</span>
+<div>
+<h1 class="font-page-title text-page-title font-bold text-on-surface">DevDesk</h1>
+<p class="font-metadata text-metadata text-on-surface-variant">Productivity Engine</p>
+</div>
+</div>
+<div class="flex-1 px-sm space-y-xs">
+<a class="flex items-center space-x-md px-md py-sm rounded text-on-surface-variant hover:bg-surface-container-high transition-all duration-150" href="#">
+<span class="material-symbols-outlined text-[18px]">dashboard</span>
+<span class="font-section-title text-section-title">Dashboard</span>
+</a>
+<a class="flex items-center space-x-md px-md py-sm rounded text-on-surface-variant hover:bg-surface-container-high transition-all duration-150" href="#">
+<span class="material-symbols-outlined text-[18px]">today</span>
+<span class="font-section-title text-section-title">My Day</span>
+</a>
+<a class="flex items-center space-x-md px-md py-sm rounded text-on-surface-variant hover:bg-surface-container-high transition-all duration-150" href="#">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+<span class="font-section-title text-section-title">Tasks</span>
+</a>
+<a class="flex items-center space-x-md px-md py-sm rounded bg-primary-container/20 text-primary border-l-2 border-primary transition-all duration-150" href="#">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">timer</span>
+<span class="font-section-title text-section-title font-semibold">Focus</span>
+</a>
+<a class="flex items-center space-x-md px-md py-sm rounded text-on-surface-variant hover:bg-surface-container-high transition-all duration-150" href="#">
+<span class="material-symbols-outlined text-[18px]">folder</span>
+<span class="font-section-title text-section-title">Projects</span>
+</a>
+</div>
+<div class="px-sm mt-auto">
+<a class="flex items-center space-x-md px-md py-sm rounded text-on-surface-variant hover:bg-surface-container-high transition-all duration-150" href="#">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+<span class="font-section-title text-section-title">Settings</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="ml-sidebar_width flex-1 h-full flex flex-col relative bg-[#0B0F14]">
+<!-- TopAppBar (Minimal for Focus mode) -->
+<header class="h-[48px] w-full flex justify-between items-center px-lg bg-[#0B0F14] border-b border-outline-variant z-30">
+<div class="flex items-center">
+<span class="font-page-title text-page-title font-bold text-on-surface">Focus</span>
+</div>
+<div class="flex items-center space-x-md">
+<button class="p-sm rounded text-on-surface-variant hover:bg-surface-container-highest transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<img alt="User profile" class="w-6 h-6 rounded-full border border-outline-variant object-cover ml-sm" data-alt="A small circular avatar placeholder showing a generic user silhouette in minimalist high contrast dark mode aesthetic with deep #0B0F14 background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5sBc5NVighuyT8bB3bcymeUDn8YD15a35WbOU1vNHZijYJHc29DpXFiASAojhuRnNNSULJFmVPhEmWJ9K_gX0eLxueb4KZilCZTba0RmIH7srlpZ1QmyHKkVuB1o1V_wp-9iKEJseWOyQtMqjBk0wcbUzteRTYmhZ_r3LIyuBJ4PAn0U8BVYmI9xWrivpxX468nwzPAsunxRuJ7L1vfo-7gDVktoYj0VzEDmRk14lJgobCbgwXQeRBw">
+</div>
+</header>
+<!-- Focus Workspace -->
+<div class="flex-1 flex overflow-hidden">
+<!-- Left Area: Timer & Controls (60%) -->
+<div class="w-[60%] flex flex-col items-center justify-center p-xl border-r border-outline-variant relative">
+<div class="flex flex-col items-center text-center space-y-lg max-w-md w-full">
+<div class="space-y-sm">
+<h2 class="font-page-title text-page-title text-on-surface">Ready to focus?</h2>
+<p class="font-body text-body text-on-surface-variant">Select a task to begin</p>
+</div>
+<!-- Large Timer -->
+<div class="font-mono-timer text-giant-timer text-surface-tint tracking-wider py-xl">
+                        00:00
+                    </div>
+<!-- Action Buttons -->
+<div class="flex flex-col w-full max-w-[280px] space-y-md mt-lg">
+<button class="w-full flex items-center justify-center space-x-sm bg-[#5B8CFF] hover:bg-[#7ba3ff] text-[#F3F6F9] font-section-title text-section-title py-md px-lg rounded transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background">
+<span class="material-symbols-outlined text-[18px]">play_arrow</span>
+<span>Start Focus</span>
+</button>
+<button class="w-full flex items-center justify-center space-x-sm bg-transparent border border-[#26303B] hover:bg-surface-container text-on-surface font-section-title text-section-title py-md px-lg rounded transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background">
+<span class="material-symbols-outlined text-[18px]">timelapse</span>
+<span>Start Pomodoro</span>
+<span class="ml-auto font-mono-code text-[11px] bg-surface-container-high px-1 rounded text-on-surface-variant">25m</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Right Area: Task Board (40%) -->
+<div class="w-[40%] flex flex-col bg-surface-dim">
+<div class="px-lg py-md border-b border-outline-variant flex justify-between items-center bg-surface-container-lowest">
+<h3 class="font-section-title text-section-title text-on-surface">Today's Task Board</h3>
+<button class="text-primary hover:text-primary-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto p-md space-y-xs custom-scrollbar">
+<!-- Task Row 1 -->
+<div class="group flex items-center justify-between p-md bg-[#11161D] border border-[#26303B] rounded hover:border-primary/50 transition-colors cursor-pointer">
+<div class="flex items-center space-x-md overflow-hidden">
+<button class="w-4 h-4 rounded-full border border-outline-variant flex-shrink-0 hover:bg-surface-variant transition-colors flex items-center justify-center">
+</button>
+<span class="font-body text-body text-on-surface truncate">Update API documentation endpoints</span>
+</div>
+<div class="flex items-center space-x-sm ml-md flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant hover:text-primary">play_circle</span>
+</div>
+</div>
+<!-- Task Row 2 -->
+<div class="group flex items-center justify-between p-md bg-[#11161D] border border-[#26303B] rounded hover:border-primary/50 transition-colors cursor-pointer">
+<div class="flex items-center space-x-md overflow-hidden">
+<button class="w-4 h-4 rounded-full border border-outline-variant flex-shrink-0 hover:bg-surface-variant transition-colors flex items-center justify-center">
+</button>
+<span class="font-body text-body text-on-surface truncate">Review PR #342 for auth service</span>
+</div>
+<div class="flex items-center space-x-sm ml-md flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant hover:text-primary">play_circle</span>
+</div>
+</div>
+<!-- Task Row 3 -->
+<div class="group flex items-center justify-between p-md bg-[#11161D] border border-[#26303B] rounded hover:border-primary/50 transition-colors cursor-pointer">
+<div class="flex items-center space-x-md overflow-hidden">
+<button class="w-4 h-4 rounded-full border border-outline-variant flex-shrink-0 hover:bg-surface-variant transition-colors flex items-center justify-center">
+</button>
+<span class="font-body text-body text-on-surface truncate">Fix memory leak in worker pool</span>
+</div>
+<div class="flex items-center space-x-sm ml-md flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant hover:text-primary">play_circle</span>
+</div>
+</div>
+<!-- Task Row 4 -->
+<div class="group flex items-center justify-between p-md bg-[#11161D] border border-[#26303B] rounded hover:border-primary/50 transition-colors cursor-pointer">
+<div class="flex items-center space-x-md overflow-hidden">
+<button class="w-4 h-4 rounded-full border border-outline-variant flex-shrink-0 hover:bg-surface-variant transition-colors flex items-center justify-center">
+</button>
+<span class="font-body text-body text-on-surface truncate">Design system alignment check</span>
+</div>
+<div class="flex items-center space-x-sm ml-md flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant hover:text-primary">play_circle</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Summary Bar -->
+<div class="h-[32px] w-full bg-[#11161D] border-t border-outline-variant flex items-center justify-center px-lg z-30">
+<div class="flex items-center space-x-lg">
+<div class="flex items-center space-x-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">timer</span>
+<span class="font-metadata text-metadata">0 Focus minutes today</span>
+</div>
+<div class="w-[1px] h-3 bg-outline-variant"></div>
+<div class="flex items-center space-x-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">checklist</span>
+<span class="font-metadata text-metadata">0 Sessions today</span>
+</div>
+</div>
+</div>
+</main>
+<style>
+        /* Minimalist Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #26303B;
+            border-radius: 10px;
+        }
+    </style>
+</body></html>

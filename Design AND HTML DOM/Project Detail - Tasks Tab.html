@@ -1,0 +1,344 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>DevDesk - Project Detail Tasks</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-low": "#111d26",
+                    "tertiary-container": "#d47b00",
+                    "on-secondary-fixed": "#171c23",
+                    "outline": "#8d909f",
+                    "tertiary-fixed": "#ffdcbf",
+                    "on-error": "#690005",
+                    "background": "#09151d",
+                    "inverse-primary": "#1857c8",
+                    "on-error-container": "#ffdad6",
+                    "error-container": "#93000a",
+                    "surface-container-high": "#202b35",
+                    "inverse-surface": "#d8e4f1",
+                    "on-primary-fixed": "#001847",
+                    "on-primary-fixed-variant": "#0040a0",
+                    "surface-container-highest": "#2b3640",
+                    "secondary-fixed-dim": "#c2c6d0",
+                    "error": "#ffb4ab",
+                    "outline-variant": "#434653",
+                    "secondary-fixed": "#dee2ed",
+                    "surface-container": "#15212a",
+                    "on-surface": "#d8e4f1",
+                    "surface-dim": "#09151d",
+                    "inverse-on-surface": "#26323b",
+                    "on-secondary": "#2c3138",
+                    "on-secondary-container": "#b7bcc6",
+                    "surface-container-lowest": "#040f18",
+                    "on-tertiary-fixed": "#2d1600",
+                    "on-tertiary": "#4b2800",
+                    "surface-tint": "#b2c5ff",
+                    "on-background": "#d8e4f1",
+                    "on-surface-variant": "#c3c6d6",
+                    "surface-bright": "#2f3a44",
+                    "surface": "#09151d",
+                    "secondary-container": "#474c54",
+                    "primary-fixed-dim": "#b2c5ff",
+                    "tertiary": "#ffb874",
+                    "secondary": "#c2c6d0",
+                    "primary-container": "#5b8cff",
+                    "tertiary-fixed-dim": "#ffb874",
+                    "surface-variant": "#2b3640",
+                    "on-tertiary-container": "#412200",
+                    "on-secondary-fixed-variant": "#42474f",
+                    "on-tertiary-fixed-variant": "#6a3b00",
+                    "on-primary": "#002c72",
+                    "primary": "#b2c5ff",
+                    "on-primary-container": "#002665",
+                    "primary-fixed": "#dae2ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "md": "12px",
+                    "sm": "8px",
+                    "gutter": "16px",
+                    "xs": "4px",
+                    "xxl": "32px",
+                    "xl": "24px",
+                    "sidebar_width": "240px",
+                    "lg": "16px"
+            },
+            "fontFamily": {
+                    "metadata": [
+                            "Geist"
+                    ],
+                    "mono-code": [
+                            "JetBrains Mono"
+                    ],
+                    "page-title": [
+                            "Geist"
+                    ],
+                    "body": [
+                            "Geist"
+                    ],
+                    "mono-timer": [
+                            "JetBrains Mono"
+                    ],
+                    "section-title": [
+                            "Geist"
+                    ]
+            },
+            "fontSize": {
+                    "metadata": [
+                            "11px",
+                            {
+                                    "lineHeight": "16px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "mono-code": [
+                            "12px",
+                            {
+                                    "lineHeight": "18px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "page-title": [
+                            "19px",
+                            {
+                                    "lineHeight": "24px",
+                                    "letterSpacing": "-0.01em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body": [
+                            "13px",
+                            {
+                                    "lineHeight": "18px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "mono-timer": [
+                            "14px",
+                            {
+                                    "lineHeight": "14px",
+                                    "letterSpacing": "0.02em",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "section-title": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "fontWeight": "600"
+                            }
+                    ]
+            }
+        },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-fill {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body text-body min-h-screen flex selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar -->
+<nav class="fixed left-0 top-0 bottom-0 flex flex-col pt-[48px] w-sidebar_width h-full bg-surface-container-low border-r border-outline-variant z-40 hidden md:flex">
+<div class="px-gutter mb-xl">
+<h1 class="font-page-title text-page-title text-on-surface">DevDesk</h1>
+<p class="font-metadata text-metadata text-on-surface-variant">Local-first</p>
+</div>
+<ul class="flex flex-col flex-grow w-full font-section-title text-section-title">
+<!-- Nav Items -->
+<li><a class="flex items-center px-gutter py-sm text-on-surface-variant hover:bg-surface-container-highest transition-all duration-150 ease-in-out w-full" href="#"><span class="material-symbols-outlined mr-sm text-[18px]">home</span> Primary</a></li>
+<li><a class="flex items-center px-gutter py-sm bg-on-primary-fixed-variant/20 text-primary border-l-2 border-primary w-full" href="#"><span class="material-symbols-outlined mr-sm text-[18px] icon-fill">folder</span> Projects</a></li>
+<li><a class="flex items-center px-gutter py-sm text-on-surface-variant hover:bg-surface-container-highest transition-all duration-150 ease-in-out w-full" href="#"><span class="material-symbols-outlined mr-sm text-[18px]">inbox</span> Inbox</a></li>
+<li><a class="flex items-center px-gutter py-sm text-on-surface-variant hover:bg-surface-container-highest transition-all duration-150 ease-in-out w-full" href="#"><span class="material-symbols-outlined mr-sm text-[18px]">terminal</span> Terminal</a></li>
+<li><a class="flex items-center px-gutter py-sm text-on-surface-variant hover:bg-surface-container-highest transition-all duration-150 ease-in-out w-full" href="#"><span class="material-symbols-outlined mr-sm text-[18px]">bug_report</span> Debugger</a></li>
+<li><a class="flex items-center px-gutter py-sm text-on-surface-variant hover:bg-surface-container-highest transition-all duration-150 ease-in-out w-full" href="#"><span class="material-symbols-outlined mr-sm text-[18px]">list_alt</span> Logs</a></li>
+<li><a class="flex items-center px-gutter py-sm text-on-surface-variant hover:bg-surface-container-highest transition-all duration-150 ease-in-out w-full" href="#"><span class="material-symbols-outlined mr-sm text-[18px]">insights</span> Analytics</a></li>
+<li><a class="flex items-center px-gutter py-sm text-on-surface-variant hover:bg-surface-container-highest transition-all duration-150 ease-in-out w-full" href="#"><span class="material-symbols-outlined mr-sm text-[18px]">bar_chart</span> Reports</a></li>
+</ul>
+<div class="mt-auto border-t border-outline-variant py-sm font-section-title text-section-title">
+<a class="flex items-center px-gutter py-sm text-on-surface-variant hover:bg-surface-container-highest transition-all duration-150 ease-in-out w-full" href="#"><span class="material-symbols-outlined mr-sm text-[18px]">help</span> Help</a>
+<a class="flex items-center px-gutter py-sm text-on-surface-variant hover:bg-surface-container-highest transition-all duration-150 ease-in-out w-full" href="#"><span class="material-symbols-outlined mr-sm text-[18px]">settings</span> Settings</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-grow flex flex-col md:ml-sidebar_width min-h-screen">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center px-gutter w-full sticky top-0 z-50 h-[48px] bg-background border-b border-outline-variant">
+<div class="flex items-center gap-gutter">
+<button class="md:hidden text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined">menu</span></button>
+<span class="font-page-title text-page-title text-on-surface md:hidden">DevDesk</span>
+<nav class="hidden md:flex gap-lg font-body text-body">
+<a class="text-on-surface-variant hover:bg-surface-container-high transition-colors px-sm py-xs rounded cursor-default active:opacity-80" href="#">Focus</a>
+</nav>
+</div>
+<div class="flex items-center gap-sm">
+<button class="p-xs text-on-surface-variant hover:bg-surface-container-high transition-colors rounded cursor-default active:opacity-80"><span class="material-symbols-outlined text-[20px]">search</span></button>
+<button class="p-xs text-on-surface-variant hover:bg-surface-container-high transition-colors rounded cursor-default active:opacity-80"><span class="material-symbols-outlined text-[20px]">settings</span></button>
+</div>
+</header>
+<div class="p-xl flex-grow overflow-auto flex flex-col gap-lg">
+<!-- Project Header -->
+<div class="flex flex-col gap-sm">
+<div class="flex items-center gap-sm text-on-surface-variant font-metadata text-metadata uppercase tracking-wider">
+<span>Projects</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-on-surface">DevDesk Core</span>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<h2 class="font-page-title text-[24px] leading-tight text-on-surface">DevDesk Core</h2>
+<p class="font-body text-body text-on-surface-variant mt-xs">Main repository for the DevDesk desktop application.</p>
+</div>
+<div class="flex gap-sm">
+<button class="bg-surface-container hover:bg-surface-container-high border border-outline-variant text-on-surface px-md py-sm rounded flex items-center gap-xs font-section-title text-section-title transition-colors">
+<span class="material-symbols-outlined text-[18px]">share</span> Share
+                        </button>
+<button class="bg-primary-container text-on-primary-container hover:bg-primary-container/90 px-md py-sm rounded flex items-center gap-xs font-section-title text-section-title transition-colors">
+<span class="material-symbols-outlined text-[18px]">add</span> New Task
+                        </button>
+</div>
+</div>
+</div>
+<!-- Project Tabs -->
+<div class="border-b border-outline-variant flex gap-lg">
+<a class="px-xs py-sm text-on-surface-variant hover:text-on-surface font-section-title text-section-title border-b-2 border-transparent transition-colors" href="#">Overview</a>
+<a class="px-xs py-sm text-primary border-b-2 border-primary font-section-title text-section-title transition-colors" href="#">Tasks <span class="ml-xs bg-surface-container-highest text-on-surface-variant rounded-full px-2 py-0.5 font-metadata text-metadata">12</span></a>
+<a class="px-xs py-sm text-on-surface-variant hover:text-on-surface font-section-title text-section-title border-b-2 border-transparent transition-colors" href="#">Issues</a>
+<a class="px-xs py-sm text-on-surface-variant hover:text-on-surface font-section-title text-section-title border-b-2 border-transparent transition-colors" href="#">Settings</a>
+</div>
+<!-- Tasks Content -->
+<div class="flex flex-col gap-xl">
+<!-- In Progress Section -->
+<div>
+<div class="flex items-center justify-between mb-sm">
+<h3 class="font-section-title text-section-title text-on-surface flex items-center gap-sm">
+<span class="material-symbols-outlined text-[18px] text-tertiary">data_usage</span> In Progress
+                            <span class="bg-surface-container-highest text-on-surface-variant rounded-full px-2 py-0.5 font-metadata text-metadata">3</span>
+</h3>
+</div>
+<div class="flex flex-col border border-outline-variant rounded-lg bg-surface-container-low overflow-hidden">
+<!-- Task Row 1 -->
+<div class="flex items-center gap-md p-sm border-b border-outline-variant hover:bg-surface-container transition-colors group">
+<input class="w-4 h-4 rounded border-outline bg-background text-primary focus:ring-primary focus:ring-offset-background cursor-pointer" type="checkbox">
+<span class="material-symbols-outlined text-[16px] text-error cursor-help" title="High Priority">keyboard_double_arrow_up</span>
+<div class="flex-grow flex items-center gap-md min-w-0">
+<span class="font-section-title text-section-title text-on-surface truncate cursor-pointer hover:underline">Implement Sidebar Navigation Component</span>
+</div>
+<div class="flex items-center gap-md shrink-0">
+<span class="bg-surface-container-highest text-on-surface-variant px-2 py-1 rounded font-metadata text-metadata flex items-center gap-xs"><span class="material-symbols-outlined text-[14px]">calendar_today</span> Today</span>
+<span class="bg-surface-container text-on-surface px-2 py-1 rounded border border-outline-variant font-metadata text-metadata flex items-center gap-xs"><span class="w-2 h-2 rounded-full bg-tertiary"></span> In Progress</span>
+<div class="w-6 opacity-0 group-hover:opacity-100 transition-opacity flex justify-end">
+<button class="text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined text-[18px]">more_horiz</span></button>
+</div>
+</div>
+</div>
+<!-- Task Row 2 -->
+<div class="flex items-center gap-md p-sm border-b border-outline-variant hover:bg-surface-container transition-colors group">
+<input class="w-4 h-4 rounded border-outline bg-background text-primary focus:ring-primary focus:ring-offset-background cursor-pointer" type="checkbox">
+<span class="material-symbols-outlined text-[16px] text-tertiary cursor-help" title="Medium Priority">keyboard_arrow_up</span>
+<div class="flex-grow flex flex-col min-w-0">
+<span class="font-section-title text-section-title text-on-surface truncate cursor-pointer hover:underline">Set up Tailwind Theme Configuration</span>
+<span class="font-metadata text-metadata text-on-surface-variant truncate">Ensure all color tokens map correctly to the design system.</span>
+</div>
+<div class="flex items-center gap-md shrink-0">
+<span class="text-on-surface-variant font-metadata text-metadata">Tomorrow</span>
+<span class="bg-surface-container text-on-surface px-2 py-1 rounded border border-outline-variant font-metadata text-metadata flex items-center gap-xs"><span class="w-2 h-2 rounded-full bg-tertiary"></span> In Progress</span>
+<div class="w-6 opacity-0 group-hover:opacity-100 transition-opacity flex justify-end">
+<button class="text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined text-[18px]">more_horiz</span></button>
+</div>
+</div>
+</div>
+<!-- Task Row 3 -->
+<div class="flex items-center gap-md p-sm hover:bg-surface-container transition-colors group">
+<input class="w-4 h-4 rounded border-outline bg-background text-primary focus:ring-primary focus:ring-offset-background cursor-pointer" type="checkbox">
+<span class="w-4"></span> <!-- No priority icon spacer -->
+<div class="flex-grow flex items-center gap-md min-w-0">
+<span class="font-section-title text-section-title text-on-surface truncate cursor-pointer hover:underline">Create Empty State Patterns</span>
+</div>
+<div class="flex items-center gap-md shrink-0">
+<span class="text-error font-metadata text-metadata flex items-center gap-xs"><span class="material-symbols-outlined text-[14px]">warning</span> Overdue</span>
+<span class="bg-surface-container text-on-surface px-2 py-1 rounded border border-outline-variant font-metadata text-metadata flex items-center gap-xs"><span class="w-2 h-2 rounded-full bg-tertiary"></span> In Progress</span>
+<div class="w-6 opacity-0 group-hover:opacity-100 transition-opacity flex justify-end">
+<button class="text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined text-[18px]">more_horiz</span></button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Upcoming Section -->
+<div>
+<div class="flex items-center justify-between mb-sm">
+<h3 class="font-section-title text-section-title text-on-surface flex items-center gap-sm">
+<span class="material-symbols-outlined text-[18px] text-outline">calendar_month</span> Upcoming
+                            <span class="bg-surface-container-highest text-on-surface-variant rounded-full px-2 py-0.5 font-metadata text-metadata">2</span>
+</h3>
+</div>
+<div class="flex flex-col border border-outline-variant rounded-lg bg-surface-container-low overflow-hidden">
+<!-- Task Row 4 -->
+<div class="flex items-center gap-md p-sm border-b border-outline-variant hover:bg-surface-container transition-colors group">
+<input class="w-4 h-4 rounded border-outline bg-background text-primary focus:ring-primary focus:ring-offset-background cursor-pointer" type="checkbox">
+<span class="material-symbols-outlined text-[16px] text-tertiary cursor-help" title="Medium Priority">keyboard_arrow_up</span>
+<div class="flex-grow flex items-center gap-md min-w-0">
+<span class="font-section-title text-section-title text-on-surface truncate cursor-pointer hover:underline">Draft API Documentation for v2.0</span>
+</div>
+<div class="flex items-center gap-md shrink-0">
+<span class="text-on-surface-variant font-metadata text-metadata">Oct 24</span>
+<span class="bg-surface-container text-on-surface px-2 py-1 rounded border border-outline-variant font-metadata text-metadata flex items-center gap-xs"><span class="w-2 h-2 rounded-full bg-outline"></span> Todo</span>
+<div class="w-6 opacity-0 group-hover:opacity-100 transition-opacity flex justify-end">
+<button class="text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined text-[18px]">more_horiz</span></button>
+</div>
+</div>
+</div>
+<!-- Task Row 5 -->
+<div class="flex items-center gap-md p-sm hover:bg-surface-container transition-colors group">
+<input class="w-4 h-4 rounded border-outline bg-background text-primary focus:ring-primary focus:ring-offset-background cursor-pointer" type="checkbox">
+<span class="material-symbols-outlined text-[16px] text-outline cursor-help" title="Low Priority">keyboard_arrow_down</span>
+<div class="flex-grow flex items-center gap-md min-w-0">
+<span class="font-section-title text-section-title text-on-surface truncate cursor-pointer hover:underline">Review Pull Request #402</span>
+</div>
+<div class="flex items-center gap-md shrink-0">
+<span class="text-on-surface-variant font-metadata text-metadata">Oct 26</span>
+<span class="bg-surface-container text-on-surface px-2 py-1 rounded border border-outline-variant font-metadata text-metadata flex items-center gap-xs"><span class="w-2 h-2 rounded-full bg-outline"></span> Todo</span>
+<div class="w-6 opacity-0 group-hover:opacity-100 transition-opacity flex justify-end">
+<button class="text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined text-[18px]">more_horiz</span></button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Completed Section (Empty State Example) -->
+<div>
+<div class="flex items-center justify-between mb-sm">
+<h3 class="font-section-title text-section-title text-on-surface flex items-center gap-sm">
+<span class="material-symbols-outlined text-[18px] text-primary">check_circle</span> Completed
+                            <span class="bg-surface-container-highest text-on-surface-variant rounded-full px-2 py-0.5 font-metadata text-metadata">0</span>
+</h3>
+</div>
+<div class="flex flex-col items-center justify-center py-xxl border border-dashed border-outline-variant rounded-lg bg-surface-container-low/50">
+<span class="material-symbols-outlined text-[32px] text-outline-variant mb-sm">done_all</span>
+<p class="font-section-title text-section-title text-on-surface-variant">No completed tasks yet.</p>
+<p class="font-metadata text-metadata text-on-surface-variant mt-xs">Finish tasks to see them here.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DevDesk - Focus</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed-variant": "#6a3b00",
+                        "surface-variant": "#2b3640",
+                        "secondary": "#c2c6d0",
+                        "surface-container-low": "#111d26",
+                        "surface-bright": "#2f3a44",
+                        "on-error": "#690005",
+                        "tertiary-container": "#d47b00",
+                        "primary": "#b2c5ff",
+                        "outline-variant": "#434653",
+                        "inverse-primary": "#1857c8",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "on-primary-fixed": "#001847",
+                        "background": "#09151d",
+                        "on-tertiary-fixed": "#2d1600",
+                        "primary-container": "#5b8cff",
+                        "on-primary-fixed-variant": "#0040a0",
+                        "surface-tint": "#b2c5ff",
+                        "on-primary": "#002c72",
+                        "secondary-fixed": "#dee2ed",
+                        "inverse-surface": "#d8e4f1",
+                        "on-background": "#d8e4f1",
+                        "tertiary-fixed": "#ffdcbf",
+                        "outline": "#8d909f",
+                        "on-surface-variant": "#c3c6d6",
+                        "surface-container": "#15212a",
+                        "inverse-on-surface": "#26323b",
+                        "tertiary": "#ffb874",
+                        "on-error-container": "#ffdad6",
+                        "surface-dim": "#09151d",
+                        "on-secondary-container": "#b7bcc6",
+                        "secondary-container": "#474c54",
+                        "error": "#ffb4ab",
+                        "on-surface": "#d8e4f1",
+                        "on-tertiary": "#4b2800",
+                        "surface-container-lowest": "#040f18",
+                        "surface-container-high": "#202b35",
+                        "primary-fixed": "#dae2ff",
+                        "on-secondary-fixed": "#171c23",
+                        "error-container": "#93000a",
+                        "surface-container-highest": "#2b3640",
+                        "on-tertiary-container": "#412200",
+                        "on-secondary": "#2c3138",
+                        "on-secondary-fixed-variant": "#42474f",
+                        "on-primary-container": "#002665",
+                        "tertiary-fixed-dim": "#ffb874",
+                        "surface": "#09151d",
+                        "secondary-fixed-dim": "#c2c6d0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xl": "24px",
+                        "gutter": "16px",
+                        "md": "12px",
+                        "sm": "8px",
+                        "sidebar_width": "240px",
+                        "xxl": "32px",
+                        "xs": "4px",
+                        "lg": "16px"
+                    },
+                    "fontFamily": {
+                        "section-title": ["Geist"],
+                        "page-title": ["Geist"],
+                        "mono-code": ["JetBrains Mono"],
+                        "mono-timer": ["JetBrains Mono"],
+                        "body": ["Geist"],
+                        "metadata": ["Geist"]
+                    },
+                    "fontSize": {
+                        "section-title": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "page-title": ["19px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "mono-code": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "mono-timer": ["14px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "body": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "metadata": ["11px", { "lineHeight": "16px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+        
+        /* Minimalist Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #26303B; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #434653; }
+        
+        /* Timer Specific Override for Hero sizing */
+        .hero-timer { font-size: 64px; line-height: 1; letter-spacing: -0.02em; }
+    </style>
+</head>
+<body class="bg-background text-on-surface overflow-hidden w-full h-screen flex selection:bg-primary-container/30">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 right-0 z-50 px-lg flex justify-between items-center h-[48px] w-full bg-background dark:bg-background border-b border-outline-variant flat no shadows">
+<div class="flex items-center pl-[240px]">
+<!-- Pushed right to clear absolute fixed Sidebar -->
+<div class="relative flex items-center w-64">
+<span class="material-symbols-outlined absolute left-sm text-outline text-[18px]">search</span>
+<input class="w-full bg-background border border-outline-variant text-body font-body text-on-surface rounded-DEFAULT pl-xl pr-sm py-[4px] focus:outline-none focus:border-primary-container focus:ring-0 placeholder:text-outline transition-colors h-[28px]" placeholder="Search tasks, docs, commands..." type="text"/>
+<span class="absolute right-sm font-mono-code text-metadata text-outline border border-outline-variant rounded-[2px] px-[4px] py-[2px] leading-none">Ctrl+K</span>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<!-- Global Focus Chip -->
+<div class="flex items-center gap-sm bg-primary-container/10 border border-primary-container/30 rounded-full px-md py-[4px]">
+<span class="material-symbols-outlined text-primary-container text-[14px]">motion_sensor_active</span>
+<span class="font-mono-timer text-metadata text-primary-container tracking-wide">Focusing • 24:12</span>
+</div>
+<div class="flex items-center gap-xs ml-md text-on-surface-variant border-l border-outline-variant pl-md">
+<button class="h-[28px] w-[28px] flex items-center justify-center rounded hover:bg-surface-container-highest transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined text-[18px]" data-weight="fill" style="font-variation-settings: 'FILL' 0;">notifications</span>
+</button>
+<button class="h-[28px] w-[28px] flex items-center justify-center rounded hover:bg-surface-container-highest transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+</button>
+</div>
+<button class="bg-primary-container text-on-primary font-section-title text-section-title rounded-DEFAULT px-md py-[4px] h-[28px] hover:brightness-110 active:opacity-80 transition-all flex items-center">
+                Focus
+            </button>
+</div>
+</header>
+<!-- SideNavBar -->
+<nav class="w-sidebar_width h-full fixed left-0 top-0 z-50 bg-surface-container-low dark:bg-surface-container-low border-r border-outline-variant flat no shadows flex flex-col py-lg space-y-xs pt-[64px]">
+<!-- Header Info overlapping TopNav space intentionally to form a coherent brand block -->
+<div class="absolute top-0 left-0 w-full h-[48px] border-b border-outline-variant flex items-center px-lg bg-surface-container-low z-50">
+<div class="flex items-center gap-sm">
+<div class="w-6 h-6 rounded bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary text-[14px]" style="font-variation-settings: 'FILL' 1;">terminal</span>
+</div>
+<h1 class="font-page-title text-page-title font-bold text-on-surface">DevDesk</h1>
+</div>
+</div>
+<div class="px-lg mb-md">
+<span class="font-metadata text-metadata text-outline uppercase tracking-wider">Productivity Engine</span>
+</div>
+<ul class="flex-1 flex flex-col gap-[2px] px-sm">
+<li class="flex items-center gap-md px-md py-[6px] rounded-DEFAULT text-on-surface-variant hover:bg-surface-container-high transition-all duration-150 cursor-pointer">
+<span class="material-symbols-outlined text-[18px]">dashboard</span>
+<span class="font-section-title text-section-title">Dashboard</span>
+</li>
+<li class="flex items-center gap-md px-md py-[6px] rounded-DEFAULT text-on-surface-variant hover:bg-surface-container-high transition-all duration-150 cursor-pointer">
+<span class="material-symbols-outlined text-[18px]">today</span>
+<span class="font-section-title text-section-title">My Day</span>
+</li>
+<li class="flex items-center gap-md px-md py-[6px] rounded-DEFAULT text-on-surface-variant hover:bg-surface-container-high transition-all duration-150 cursor-pointer">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+<span class="font-section-title text-section-title">Tasks</span>
+</li>
+<!-- ACTIVE TAB -->
+<li class="flex items-center gap-md px-md py-[6px] bg-primary-container/20 text-primary border-l-2 border-primary transition-all duration-150 cursor-pointer">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">timer</span>
+<span class="font-section-title text-section-title">Focus</span>
+</li>
+<li class="flex items-center gap-md px-md py-[6px] rounded-DEFAULT text-on-surface-variant hover:bg-surface-container-high transition-all duration-150 cursor-pointer">
+<span class="material-symbols-outlined text-[18px]">folder</span>
+<span class="font-section-title text-section-title">Projects</span>
+</li>
+</ul>
+<div class="mt-auto px-sm pb-sm border-t border-outline-variant pt-sm">
+<div class="flex items-center gap-md px-md py-[6px] rounded-DEFAULT text-on-surface-variant hover:bg-surface-container-high transition-all duration-150 cursor-pointer">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+<span class="font-section-title text-section-title">Settings</span>
+</div>
+<div class="flex items-center gap-md px-md py-[8px] mt-xs rounded-DEFAULT hover:bg-surface-container-high cursor-pointer">
+<div class="w-6 h-6 rounded-full bg-surface-variant border border-outline-variant flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant" data-weight="fill">person</span>
+</div>
+<div class="flex flex-col">
+<span class="font-section-title text-[12px] text-on-surface leading-tight">DevUser</span>
+<span class="font-metadata text-[10px] text-outline leading-tight">Pro Plan</span>
+</div>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="ml-[240px] mt-[48px] flex-1 flex h-[calc(100vh-48px)] relative z-0">
+<!-- Focus Area (60% Left) -->
+<section class="w-[60%] border-r border-outline-variant flex flex-col relative overflow-hidden bg-background">
+<!-- Atmospheric gradient (subtle, non-intrusive) -->
+<div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary-container/5 via-background to-background pointer-events-none opacity-50"></div>
+<div class="flex-1 flex flex-col items-center justify-center px-xxl relative z-10 w-full max-w-2xl mx-auto">
+<div class="flex items-center gap-sm text-primary-container mb-xl border border-primary-container/20 bg-primary-container/5 px-md py-sm rounded-full">
+<span class="material-symbols-outlined text-[16px] animate-pulse">radio_button_checked</span>
+<span class="font-metadata text-metadata uppercase tracking-widest font-semibold">Focusing...</span>
+</div>
+<div class="font-mono-timer hero-timer text-primary-container mb-xs text-center drop-shadow-[0_0_12px_rgba(91,140,255,0.15)]">
+                    24:12
+                </div>
+<div class="w-16 h-[2px] bg-outline-variant mb-xl"></div>
+<h2 class="font-page-title text-page-title text-on-surface text-center mb-xxl max-w-lg leading-tight">
+                    Deep Work: Implement WebGL Pipeline
+                </h2>
+<div class="flex items-center gap-md">
+<button class="group flex items-center gap-sm bg-transparent border border-outline-variant hover:border-outline text-on-surface-variant hover:text-on-surface rounded-DEFAULT px-xl py-sm transition-all">
+<span class="material-symbols-outlined text-[20px]">pause</span>
+<span class="font-section-title text-section-title">Pause</span>
+<span class="ml-sm font-mono-code text-[10px] bg-surface-container px-[4px] rounded border border-surface-variant group-hover:border-outline-variant">Space</span>
+</button>
+<button class="group flex items-center gap-sm bg-transparent border border-error/30 hover:border-error hover:bg-error/10 text-error rounded-DEFAULT px-xl py-sm transition-all">
+<span class="material-symbols-outlined text-[20px]">stop</span>
+<span class="font-section-title text-section-title">Stop</span>
+<span class="ml-sm font-mono-code text-[10px] bg-surface-container px-[4px] rounded border border-surface-variant group-hover:border-error/30 text-outline group-hover:text-error/70">Esc</span>
+</button>
+</div>
+</div>
+<div class="mt-auto border-t border-outline-variant p-md flex items-center justify-between bg-surface-container-lowest/50 backdrop-blur-sm z-10">
+<div class="flex items-center gap-md text-on-surface-variant font-metadata text-metadata">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">timeline</span>
+                        120 Focus minutes today
+                    </div>
+<span class="text-outline-variant">|</span>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">flag</span>
+                        3 Sessions today
+                    </div>
+</div>
+<button class="text-outline hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-[16px]">help</span>
+</button>
+</div>
+</section>
+<!-- Task Board Area (40% Right) -->
+<section class="w-[40%] bg-surface-dim flex flex-col">
+<div class="px-lg py-md border-b border-outline-variant flex items-center justify-between bg-surface-container-low">
+<h3 class="font-section-title text-section-title text-on-surface">Up Next</h3>
+<button class="text-outline hover:text-on-surface transition-colors flex items-center">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto p-md space-y-xs">
+<!-- Active Task Item -->
+<div class="bg-surface-container border border-outline-variant border-l-[3px] border-l-primary-container p-md rounded-[4px] shadow-[0_4px_12px_rgba(0,0,0,0.2)]">
+<div class="flex justify-between items-start mb-sm">
+<span class="font-metadata text-[10px] text-primary-container border border-primary-container/30 bg-primary-container/10 px-xs py-[2px] rounded uppercase tracking-wider">In Progress</span>
+<button class="text-outline hover:text-on-surface"><span class="material-symbols-outlined text-[16px]">more_horiz</span></button>
+</div>
+<h4 class="font-body text-body text-on-surface font-semibold mb-xs">Implement WebGL Pipeline</h4>
+<p class="font-body text-metadata text-on-surface-variant line-clamp-2 mb-md">
+                        Set up the initial scene context, buffers, and shader compilation loop for the new visualization module.
+                    </p>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex gap-sm">
+<span class="font-metadata text-metadata text-outline flex items-center gap-xs"><span class="material-symbols-outlined text-[14px]">tag</span>CORE-112</span>
+</div>
+<div class="font-mono-timer text-metadata text-on-surface">E: 2h</div>
+</div>
+</div>
+<!-- Queued Tasks -->
+<div class="bg-transparent border border-outline-variant hover:border-outline p-md rounded-[4px] cursor-pointer group transition-colors">
+<div class="flex justify-between items-start mb-xs">
+<h4 class="font-body text-body text-on-surface-variant group-hover:text-on-surface font-medium transition-colors">Write Shader Unit Tests</h4>
+<div class="w-4 h-4 rounded-full border border-outline-variant flex items-center justify-center group-hover:border-primary transition-colors"></div>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-metadata text-metadata text-outline flex items-center gap-xs"><span class="material-symbols-outlined text-[14px]">tag</span>CORE-113</span>
+<div class="font-mono-timer text-metadata text-outline">E: 1h</div>
+</div>
+</div>
+<div class="bg-transparent border border-outline-variant hover:border-outline p-md rounded-[4px] cursor-pointer group transition-colors">
+<div class="flex justify-between items-start mb-xs">
+<h4 class="font-body text-body text-on-surface-variant group-hover:text-on-surface font-medium transition-colors">Review PR #442 (Data Binding)</h4>
+<div class="w-4 h-4 rounded-full border border-outline-variant flex items-center justify-center group-hover:border-primary transition-colors"></div>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-xs">
+<span class="font-metadata text-metadata text-outline flex items-center gap-xs"><span class="material-symbols-outlined text-[14px]">tag</span>UI-89</span>
+<span class="w-1 h-1 rounded-full bg-tertiary"></span>
+</div>
+<div class="font-mono-timer text-metadata text-outline">E: 30m</div>
+</div>
+</div>
+<div class="bg-transparent border border-outline-variant hover:border-outline p-md rounded-[4px] cursor-pointer group transition-colors opacity-60">
+<div class="flex justify-between items-start mb-xs">
+<h4 class="font-body text-body text-outline font-medium">Update Documentation for v2.4</h4>
+<div class="w-4 h-4 rounded-full border border-outline-variant flex items-center justify-center"></div>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-metadata text-metadata text-outline/50 flex items-center gap-xs"><span class="material-symbols-outlined text-[14px]">tag</span>DOCS-21</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+</body></html>

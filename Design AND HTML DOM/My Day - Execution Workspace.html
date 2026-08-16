@@ -1,0 +1,574 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>DevDesk - My Day</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-dim": "#09151d",
+                        "inverse-surface": "#d8e4f1",
+                        "error-container": "#93000a",
+                        "surface-bright": "#2f3a44",
+                        "on-tertiary-fixed-variant": "#6a3b00",
+                        "inverse-primary": "#1857c8",
+                        "surface-tint": "#b2c5ff",
+                        "on-primary": "#002c72",
+                        "tertiary-fixed-dim": "#ffb874",
+                        "surface-container-lowest": "#040f18",
+                        "surface-container": "#15212a",
+                        "outline": "#8d909f",
+                        "on-primary-container": "#002665",
+                        "on-primary-fixed": "#001847",
+                        "on-secondary": "#2c3138",
+                        "outline-variant": "#434653",
+                        "inverse-on-surface": "#26323b",
+                        "secondary-fixed": "#dee2ed",
+                        "on-secondary-container": "#b7bcc6",
+                        "tertiary": "#ffb874",
+                        "on-tertiary-container": "#412200",
+                        "on-surface-variant": "#c3c6d6",
+                        "secondary-fixed-dim": "#c2c6d0",
+                        "surface-container-highest": "#2b3640",
+                        "on-error": "#690005",
+                        "secondary": "#c2c6d0",
+                        "on-surface": "#d8e4f1",
+                        "primary-container": "#5b8cff",
+                        "surface": "#09151d",
+                        "on-background": "#d8e4f1",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "tertiary-fixed": "#ffdcbf",
+                        "surface-container-low": "#111d26",
+                        "secondary-container": "#474c54",
+                        "tertiary-container": "#d47b00",
+                        "on-secondary-fixed": "#171c23",
+                        "on-tertiary-fixed": "#2d1600",
+                        "on-secondary-fixed-variant": "#42474f",
+                        "primary-fixed": "#dae2ff",
+                        "primary": "#b2c5ff",
+                        "background": "#09151d",
+                        "on-primary-fixed-variant": "#0040a0",
+                        "on-tertiary": "#4b2800",
+                        "surface-container-high": "#202b35",
+                        "surface-variant": "#2b3640",
+                        "error": "#ffb4ab",
+                        "on-error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "sidebar_width": "240px",
+                        "md": "12px",
+                        "sm": "8px",
+                        "lg": "16px",
+                        "xl": "24px",
+                        "gutter": "16px",
+                        "xxl": "32px"
+                    },
+                    "fontFamily": {
+                        "metadata": ["Geist"],
+                        "body": ["Geist"],
+                        "page-title": ["Geist"],
+                        "mono-code": ["JetBrains Mono"],
+                        "section-title": ["Geist"],
+                        "mono-timer": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "metadata": ["11px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "body": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "page-title": ["19px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "mono-code": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "section-title": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "mono-timer": ["14px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Base styles derived from guidance */
+        body {
+            background-color: #0B0F14; /* Using raw hex as specified in guidance for base */
+            color: #d8e4f1;
+        }
+        
+        /* Thin Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #26303B;
+            border-radius: 10px;
+        }
+        
+        /* Focus styles for inputs */
+        input:focus {
+            outline: none;
+            border-color: #5B8CFF !important;
+            box-shadow: 0 0 0 2px rgba(91, 140, 255, 0.2);
+        }
+        
+        /* Material Icon styling */
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        /* Checkbox styling */
+        .task-checkbox {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border: 1px solid #434653;
+            border-radius: 3px;
+            background-color: transparent;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+        }
+        .task-checkbox:checked {
+            background-color: #5B8CFF;
+            border-color: #5B8CFF;
+        }
+        .task-checkbox:checked::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 2px;
+            width: 4px;
+            height: 8px;
+            border: solid #002c72;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+    </style>
+</head>
+<body class="font-body text-body bg-[#0B0F14] text-on-surface h-screen w-screen overflow-hidden flex flex-col md:flex-row antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- SIDE NAV (Hidden on mobile, flex on md+) -->
+<nav class="hidden md:flex flex-col h-screen w-[240px] bg-[#0E131A] border-r border-[#26303B] py-md overflow-y-auto shrink-0 transition-all duration-200 ease-in-out">
+<!-- Brand Header -->
+<div class="px-lg pb-md mb-xs flex items-center justify-between">
+<div>
+<h1 class="font-page-title text-page-title font-bold text-on-surface">DevDesk</h1>
+<p class="font-metadata text-metadata text-on-surface-variant">Productivity Engine</p>
+</div>
+</div>
+<!-- Nav Links -->
+<ul class="flex flex-col gap-0 px-sm">
+<!-- Dashboard -->
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant hover:bg-[#171D26] transition-colors group" href="#">
+<span class="material-symbols-outlined text-[18px]">dashboard</span>
+<span class="font-section-title text-section-title">Dashboard</span>
+</a>
+</li>
+<!-- My Day (ACTIVE) -->
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded bg-[#1A2A4A] border-l-[2px] border-[#5B8CFF] text-[#d8e4f1] group transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px] text-[#5B8CFF]" style="font-variation-settings: 'FILL' 1;">sunny</span>
+<span class="font-section-title text-section-title">My Day</span>
+</a>
+</li>
+<!-- Tasks -->
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant hover:bg-[#171D26] transition-colors group" href="#">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+<span class="font-section-title text-section-title">Tasks</span>
+</a>
+</li>
+<!-- Focus -->
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant hover:bg-[#171D26] transition-colors group" href="#">
+<span class="material-symbols-outlined text-[18px]">timer</span>
+<span class="font-section-title text-section-title">Focus</span>
+</a>
+</li>
+<!-- Projects -->
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant hover:bg-[#171D26] transition-colors group" href="#">
+<span class="material-symbols-outlined text-[18px]">account_tree</span>
+<span class="font-section-title text-section-title">Projects</span>
+</a>
+</li>
+<!-- Calendar -->
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant hover:bg-[#171D26] transition-colors group" href="#">
+<span class="material-symbols-outlined text-[18px]">calendar_today</span>
+<span class="font-section-title text-section-title">Calendar</span>
+</a>
+</li>
+<li class="my-xs"><hr class="border-[#26303B]"></li>
+<!-- Notes -->
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant hover:bg-[#171D26] transition-colors group" href="#">
+<span class="material-symbols-outlined text-[18px]">description</span>
+<span class="font-section-title text-section-title">Notes</span>
+</a>
+</li>
+<!-- Goals -->
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant hover:bg-[#171D26] transition-colors group" href="#">
+<span class="material-symbols-outlined text-[18px]">emoji_events</span>
+<span class="font-section-title text-section-title">Goals</span>
+</a>
+</li>
+<!-- Habits -->
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant hover:bg-[#171D26] transition-colors group" href="#">
+<span class="material-symbols-outlined text-[18px]">repeat</span>
+<span class="font-section-title text-section-title">Habits</span>
+</a>
+</li>
+<!-- Snippets -->
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant hover:bg-[#171D26] transition-colors group" href="#">
+<span class="material-symbols-outlined text-[18px]">code</span>
+<span class="font-section-title text-section-title">Snippets</span>
+</a>
+</li>
+<!-- Bookmarks -->
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant hover:bg-[#171D26] transition-colors group" href="#">
+<span class="material-symbols-outlined text-[18px]">bookmark</span>
+<span class="font-section-title text-section-title">Bookmarks</span>
+</a>
+</li>
+<li class="my-xs"><hr class="border-[#26303B]"></li>
+<!-- Environments -->
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant hover:bg-[#171D26] transition-colors group" href="#">
+<span class="material-symbols-outlined text-[18px]">dns</span>
+<span class="font-section-title text-section-title">Environments</span>
+</a>
+</li>
+<!-- Knowledge -->
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant hover:bg-[#171D26] transition-colors group" href="#">
+<span class="material-symbols-outlined text-[18px]">menu_book</span>
+<span class="font-section-title text-section-title">Knowledge</span>
+</a>
+</li>
+<!-- Analytics -->
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant hover:bg-[#171D26] transition-colors group" href="#">
+<span class="material-symbols-outlined text-[18px]">analytics</span>
+<span class="font-section-title text-section-title">Analytics</span>
+</a>
+</li>
+<li class="my-xs"><hr class="border-[#26303B]"></li>
+<!-- Daily Plan -->
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant hover:bg-[#171D26] transition-colors group" href="#">
+<span class="material-symbols-outlined text-[18px]">event_note</span>
+<span class="font-section-title text-section-title">Daily Plan</span>
+</a>
+</li>
+<!-- Daily Review -->
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant hover:bg-[#171D26] transition-colors group" href="#">
+<span class="material-symbols-outlined text-[18px]">rate_review</span>
+<span class="font-section-title text-section-title">Daily Review</span>
+</a>
+</li>
+<!-- Settings -->
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant hover:bg-[#171D26] transition-colors group" href="#">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+<span class="font-section-title text-section-title">Settings</span>
+</a>
+</li>
+</ul>
+</nav>
+<!-- MAIN CONTENT CANVAS -->
+<div class="flex-1 flex flex-col h-screen overflow-hidden bg-[#0B0F14]">
+<!-- TOP APP BAR -->
+<header class="flex justify-between items-center w-full px-lg h-[48px] bg-[#0B0F14] border-b border-[#26303B] shrink-0 transition-colors duration-150 ease-in-out">
+<!-- Left: Title & Focus Chip -->
+<div class="flex items-center gap-lg">
+<h2 class="font-page-title text-page-title text-[#d8e4f1] font-bold">My Day</h2>
+<!-- Focus Chip -->
+<div class="hidden sm:flex items-center gap-xs px-sm py-[2px] bg-[#171D26] rounded border border-[#26303B]">
+<div class="w-2 h-2 rounded-full bg-[#ffb874]"></div>
+<span class="font-metadata text-metadata text-[#d8e4f1]">Deep Work: Architecture Review</span>
+<span class="font-mono-timer text-mono-timer text-[#ffb874] ml-sm">45:00</span>
+</div>
+</div>
+<!-- Right: Search & Actions -->
+<div class="flex items-center gap-md">
+<!-- Search -->
+<div class="relative hidden md:block">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-[16px] text-on-surface-variant">search</span>
+<input class="w-[200px] h-7 pl-xl pr-sm bg-[#0B0F14] border border-[#26303B] rounded text-body font-body text-on-surface placeholder:text-[#434653] transition-colors focus:border-[#5B8CFF] focus:ring-0" placeholder="Search tasks..." type="text">
+<div class="absolute right-xs top-1/2 -translate-y-1/2 px-1 bg-[#171D26] rounded border border-[#26303B] font-mono-code text-[10px] text-on-surface-variant">⌘K</div>
+</div>
+<!-- Trailing Icon Actions -->
+<button class="w-7 h-7 flex items-center justify-center rounded text-on-surface-variant hover:bg-[#171D26] transition-colors">
+<span class="material-symbols-outlined text-[18px]">timer</span>
+</button>
+<button class="w-7 h-7 flex items-center justify-center rounded text-on-surface-variant hover:bg-[#171D26] transition-colors">
+<span class="material-symbols-outlined text-[18px]">notifications</span>
+</button>
+<!-- Primary Action (New Task) -->
+<button class="flex items-center gap-xs h-7 px-sm bg-[#5B8CFF] text-[#F3F6F9] rounded hover:bg-[#4a7aeb] transition-colors ml-sm">
+<span class="material-symbols-outlined text-[16px]">add</span>
+<span class="font-section-title text-metadata font-medium">New Task</span>
+</button>
+</div>
+</header>
+<!-- MAIN SCROLLABLE AREA -->
+<main class="flex-1 overflow-y-auto p-lg">
+<div class="max-w-[1000px] mx-auto flex flex-col gap-lg">
+<!-- Daily Plan Summary Bento -->
+<section class="grid grid-cols-1 md:grid-cols-4 gap-sm">
+<!-- Top Goals -->
+<div class="md:col-span-2 bg-[#11161D] border border-[#26303B] rounded-[6px] p-md flex flex-col gap-sm">
+<h3 class="font-section-title text-section-title text-[#d8e4f1] flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px] text-[#ffb874]">emoji_events</span>
+                            Top Goals for Today
+                        </h3>
+<ul class="flex flex-col gap-[2px]">
+<li class="flex items-center gap-sm font-body text-body text-on-surface-variant">
+<div class="w-1.5 h-1.5 rounded-full bg-[#ffb874]"></div>
+                                Finalize Core API Architecture Doc
+                            </li>
+<li class="flex items-center gap-sm font-body text-body text-on-surface-variant">
+<div class="w-1.5 h-1.5 rounded-full bg-[#b2c5ff]"></div>
+                                Review PRs for Authentication Module
+                            </li>
+<li class="flex items-center gap-sm font-body text-body text-on-surface-variant">
+<div class="w-1.5 h-1.5 rounded-full bg-[#c2c6d0]"></div>
+                                Inbox Zero by EOD
+                            </li>
+</ul>
+</div>
+<!-- Time Metrics -->
+<div class="bg-[#11161D] border border-[#26303B] rounded-[6px] p-md flex flex-col justify-between">
+<h3 class="font-metadata text-metadata text-on-surface-variant uppercase tracking-wider">Capacity</h3>
+<div class="flex flex-col gap-xs mt-sm">
+<div class="flex justify-between items-end">
+<span class="font-body text-body text-on-surface-variant">Available</span>
+<span class="font-mono-timer text-[16px] text-[#d8e4f1]">480m</span>
+</div>
+<div class="flex justify-between items-end">
+<span class="font-body text-body text-on-surface-variant">Workload</span>
+<span class="font-mono-timer text-[16px] text-[#ffb874]">420m</span>
+</div>
+<div class="w-full h-1 bg-[#171D26] rounded-full mt-1 overflow-hidden">
+<div class="h-full bg-[#5B8CFF] w-[87%] rounded-full"></div>
+</div>
+</div>
+</div>
+<!-- System Status -->
+<div class="bg-[#11161D] border border-[#26303B] rounded-[6px] p-md flex flex-col justify-center items-center text-center gap-sm">
+<span class="material-symbols-outlined text-[32px] text-[#93000a] hidden">warning</span>
+<span class="material-symbols-outlined text-[32px] text-[#5B8CFF]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<div>
+<div class="font-section-title text-section-title text-[#d8e4f1]">System Optimal</div>
+<div class="font-metadata text-metadata text-on-surface-variant">Load is balanced</div>
+</div>
+</div>
+</section>
+<!-- Task Lists Area -->
+<div class="flex flex-col gap-lg mt-md">
+<!-- Overdue Group -->
+<section class="flex flex-col gap-xs">
+<div class="flex items-center gap-sm px-xs pb-xs border-b border-[#26303B]">
+<h3 class="font-section-title text-section-title text-[#ffb4ab]">Overdue</h3>
+<span class="px-1.5 py-0.5 bg-[#171D26] rounded text-metadata text-on-surface-variant">2</span>
+</div>
+<div class="flex flex-col gap-[2px]">
+<!-- Task Row -->
+<div class="group flex items-center gap-sm p-sm bg-[#11161D] hover:bg-[#171D26] border border-[#26303B] border-l-[3px] border-l-[#ffb4ab] rounded-[4px] transition-colors cursor-pointer">
+<input class="task-checkbox shrink-0" type="checkbox">
+<div class="flex-1 flex items-center justify-between min-w-0">
+<div class="flex items-center gap-md truncate">
+<span class="font-body text-body text-[#d8e4f1] truncate">Update security dependencies for Auth Service</span>
+<div class="hidden sm:flex items-center gap-1 px-1.5 py-0.5 bg-[#171D26] rounded">
+<span class="w-2 h-2 rounded-full bg-[#ffb874]"></span>
+<span class="font-metadata text-metadata text-[#9AA6B2]">Platform</span>
+</div>
+</div>
+<div class="flex items-center gap-md shrink-0">
+<span class="font-mono-code text-metadata text-[#ffb4ab]">Yesterday</span>
+<button class="text-on-surface-variant hover:text-[#ffb874] opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[16px]">star</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Task Row -->
+<div class="group flex items-center gap-sm p-sm bg-[#11161D] hover:bg-[#171D26] border border-[#26303B] border-l-[3px] border-l-[#ffb4ab] rounded-[4px] transition-colors cursor-pointer">
+<input class="task-checkbox shrink-0" type="checkbox">
+<div class="flex-1 flex items-center justify-between min-w-0">
+<div class="flex items-center gap-md truncate">
+<span class="font-body text-body text-[#d8e4f1] truncate">Send weekly status report to stakeholders</span>
+</div>
+<div class="flex items-center gap-md shrink-0">
+<span class="font-mono-code text-metadata text-[#ffb4ab]">Yesterday</span>
+<button class="text-on-surface-variant hover:text-[#ffb874] opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[16px]">star</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Due Today Group -->
+<section class="flex flex-col gap-xs">
+<div class="flex items-center gap-sm px-xs pb-xs border-b border-[#26303B]">
+<h3 class="font-section-title text-section-title text-[#d8e4f1]">Due Today</h3>
+<span class="px-1.5 py-0.5 bg-[#171D26] rounded text-metadata text-on-surface-variant">5</span>
+</div>
+<div class="flex flex-col gap-[2px]">
+<!-- Task Row 1 (High Priority, Checklist) -->
+<div class="group flex items-center gap-sm p-sm bg-[#11161D] hover:bg-[#171D26] border border-[#26303B] border-l-[3px] border-l-[#ffb874] rounded-[4px] transition-colors cursor-pointer">
+<input class="task-checkbox shrink-0" type="checkbox">
+<div class="flex-1 flex items-center justify-between min-w-0">
+<div class="flex items-center gap-md truncate">
+<span class="font-body text-body text-[#d8e4f1] font-medium truncate">Architecture Review: Event Sourcing Migration</span>
+<div class="hidden sm:flex items-center gap-1 px-1.5 py-0.5 bg-[#171D26] rounded">
+<span class="w-2 h-2 rounded-full bg-[#b2c5ff]"></span>
+<span class="font-metadata text-metadata text-[#9AA6B2]">Architecture</span>
+</div>
+<div class="flex items-center gap-1 text-[#9AA6B2]">
+<span class="material-symbols-outlined text-[14px]">checklist</span>
+<span class="font-mono-code text-[11px]">2/5</span>
+</div>
+</div>
+<div class="flex items-center gap-md shrink-0">
+<span class="font-mono-code text-metadata text-on-surface-variant">10:00 AM</span>
+<button class="text-[#ffb874] opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Task Row 2 -->
+<div class="group flex items-center gap-sm p-sm bg-[#11161D] hover:bg-[#171D26] border border-[#26303B] border-l-[3px] border-l-[#5B8CFF] rounded-[4px] transition-colors cursor-pointer">
+<input class="task-checkbox shrink-0" type="checkbox">
+<div class="flex-1 flex items-center justify-between min-w-0">
+<div class="flex items-center gap-md truncate">
+<span class="font-body text-body text-[#d8e4f1] truncate">Review PR #1042: Implement rate limiting</span>
+<div class="hidden sm:flex items-center gap-1 px-1.5 py-0.5 bg-[#171D26] rounded">
+<span class="font-metadata text-metadata text-[#9AA6B2]">Code Review</span>
+</div>
+</div>
+<div class="flex items-center gap-md shrink-0">
+<span class="font-mono-code text-metadata text-on-surface-variant">1:30 PM</span>
+<button class="text-on-surface-variant hover:text-[#ffb874] opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[16px]">star</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Task Row 3 -->
+<div class="group flex items-center gap-sm p-sm bg-[#11161D] hover:bg-[#171D26] border border-[#26303B] border-l-[3px] border-l-[#434653] rounded-[4px] transition-colors cursor-pointer">
+<input class="task-checkbox shrink-0" type="checkbox">
+<div class="flex-1 flex items-center justify-between min-w-0">
+<div class="flex items-center gap-md truncate">
+<span class="font-body text-body text-[#d8e4f1] truncate">1:1 with Sarah</span>
+<div class="hidden sm:flex items-center gap-1 px-1.5 py-0.5 bg-[#171D26] rounded">
+<span class="material-symbols-outlined text-[12px] text-[#9AA6B2]">video_camera_front</span>
+<span class="font-metadata text-metadata text-[#9AA6B2]">Meetings</span>
+</div>
+</div>
+<div class="flex items-center gap-md shrink-0">
+<span class="font-mono-code text-metadata text-on-surface-variant">3:00 PM</span>
+<button class="text-on-surface-variant hover:text-[#ffb874] opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[16px]">star</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Task Row 4 -->
+<div class="group flex items-center gap-sm p-sm bg-[#11161D] hover:bg-[#171D26] border border-[#26303B] border-l-[3px] border-l-[#434653] rounded-[4px] transition-colors cursor-pointer">
+<input class="task-checkbox shrink-0" type="checkbox">
+<div class="flex-1 flex items-center justify-between min-w-0">
+<div class="flex items-center gap-md truncate">
+<span class="font-body text-body text-[#d8e4f1] truncate">Draft Q3 OKRs</span>
+</div>
+<div class="flex items-center gap-md shrink-0">
+<button class="text-on-surface-variant hover:text-[#ffb874] opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[16px]">star</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Task Row 5 -->
+<div class="group flex items-center gap-sm p-sm bg-[#11161D] hover:bg-[#171D26] border border-[#26303B] border-l-[3px] border-l-[#434653] rounded-[4px] transition-colors cursor-pointer">
+<input class="task-checkbox shrink-0" type="checkbox">
+<div class="flex-1 flex items-center justify-between min-w-0">
+<div class="flex items-center gap-md truncate">
+<span class="font-body text-body text-[#d8e4f1] truncate">Process Inbox</span>
+<div class="hidden sm:flex items-center gap-1 px-1.5 py-0.5 bg-[#171D26] rounded">
+<span class="material-symbols-outlined text-[12px] text-[#9AA6B2]">repeat</span>
+</div>
+</div>
+<div class="flex items-center gap-md shrink-0">
+<button class="text-on-surface-variant hover:text-[#ffb874] opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[16px]">star</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Completed Today Group -->
+<section class="flex flex-col gap-xs mt-sm opacity-60">
+<div class="flex items-center gap-sm px-xs pb-xs border-b border-[#26303B]">
+<h3 class="font-section-title text-section-title text-on-surface-variant">Completed Today</h3>
+<span class="px-1.5 py-0.5 bg-[#171D26] rounded text-metadata text-on-surface-variant">3</span>
+</div>
+<div class="flex flex-col gap-[2px]">
+<!-- Completed Task -->
+<div class="flex items-center gap-sm p-sm bg-[#11161D] border border-[#26303B] rounded-[4px]">
+<input checked="" class="task-checkbox shrink-0 cursor-default" disabled="" type="checkbox">
+<div class="flex-1 flex items-center justify-between min-w-0">
+<span class="font-body text-body text-on-surface-variant line-through truncate">Daily Standup</span>
+<span class="font-mono-code text-metadata text-on-surface-variant">Done 9:30 AM</span>
+</div>
+</div>
+<!-- Completed Task -->
+<div class="flex items-center gap-sm p-sm bg-[#11161D] border border-[#26303B] rounded-[4px]">
+<input checked="" class="task-checkbox shrink-0 cursor-default" disabled="" type="checkbox">
+<div class="flex-1 flex items-center justify-between min-w-0">
+<span class="font-body text-body text-on-surface-variant line-through truncate">Reply to design feedback on component library</span>
+</div>
+</div>
+<!-- Completed Task -->
+<div class="flex items-center gap-sm p-sm bg-[#11161D] border border-[#26303B] rounded-[4px]">
+<input checked="" class="task-checkbox shrink-0 cursor-default" disabled="" type="checkbox">
+<div class="flex-1 flex items-center justify-between min-w-0">
+<span class="font-body text-body text-on-surface-variant line-through truncate">Deploy hotfix to staging</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Loading Skeleton Area -->
+<div class="flex flex-col gap-[2px] mt-md opacity-30 pointer-events-none">
+<div class="h-[42px] bg-[#11161D] border border-[#26303B] rounded-[4px] animate-pulse flex items-center px-sm gap-md">
+<div class="w-4 h-4 bg-[#26303B] rounded-[3px]"></div>
+<div class="h-3 w-1/3 bg-[#26303B] rounded"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom padding for scroll -->
+<div class="h-xl"></div>
+</main>
+</div>
+</body></html>

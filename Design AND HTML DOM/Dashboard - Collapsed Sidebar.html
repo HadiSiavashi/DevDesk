@@ -1,0 +1,503 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>DevDesk - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-fixed": "#dae2ff",
+                      "on-primary-container": "#002665",
+                      "tertiary": "#ffb874",
+                      "surface-container-low": "#111d26",
+                      "surface-container-high": "#202b35",
+                      "on-secondary-fixed": "#171c23",
+                      "on-primary-fixed-variant": "#0040a0",
+                      "surface-variant": "#2b3640",
+                      "surface": "#09151d",
+                      "surface-container-lowest": "#040f18",
+                      "primary-container": "#5b8cff",
+                      "on-background": "#d8e4f1",
+                      "on-surface-variant": "#c3c6d6",
+                      "secondary-container": "#474c54",
+                      "background": "#09151d",
+                      "on-tertiary-fixed": "#2d1600",
+                      "error-container": "#93000a",
+                      "on-secondary": "#2c3138",
+                      "secondary": "#c2c6d0",
+                      "on-surface": "#d8e4f1",
+                      "primary": "#b2c5ff",
+                      "on-tertiary-container": "#412200",
+                      "surface-container": "#15212a",
+                      "on-error-container": "#ffdad6",
+                      "surface-tint": "#b2c5ff",
+                      "error": "#ffb4ab",
+                      "secondary-fixed-dim": "#c2c6d0",
+                      "surface-bright": "#2f3a44",
+                      "on-tertiary-fixed-variant": "#6a3b00",
+                      "inverse-surface": "#d8e4f1",
+                      "tertiary-fixed": "#ffdcbf",
+                      "on-tertiary": "#4b2800",
+                      "on-primary-fixed": "#001847",
+                      "inverse-on-surface": "#26323b",
+                      "primary-fixed-dim": "#b2c5ff",
+                      "tertiary-container": "#d47b00",
+                      "on-secondary-container": "#b7bcc6",
+                      "on-error": "#690005",
+                      "on-primary": "#002c72",
+                      "secondary-fixed": "#dee2ed",
+                      "on-secondary-fixed-variant": "#42474f",
+                      "inverse-primary": "#1857c8",
+                      "tertiary-fixed-dim": "#ffb874",
+                      "outline-variant": "#434653",
+                      "surface-container-highest": "#2b3640",
+                      "surface-dim": "#09151d",
+                      "outline": "#8d909f"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "xl": "24px",
+                      "xxl": "32px",
+                      "sm": "8px",
+                      "sidebar_width": "240px",
+                      "lg": "16px",
+                      "xs": "4px",
+                      "gutter": "16px",
+                      "md": "12px"
+              },
+              "fontFamily": {
+                      "metadata": [
+                              "Geist"
+                      ],
+                      "section-title": [
+                              "Geist"
+                      ],
+                      "mono-timer": [
+                              "JetBrains Mono"
+                      ],
+                      "page-title": [
+                              "Geist"
+                      ],
+                      "mono-code": [
+                              "JetBrains Mono"
+                      ],
+                      "body": [
+                              "Geist"
+                      ]
+              },
+              "fontSize": {
+                      "metadata": [
+                              "11px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "section-title": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "mono-timer": [
+                              "14px",
+                              {
+                                      "lineHeight": "14px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "page-title": [
+                              "19px",
+                              {
+                                      "lineHeight": "24px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "mono-code": [
+                              "12px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body": [
+                              "13px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        /* Minimalist Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #26303B;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #434653;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface h-screen overflow-hidden flex font-body text-body selection:bg-primary-container selection:text-on-primary-container">
+<!-- Collapsed SideNavBar -->
+<nav aria-label="Main Navigation" class="bg-surface-container-low dark:bg-surface-container-low text-primary dark:text-primary-fixed-dim font-section-title text-section-title font-page-title text-page-title font-bold text-on-surface docked h-full w-[52px] rtl:right-0 ltr:left-0 border-r border-outline-variant dark:border-outline-variant rtl:border-l rtl:border-r-0 flat no shadows flex flex-col h-screen py-md overflow-y-auto transition-all duration-200 ease-in-out shrink-0 z-10">
+<div class="flex justify-center mb-xl">
+<span class="material-symbols-outlined text-[24px]">terminal</span>
+</div>
+<ul class="flex flex-col gap-xs px-xs">
+<li>
+<a aria-current="page" class="bg-secondary-container dark:bg-secondary-container border-l-2 border-primary dark:border-primary-fixed text-on-secondary-container flex justify-center items-center h-10 hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out rounded-r-sm group relative" href="#" title="Dashboard">
+<span class="material-symbols-outlined text-[20px]" data-icon="dashboard">dashboard</span>
+</a>
+</li>
+<li>
+<a class="text-on-surface-variant dark:text-on-surface-variant border-l-2 border-transparent flex justify-center items-center h-10 hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out rounded-r-sm group relative" href="#" title="My Day">
+<span class="material-symbols-outlined text-[20px]" data-icon="sunny">sunny</span>
+</a>
+</li>
+<li>
+<a class="text-on-surface-variant dark:text-on-surface-variant border-l-2 border-transparent flex justify-center items-center h-10 hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out rounded-r-sm group relative" href="#" title="Tasks">
+<span class="material-symbols-outlined text-[20px]" data-icon="check_circle">check_circle</span>
+</a>
+</li>
+<li>
+<a class="text-on-surface-variant dark:text-on-surface-variant border-l-2 border-transparent flex justify-center items-center h-10 hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out rounded-r-sm group relative" href="#" title="Focus">
+<span class="material-symbols-outlined text-[20px]" data-icon="timer">timer</span>
+</a>
+</li>
+<li>
+<a class="text-on-surface-variant dark:text-on-surface-variant border-l-2 border-transparent flex justify-center items-center h-10 hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out rounded-r-sm group relative" href="#" title="Projects">
+<span class="material-symbols-outlined text-[20px]" data-icon="account_tree">account_tree</span>
+</a>
+</li>
+<li>
+<a class="text-on-surface-variant dark:text-on-surface-variant border-l-2 border-transparent flex justify-center items-center h-10 hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out rounded-r-sm group relative" href="#" title="Calendar">
+<span class="material-symbols-outlined text-[20px]" data-icon="calendar_today">calendar_today</span>
+</a>
+</li>
+<li>
+<a class="text-on-surface-variant dark:text-on-surface-variant border-l-2 border-transparent flex justify-center items-center h-10 hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out rounded-r-sm group relative" href="#" title="Notes">
+<span class="material-symbols-outlined text-[20px]" data-icon="description">description</span>
+</a>
+</li>
+<li>
+<a class="text-on-surface-variant dark:text-on-surface-variant border-l-2 border-transparent flex justify-center items-center h-10 hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out rounded-r-sm group relative" href="#" title="Goals">
+<span class="material-symbols-outlined text-[20px]" data-icon="emoji_events">emoji_events</span>
+</a>
+</li>
+<li>
+<a class="text-on-surface-variant dark:text-on-surface-variant border-l-2 border-transparent flex justify-center items-center h-10 hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out rounded-r-sm group relative" href="#" title="Habits">
+<span class="material-symbols-outlined text-[20px]" data-icon="repeat">repeat</span>
+</a>
+</li>
+<li>
+<a class="text-on-surface-variant dark:text-on-surface-variant border-l-2 border-transparent flex justify-center items-center h-10 hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out rounded-r-sm group relative" href="#" title="Snippets">
+<span class="material-symbols-outlined text-[20px]" data-icon="code">code</span>
+</a>
+</li>
+<li>
+<a class="text-on-surface-variant dark:text-on-surface-variant border-l-2 border-transparent flex justify-center items-center h-10 hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out rounded-r-sm group relative" href="#" title="Bookmarks">
+<span class="material-symbols-outlined text-[20px]" data-icon="bookmark">bookmark</span>
+</a>
+</li>
+<li>
+<a class="text-on-surface-variant dark:text-on-surface-variant border-l-2 border-transparent flex justify-center items-center h-10 hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out rounded-r-sm group relative" href="#" title="Environments">
+<span class="material-symbols-outlined text-[20px]" data-icon="dns">dns</span>
+</a>
+</li>
+<li>
+<a class="text-on-surface-variant dark:text-on-surface-variant border-l-2 border-transparent flex justify-center items-center h-10 hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out rounded-r-sm group relative" href="#" title="Knowledge">
+<span class="material-symbols-outlined text-[20px]" data-icon="menu_book">menu_book</span>
+</a>
+</li>
+<li>
+<a class="text-on-surface-variant dark:text-on-surface-variant border-l-2 border-transparent flex justify-center items-center h-10 hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out rounded-r-sm group relative" href="#" title="Analytics">
+<span class="material-symbols-outlined text-[20px]" data-icon="analytics">analytics</span>
+</a>
+</li>
+<li>
+<a class="text-on-surface-variant dark:text-on-surface-variant border-l-2 border-transparent flex justify-center items-center h-10 hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out rounded-r-sm group relative" href="#" title="Daily Plan">
+<span class="material-symbols-outlined text-[20px]" data-icon="event_note">event_note</span>
+</a>
+</li>
+<li>
+<a class="text-on-surface-variant dark:text-on-surface-variant border-l-2 border-transparent flex justify-center items-center h-10 hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out rounded-r-sm group relative" href="#" title="Daily Review">
+<span class="material-symbols-outlined text-[20px]" data-icon="rate_review">rate_review</span>
+</a>
+</li>
+<li class="mt-auto">
+<a class="text-on-surface-variant dark:text-on-surface-variant border-l-2 border-transparent flex justify-center items-center h-10 hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out rounded-r-sm group relative" href="#" title="Settings">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
+</a>
+</li>
+</ul>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-screen overflow-hidden">
+<!-- TopNavBar -->
+<header class="bg-surface dark:bg-surface text-primary dark:text-primary-fixed font-body text-body font-page-title text-page-title text-on-surface dark:text-on-surface docked full-width top-0 h-[48px] border-b border-outline-variant dark:border-outline-variant flat no shadows transition-colors duration-150 ease-in-out flex justify-between items-center w-full px-lg rtl:flex-row-reverse shrink-0 z-10">
+<div class="flex items-center gap-md">
+<!-- Breadcrumb/Title Area -->
+<span class="font-page-title text-page-title font-semibold">DevDesk</span>
+<span class="text-outline-variant">/</span>
+<span class="text-on-surface-variant">Dashboard</span>
+</div>
+<div class="flex items-center gap-md flex-1 max-w-md mx-lg">
+<!-- Search Bar -->
+<div class="relative w-full group">
+<div class="absolute inset-y-0 left-0 pl-sm flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant group-focus-within:text-primary-container transition-colors">search</span>
+</div>
+<input class="w-full bg-surface-container-low border border-outline-variant text-on-surface text-body font-body rounded pl-[32px] pr-[40px] py-xs focus:outline-none focus:border-primary-container focus:ring-0 transition-colors h-8 placeholder:text-on-surface-variant" placeholder="Search commands, projects, files..." type="text">
+<div class="absolute inset-y-0 right-0 pr-xs flex items-center pointer-events-none">
+<span class="bg-surface-container-highest text-on-surface-variant font-mono-code text-metadata px-1.5 py-0.5 rounded border border-outline-variant">⌘K</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<!-- Trailing Icon Actions -->
+<button class="text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest p-1.5 rounded transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]" data-icon="timer">timer</span>
+</button>
+<button class="text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest p-1.5 rounded transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]" data-icon="notifications">notifications</span>
+</button>
+<div class="w-[1px] h-4 bg-outline-variant mx-1"></div>
+<!-- Trailing Primary Action -->
+<button class="bg-primary-container text-[#F3F6F9] hover:bg-primary-fixed hover:text-on-primary-container flex items-center gap-xs px-2 py-1 rounded transition-colors h-7">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+<span class="font-section-title text-section-title text-[12px]">New</span>
+</button>
+</div>
+</header>
+<!-- Scrollable Canvas -->
+<div class="flex-1 overflow-y-auto p-xl bg-background">
+<div class="max-w-[1400px] mx-auto flex flex-col gap-lg">
+<!-- Overview Header -->
+<div class="flex justify-between items-end mb-sm">
+<div>
+<h1 class="font-page-title text-page-title text-on-surface mb-xs">Good Morning, Developer</h1>
+<p class="text-on-surface-variant font-body text-body">Here is your system status and daily overview.</p>
+</div>
+<div class="flex gap-sm">
+<span class="bg-surface-container-low border border-outline-variant text-on-surface-variant px-2 py-1 rounded font-mono-timer text-mono-timer flex items-center gap-xs">
+<span class="w-2 h-2 rounded-full bg-[#5B8CFF] animate-pulse"></span>
+                             System Optimal
+                         </span>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-lg auto-rows-min">
+<!-- Active Focus Session (Spans 8 cols) -->
+<div class="col-span-1 md:col-span-8 bg-surface border border-outline-variant rounded-lg p-lg flex flex-col justify-between relative overflow-hidden min-h-[220px]">
+<!-- Decorative background element -->
+<div class="absolute right-0 top-0 w-1/2 h-full bg-gradient-to-l from-surface-container-low to-transparent opacity-50 pointer-events-none"></div>
+<div class="flex justify-between items-start z-10">
+<div>
+<h2 class="font-section-title text-section-title text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px] text-primary-container" data-icon="center_focus_strong">center_focus_strong</span>
+                                    Active Focus Session
+                                </h2>
+<p class="text-on-surface-variant font-body text-body mt-1">Deep Work: Architecture Review</p>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant px-3 py-1 rounded-full flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+<span class="font-metadata text-metadata text-on-surface uppercase tracking-wider">Recording</span>
+</div>
+</div>
+<div class="z-10 mt-auto flex items-end justify-between">
+<div class="font-mono-timer text-[48px] leading-none text-[#F3F6F9] tracking-tight">
+                                45:12
+                            </div>
+<div class="flex gap-sm">
+<button class="border border-outline-variant text-on-surface hover:bg-surface-container-highest px-3 py-1.5 rounded transition-colors font-section-title text-section-title">Pause</button>
+<button class="bg-primary-container text-[#F3F6F9] px-3 py-1.5 rounded hover:bg-primary-fixed hover:text-on-primary-container transition-colors font-section-title text-section-title">Stop Session</button>
+</div>
+</div>
+</div>
+<!-- Daily Progress (Spans 4 cols) -->
+<div class="col-span-1 md:col-span-4 bg-surface border border-outline-variant rounded-lg p-lg flex flex-col h-full">
+<h2 class="font-section-title text-section-title text-on-surface mb-md">Daily Progress</h2>
+<div class="flex-1 flex flex-col justify-center gap-md">
+<div>
+<div class="flex justify-between text-metadata font-metadata mb-xs">
+<span class="text-on-surface-variant">Tasks Completed</span>
+<span class="text-on-surface">12 / 15</span>
+</div>
+<div class="w-full bg-surface-container-low h-1.5 rounded-full overflow-hidden border border-outline-variant">
+<div class="bg-primary-container h-full rounded-full" style="width: 80%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-metadata font-metadata mb-xs">
+<span class="text-on-surface-variant">Focus Goal</span>
+<span class="text-on-surface">3h 15m / 4h</span>
+</div>
+<div class="w-full bg-surface-container-low h-1.5 rounded-full overflow-hidden border border-outline-variant">
+<div class="bg-tertiary h-full rounded-full" style="width: 75%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-metadata font-metadata mb-xs">
+<span class="text-on-surface-variant">Habits</span>
+<span class="text-on-surface">4 / 5</span>
+</div>
+<div class="w-full bg-surface-container-low h-1.5 rounded-full overflow-hidden border border-outline-variant">
+<div class="bg-secondary-container h-full rounded-full" style="width: 90%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Priority Tasks (Spans 6 cols) -->
+<div class="col-span-1 md:col-span-6 bg-surface border border-outline-variant rounded-lg p-lg flex flex-col h-[300px]">
+<div class="flex justify-between items-center mb-md pb-xs border-b border-outline-variant">
+<h2 class="font-section-title text-section-title text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]" data-icon="task_alt">task_alt</span>
+                                Priority Tasks
+                            </h2>
+<button class="text-on-surface-variant hover:text-on-surface text-metadata font-metadata flex items-center gap-1">
+                                View All <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto pr-1">
+<ul class="flex flex-col gap-0">
+<li class="group flex items-start gap-md p-2 hover:bg-surface-container-low rounded border border-transparent hover:border-outline-variant transition-colors cursor-pointer">
+<div class="mt-0.5">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant group-hover:text-primary-container transition-colors">radio_button_unchecked</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="text-on-surface font-body text-body truncate">Finalize DB Migration Script</div>
+<div class="text-on-surface-variant font-metadata text-metadata mt-0.5 flex gap-2">
+<span class="text-error flex items-center"><span class="material-symbols-outlined text-[12px] mr-0.5">priority_high</span> P1</span>
+<span>#backend</span>
+</div>
+</div>
+</li>
+<li class="group flex items-start gap-md p-2 hover:bg-surface-container-low rounded border border-transparent hover:border-outline-variant transition-colors cursor-pointer">
+<div class="mt-0.5">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant group-hover:text-primary-container transition-colors">radio_button_unchecked</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="text-on-surface font-body text-body truncate">Review PR #442 - Auth Flow</div>
+<div class="text-on-surface-variant font-metadata text-metadata mt-0.5 flex gap-2">
+<span class="text-tertiary flex items-center"><span class="material-symbols-outlined text-[12px] mr-0.5">arrow_upward</span> P2</span>
+<span>#frontend</span>
+</div>
+</div>
+</li>
+<li class="group flex items-start gap-md p-2 hover:bg-surface-container-low rounded border border-transparent hover:border-outline-variant transition-colors cursor-pointer">
+<div class="mt-0.5">
+<span class="material-symbols-outlined text-[18px] text-primary-container">check_circle</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="text-on-surface-variant font-body text-body line-through truncate">Weekly Team Sync</div>
+<div class="text-on-surface-variant font-metadata text-metadata mt-0.5 flex gap-2">
+<span>Done</span>
+</div>
+</div>
+</li>
+<li class="group flex items-start gap-md p-2 hover:bg-surface-container-low rounded border border-transparent hover:border-outline-variant transition-colors cursor-pointer">
+<div class="mt-0.5">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant group-hover:text-primary-container transition-colors">radio_button_unchecked</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="text-on-surface font-body text-body truncate">Update API Documentation</div>
+<div class="text-on-surface-variant font-metadata text-metadata mt-0.5 flex gap-2">
+<span class="text-on-surface-variant flex items-center"><span class="material-symbols-outlined text-[12px] mr-0.5">arrow_downward</span> P3</span>
+<span>#docs</span>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<!-- Environment Status (Spans 6 cols) -->
+<div class="col-span-1 md:col-span-6 bg-surface border border-outline-variant rounded-lg p-lg flex flex-col h-[300px]">
+<div class="flex justify-between items-center mb-md pb-xs border-b border-outline-variant">
+<h2 class="font-section-title text-section-title text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]" data-icon="dns">dns</span>
+                                Environment Status
+                            </h2>
+</div>
+<div class="grid grid-cols-2 gap-sm">
+<!-- Prod -->
+<div class="bg-surface-container-low border border-outline-variant rounded p-sm flex flex-col justify-between">
+<div class="flex justify-between items-center mb-2">
+<span class="font-section-title text-section-title text-on-surface">Production</span>
+<span class="w-2 h-2 rounded-full bg-[#5B8CFF]"></span>
+</div>
+<div class="font-mono-code text-mono-code text-on-surface-variant mb-1 truncate">v2.4.1 (Stable)</div>
+<div class="flex justify-between font-metadata text-metadata">
+<span class="text-on-surface-variant">Uptime</span>
+<span class="text-on-surface">99.99%</span>
+</div>
+</div>
+<!-- Staging -->
+<div class="bg-surface-container-low border border-outline-variant rounded p-sm flex flex-col justify-between">
+<div class="flex justify-between items-center mb-2">
+<span class="font-section-title text-section-title text-on-surface">Staging</span>
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+</div>
+<div class="font-mono-code text-mono-code text-on-surface-variant mb-1 truncate">v2.5.0-rc.2</div>
+<div class="flex justify-between font-metadata text-metadata">
+<span class="text-on-surface-variant">Deploying</span>
+<span class="text-tertiary animate-pulse">Running</span>
+</div>
+</div>
+<!-- Dev DB -->
+<div class="bg-surface-container-low border border-outline-variant rounded p-sm flex flex-col justify-between">
+<div class="flex justify-between items-center mb-2">
+<span class="font-section-title text-section-title text-on-surface">Dev DB</span>
+<span class="w-2 h-2 rounded-full bg-[#5B8CFF]"></span>
+</div>
+<div class="font-mono-code text-mono-code text-on-surface-variant mb-1 truncate">PostgreSQL 14</div>
+<div class="flex justify-between font-metadata text-metadata">
+<span class="text-on-surface-variant">Connections</span>
+<span class="text-on-surface">12/100</span>
+</div>
+</div>
+<!-- Redis -->
+<div class="bg-surface-container-low border border-outline-variant rounded p-sm flex flex-col justify-between">
+<div class="flex justify-between items-center mb-2">
+<span class="font-section-title text-section-title text-on-surface">Cache</span>
+<span class="w-2 h-2 rounded-full bg-error"></span>
+</div>
+<div class="font-mono-code text-mono-code text-on-surface-variant mb-1 truncate">Redis Cluster</div>
+<div class="flex justify-between font-metadata text-metadata">
+<span class="text-on-surface-variant">Status</span>
+<span class="text-error">High Memory</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

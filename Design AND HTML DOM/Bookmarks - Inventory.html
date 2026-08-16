@@ -1,0 +1,452 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>DevDesk - Bookmarks Inventory</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-tertiary-fixed": "#2d1600",
+                      "surface-tint": "#b2c5ff",
+                      "primary": "#b2c5ff",
+                      "on-surface-variant": "#c3c6d6",
+                      "error": "#ffb4ab",
+                      "surface-container": "#15212a",
+                      "on-background": "#d8e4f1",
+                      "outline-variant": "#434653",
+                      "surface-container-high": "#202b35",
+                      "surface-variant": "#2b3640",
+                      "on-secondary-container": "#b7bcc6",
+                      "on-secondary": "#2c3138",
+                      "surface-dim": "#09151d",
+                      "on-primary-container": "#002665",
+                      "on-primary-fixed": "#001847",
+                      "secondary-fixed": "#dee2ed",
+                      "inverse-on-surface": "#26323b",
+                      "inverse-surface": "#d8e4f1",
+                      "on-surface": "#d8e4f1",
+                      "secondary-container": "#474c54",
+                      "on-tertiary-container": "#412200",
+                      "inverse-primary": "#1857c8",
+                      "on-primary": "#002c72",
+                      "on-error": "#690005",
+                      "secondary": "#c2c6d0",
+                      "error-container": "#93000a",
+                      "background": "#09151d",
+                      "tertiary-fixed-dim": "#ffb874",
+                      "on-secondary-fixed-variant": "#42474f",
+                      "tertiary-fixed": "#ffdcbf",
+                      "surface-container-lowest": "#040f18",
+                      "on-secondary-fixed": "#171c23",
+                      "on-tertiary-fixed-variant": "#6a3b00",
+                      "surface": "#09151d",
+                      "secondary-fixed-dim": "#c2c6d0",
+                      "primary-fixed": "#dae2ff",
+                      "outline": "#8d909f",
+                      "surface-container-highest": "#2b3640",
+                      "on-error-container": "#ffdad6",
+                      "tertiary-container": "#d47b00",
+                      "surface-bright": "#2f3a44",
+                      "primary-fixed-dim": "#b2c5ff",
+                      "on-tertiary": "#4b2800",
+                      "primary-container": "#5b8cff",
+                      "surface-container-low": "#111d26",
+                      "on-primary-fixed-variant": "#0040a0",
+                      "tertiary": "#ffb874"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "lg": "16px",
+                      "sm": "8px",
+                      "md": "12px",
+                      "xxl": "32px",
+                      "sidebar_width": "240px",
+                      "xl": "24px",
+                      "gutter": "16px",
+                      "xs": "4px"
+              },
+              "fontFamily": {
+                      "page-title": [
+                              "Geist"
+                      ],
+                      "mono-code": [
+                              "JetBrains Mono"
+                      ],
+                      "body": [
+                              "Geist"
+                      ],
+                      "mono-timer": [
+                              "JetBrains Mono"
+                      ],
+                      "metadata": [
+                              "Geist"
+                      ],
+                      "section-title": [
+                              "Geist"
+                      ]
+              },
+              "fontSize": {
+                      "page-title": [
+                              "19px",
+                              {
+                                      "lineHeight": "24px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "mono-code": [
+                              "12px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body": [
+                              "13px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "mono-timer": [
+                              "14px",
+                              {
+                                      "lineHeight": "14px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "metadata": [
+                              "11px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "section-title": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        body {
+            background-color: #0B0F14;
+            color: #d8e4f1;
+            font-family: 'Geist', sans-serif;
+            overflow: hidden;
+        }
+        
+        /* Level 1 Sidebar */
+        .bg-sidebar { background-color: #0E131A; }
+        
+        /* Level 2 Surface */
+        .bg-surface-level-2 { background-color: #11161D; }
+        
+        /* Structural Borders */
+        .border-structural { border-color: #26303B; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #26303B;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #434653;
+        }
+
+        /* Focus States for Inputs */
+        .input-focus-glow:focus {
+            outline: none;
+            border-color: #5B8CFF;
+            box-shadow: 0 0 0 2px rgba(91, 140, 255, 0.2);
+        }
+
+        /* List Active/Hover States */
+        .list-item-hover:hover {
+            background-color: #171D26;
+        }
+        .list-item-active {
+            background-color: #1A2A4A;
+            border-left: 2px solid #5B8CFF;
+        }
+
+      </style>
+</head>
+<body class="flex h-screen w-full antialiased text-on-surface">
+<!-- SideNavBar -->
+<nav class="flex flex-col w-sidebar_width h-full fixed left-0 top-0 z-40 bg-sidebar border-r border-structural shrink-0">
+<!-- Header -->
+<div class="flex items-center gap-md p-lg border-b border-structural h-12 box-border">
+<div class="w-6 h-6 rounded bg-primary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[14px] text-on-primary-container" data-icon="terminal">terminal</span>
+</div>
+<div class="flex flex-col">
+<span class="font-page-title text-page-title font-bold text-primary leading-none">DevDesk</span>
+<span class="font-metadata text-metadata text-on-surface-variant leading-none mt-xs">V1.2.0-stable</span>
+</div>
+</div>
+<!-- Main Nav -->
+<div class="flex-1 overflow-y-auto py-md px-sm space-y-xs">
+<button class="w-full flex items-center gap-md px-sm py-xs rounded text-on-surface-variant hover:bg-surface-variant transition-colors group cursor-pointer active:scale-95 text-left">
+<span class="material-symbols-outlined text-[18px]" data-icon="dashboard">dashboard</span>
+<span class="font-section-title text-section-title">Dashboard</span>
+</button>
+<button class="w-full flex items-center gap-md px-sm py-xs rounded text-on-surface-variant hover:bg-surface-variant transition-colors group cursor-pointer active:scale-95 text-left">
+<span class="material-symbols-outlined text-[18px]" data-icon="code">code</span>
+<span class="font-section-title text-section-title">Editor</span>
+</button>
+<button class="w-full flex items-center gap-md px-sm py-xs rounded text-on-surface-variant hover:bg-surface-variant transition-colors group cursor-pointer active:scale-95 text-left">
+<span class="material-symbols-outlined text-[18px]" data-icon="account_tree">account_tree</span>
+<span class="font-section-title text-section-title">Source Control</span>
+</button>
+<button class="w-full flex items-center gap-md px-sm py-xs rounded text-on-surface-variant hover:bg-surface-variant transition-colors group cursor-pointer active:scale-95 text-left">
+<span class="material-symbols-outlined text-[18px]" data-icon="pest_control">pest_control</span>
+<span class="font-section-title text-section-title">Debugging</span>
+</button>
+<button class="w-full flex items-center gap-md px-sm py-xs rounded text-on-surface-variant hover:bg-surface-variant transition-colors group cursor-pointer active:scale-95 text-left">
+<span class="material-symbols-outlined text-[18px]" data-icon="database">database</span>
+<span class="font-section-title text-section-title">Database</span>
+</button>
+<div class="pt-sm mt-sm border-t border-structural">
+<button class="w-full flex items-center gap-md px-sm py-xs rounded bg-secondary-container text-on-primary-fixed-variant border-l-2 border-primary group cursor-pointer active:scale-95 text-left">
+<span class="material-symbols-outlined text-[18px]" data-icon="bookmarks" data-weight="fill" style="font-variation-settings: 'FILL' 1;">bookmarks</span>
+<span class="font-section-title text-section-title">Bookmarks</span>
+</button>
+</div>
+</div>
+<!-- Footer Nav -->
+<div class="p-sm border-t border-structural mt-auto space-y-xs">
+<button class="w-full flex items-center gap-md px-sm py-xs rounded text-on-surface-variant hover:bg-surface-variant transition-colors group cursor-pointer active:scale-95 text-left">
+<span class="material-symbols-outlined text-[18px]" data-icon="menu_book">menu_book</span>
+<span class="font-section-title text-section-title">Docs</span>
+</button>
+<button class="w-full flex items-center gap-md px-sm py-xs rounded text-on-surface-variant hover:bg-surface-variant transition-colors group cursor-pointer active:scale-95 text-left">
+<span class="material-symbols-outlined text-[18px]" data-icon="help">help</span>
+<span class="font-section-title text-section-title">Help</span>
+</button>
+<button class="mt-md w-full flex items-center justify-center gap-sm px-sm py-sm rounded bg-[#5B8CFF] text-[#F3F6F9] font-section-title text-section-title hover:bg-opacity-90 transition-colors cursor-pointer active:scale-95">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+                New Project
+            </button>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col ml-[240px] min-h-screen bg-[#0B0F14]">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-lg w-full h-12 border-b border-structural bg-background shrink-0 z-30">
+<!-- Left: Search -->
+<div class="flex items-center w-64">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-[16px] text-on-surface-variant" data-icon="search">search</span>
+<input class="w-full h-8 bg-surface-level-2 border border-structural rounded pl-8 pr-sm font-body text-body text-on-surface placeholder-on-surface-variant input-focus-glow transition-all" placeholder="Search bookmarks..." type="text">
+<div class="absolute right-xs top-1/2 -translate-y-1/2 flex items-center gap-xs">
+<span class="px-1.5 py-0.5 rounded bg-surface-variant text-[#9AA6B2] font-mono-code text-[10px] leading-none border border-structural">Ctrl</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-variant text-[#9AA6B2] font-mono-code text-[10px] leading-none border border-structural">K</span>
+</div>
+</div>
+</div>
+<!-- Center: Title Context (Optional, kept minimal) -->
+<div class="hidden lg:flex items-center justify-center absolute left-1/2 -translate-x-1/2">
+<span class="font-page-title text-page-title text-on-surface font-semibold">Bookmarks Inventory</span>
+</div>
+<!-- Right: Actions -->
+<div class="flex items-center gap-sm">
+<button class="p-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-variant rounded transition-colors" title="Deploy">
+<span class="material-symbols-outlined text-[20px]" data-icon="rocket_launch">rocket_launch</span>
+</button>
+<button class="p-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-variant rounded transition-colors" title="Terminal">
+<span class="material-symbols-outlined text-[20px]" data-icon="terminal">terminal</span>
+</button>
+<button class="p-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-variant rounded transition-colors" title="Bug Report">
+<span class="material-symbols-outlined text-[20px]" data-icon="bug_report">bug_report</span>
+</button>
+<button class="p-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-variant rounded transition-colors" title="Settings">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
+</button>
+<div class="w-px h-5 bg-outline-variant mx-xs"></div>
+<button class="w-7 h-7 rounded-full bg-surface-variant overflow-hidden border border-structural hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background">
+<img alt="User profile photo" class="w-full h-full object-cover" data-alt="A small, professional user avatar portrait of a software developer with a neutral background, highly detailed, sharp focus, modern lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5P5R3ScoTU_Y1vohhX3e6B7tkbu7bMmv-S9LtNOipD1REnHAC6TW4xFeNuRh0ihCsCFmd__qe0E_XRmpoxokKWSCW6M0V7pVtZu-sc7Iso9tofZy8O4Jn6WqzU2rqRIr0O9LQ1vqB7xKLQjRO4ISf5v0cWT86nNp7t32o80BYvczfZw1L7OsuyMqlk-740z7L6rPSS5lGhYXx3ms3rZArGcplO64r_hXJdIcspXrdj3J5wsJfwNjqMA">
+</button>
+</div>
+</header>
+<!-- Canvas -->
+<div class="flex-1 overflow-y-auto p-lg layout-container">
+<!-- Toolbar -->
+<div class="flex items-center justify-between mb-lg">
+<div class="flex items-center gap-md">
+<button class="flex items-center gap-xs px-md py-1.5 rounded bg-[#5B8CFF] text-[#F3F6F9] font-section-title text-section-title hover:bg-opacity-90 transition-colors">
+<span class="material-symbols-outlined text-[16px]" data-icon="add">add</span>
+                        Add Bookmark
+                    </button>
+<button class="flex items-center gap-xs px-md py-1.5 rounded border border-structural text-on-surface hover:bg-surface-variant transition-colors font-section-title text-section-title">
+<span class="material-symbols-outlined text-[16px]" data-icon="filter_list">filter_list</span>
+                        Filter
+                    </button>
+</div>
+<div class="flex items-center gap-sm text-on-surface-variant font-metadata text-metadata">
+<span>14 items</span>
+<div class="w-px h-3 bg-outline-variant"></div>
+<span class="flex items-center gap-xs">Sorted by: <strong class="text-on-surface font-semibold">Date Added</strong> <span class="material-symbols-outlined text-[14px]" data-icon="keyboard_arrow_down">keyboard_arrow_down</span></span>
+</div>
+</div>
+<!-- List Header -->
+<div class="grid grid-cols-[auto_minmax(0,2fr)_minmax(0,3fr)_120px_100px] gap-md px-md py-xs border-b border-structural text-on-surface-variant font-metadata text-metadata uppercase tracking-wider mb-sm">
+<div class="w-6 flex justify-center">
+<span class="material-symbols-outlined text-[14px]" data-icon="star">star</span>
+</div>
+<div>Title</div>
+<div>URL</div>
+<div>Category</div>
+<div class="text-right">Actions</div>
+</div>
+<!-- List Body -->
+<div class="flex flex-col gap-0 border border-structural rounded bg-surface-level-2">
+<!-- Row 1 -->
+<div class="grid grid-cols-[auto_minmax(0,2fr)_minmax(0,3fr)_120px_100px] items-center gap-md px-md py-2 border-b border-structural last:border-0 list-item-hover transition-colors group cursor-default">
+<button class="w-6 h-6 flex items-center justify-center text-primary hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[18px]" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+</button>
+<div class="flex items-center gap-sm min-w-0">
+<img alt="" class="w-4 h-4 rounded-sm object-cover shrink-0" data-alt="A small 16x16 pixel crisp favicon icon for a documentation website, featuring a stylized stylized minimal book logo on a dark background, precise, UI asset." src="https://lh3.googleusercontent.com/aida-public/AB6AXuASK4QXMxS7ow_qUE35z4mzZ3xNBTWMmA-kV6hpEuR79b5fMhGScK1q_HWd6PaZTcWWHpTABhki56TJTPGEGR9P5cRGo5eL0VOL8Rd_A4QGm_iInkPtNOs0qJb9GIXAKBSVeS8805UyCLYoRVoYmwOWsp5PD8mgLv33wzz-E7_JVip7MR2aIdFda6CCn6MgqefC40HjolU_zv9HoAp-NrW2aiyVZvvGQKvCHR-cENBxr_dsmfwYRXM_zg">
+<span class="font-body text-body text-on-surface truncate font-medium">Tailwind CSS Documentation</span>
+</div>
+<div class="font-mono-code text-mono-code text-on-surface-variant truncate">
+                        https://tailwindcss.com/docs/installation
+                    </div>
+<div>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded bg-[#171D26] text-[#9AA6B2] font-metadata text-metadata border border-structural truncate">Design</span>
+</div>
+<div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors" title="Copy URL">
+<span class="material-symbols-outlined text-[16px]" data-icon="content_copy">content_copy</span>
+</button>
+<button class="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors" title="Open in Browser">
+<span class="material-symbols-outlined text-[16px]" data-icon="open_in_new">open_in_new</span>
+</button>
+<button class="p-1 rounded text-on-surface-variant hover:text-error hover:bg-error-container transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[16px]" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="grid grid-cols-[auto_minmax(0,2fr)_minmax(0,3fr)_120px_100px] items-center gap-md px-md py-2 border-b border-structural last:border-0 list-item-hover transition-colors group cursor-default">
+<button class="w-6 h-6 flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[18px]" data-icon="star">star</span>
+</button>
+<div class="flex items-center gap-sm min-w-0">
+<div class="w-4 h-4 rounded-sm bg-surface-variant border border-structural flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[10px] text-on-surface-variant" data-icon="public">public</span>
+</div>
+<span class="font-body text-body text-on-surface truncate font-medium">React Query Setup Guide</span>
+</div>
+<div class="font-mono-code text-mono-code text-on-surface-variant truncate">
+                        https://tanstack.com/query/latest/docs/react/quick-start
+                    </div>
+<div>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded bg-[#171D26] text-[#9AA6B2] font-metadata text-metadata border border-structural truncate">Frontend</span>
+</div>
+<div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors" title="Copy URL">
+<span class="material-symbols-outlined text-[16px]" data-icon="content_copy">content_copy</span>
+</button>
+<button class="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors" title="Open in Browser">
+<span class="material-symbols-outlined text-[16px]" data-icon="open_in_new">open_in_new</span>
+</button>
+<button class="p-1 rounded text-on-surface-variant hover:text-error hover:bg-error-container transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[16px]" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+<!-- Row 3 -->
+<div class="grid grid-cols-[auto_minmax(0,2fr)_minmax(0,3fr)_120px_100px] items-center gap-md px-md py-2 border-b border-structural last:border-0 list-item-hover transition-colors group cursor-default">
+<button class="w-6 h-6 flex items-center justify-center text-primary hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[18px]" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+</button>
+<div class="flex items-center gap-sm min-w-0">
+<div class="w-4 h-4 rounded-sm bg-surface-variant border border-structural flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[10px] text-on-surface-variant" data-icon="terminal">terminal</span>
+</div>
+<span class="font-body text-body text-on-surface truncate font-medium">PostgreSQL Cheatsheet</span>
+</div>
+<div class="font-mono-code text-mono-code text-on-surface-variant truncate">
+                        https://postgrescheatsheet.com/#/tables
+                    </div>
+<div>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded bg-[#171D26] text-[#9AA6B2] font-metadata text-metadata border border-structural truncate">Database</span>
+</div>
+<div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors" title="Copy URL">
+<span class="material-symbols-outlined text-[16px]" data-icon="content_copy">content_copy</span>
+</button>
+<button class="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors" title="Open in Browser">
+<span class="material-symbols-outlined text-[16px]" data-icon="open_in_new">open_in_new</span>
+</button>
+<button class="p-1 rounded text-on-surface-variant hover:text-error hover:bg-error-container transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[16px]" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+<!-- Row 4 -->
+<div class="grid grid-cols-[auto_minmax(0,2fr)_minmax(0,3fr)_120px_100px] items-center gap-md px-md py-2 border-b border-structural last:border-0 list-item-hover transition-colors group cursor-default">
+<button class="w-6 h-6 flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[18px]" data-icon="star">star</span>
+</button>
+<div class="flex items-center gap-sm min-w-0">
+<img alt="" class="w-4 h-4 rounded-sm object-cover shrink-0" data-alt="A small 16x16 pixel crisp favicon icon for a GitHub repository, featuring the iconic octocat logo in white on a dark grey background, precise, UI asset." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJFyIMO9v-Yrd8bqtFgIqaVPEq9l7Yxn8WW9sObMmBtkVl-lqCs9PbjreZMAEEML2n8xXtQWMF66nchDGIhcyTK3KZIARbDbfGj8jbamvfm0VcVXyEI8f6Dljb2nXAXTeSR1TIcVLlXO9qykMvyynsfM0mFmqKWwSKuorhXMR70E7LvbmpoSNS4CYlnftSaTQSabeJ17PF1Ew2-VJyl_HmgeBg9gb0bC1EYqsx3mUVmOuTGvYYJb2t4w">
+<span class="font-body text-body text-on-surface truncate font-medium">Vim Keybindings Repo</span>
+</div>
+<div class="font-mono-code text-mono-code text-on-surface-variant truncate">
+                        https://github.com/user/vim-bindings-master
+                    </div>
+<div>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded bg-[#171D26] text-[#9AA6B2] font-metadata text-metadata border border-structural truncate">Tools</span>
+</div>
+<div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors" title="Copy URL">
+<span class="material-symbols-outlined text-[16px]" data-icon="content_copy">content_copy</span>
+</button> 
+<button class="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors" title="Open in Browser">
+<span class="material-symbols-outlined text-[16px]" data-icon="open_in_new">open_in_new</span>
+</button>
+<button class="p-1 rounded text-on-surface-variant hover:text-error hover:bg-error-container transition-colors" title="Delete">
+<span class="material-symbols-outlined text-[16px]" data-icon="delete">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Empty State (Hidden, but structured for demonstration if list is empty) -->
+<!--
+             <div class="flex flex-col items-center justify-center py-xxl text-on-surface-variant h-64 border border-structural rounded bg-surface-level-2 mt-4 border-dashed">
+                <span class="material-symbols-outlined text-[48px] mb-md opacity-50" data-icon="bookmark_border">bookmark_border</span>
+                <p class="font-section-title text-section-title mb-xs">No bookmarks found</p>
+                <p class="font-body text-body opacity-70">Add a new bookmark or try adjusting your filters.</p>
+             </div>
+             -->
+</div>
+</main>
+</body></html>

@@ -1,0 +1,388 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>DevDesk - Tasks Inventory</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#d8e4f1",
+                        "secondary-fixed": "#dee2ed",
+                        "inverse-surface": "#d8e4f1",
+                        "outline-variant": "#434653",
+                        "surface-tint": "#b2c5ff",
+                        "surface-container": "#15212a",
+                        "on-background": "#d8e4f1",
+                        "on-secondary-fixed": "#171c23",
+                        "primary": "#b2c5ff",
+                        "inverse-on-surface": "#26323b",
+                        "surface-container-lowest": "#040f18",
+                        "on-error-container": "#ffdad6",
+                        "error": "#ffb4ab",
+                        "on-tertiary": "#4b2800",
+                        "on-primary": "#002c72",
+                        "on-surface-variant": "#c3c6d6",
+                        "surface": "#09151d",
+                        "on-tertiary-fixed-variant": "#6a3b00",
+                        "primary-fixed": "#dae2ff",
+                        "background": "#09151d",
+                        "tertiary-container": "#d47b00",
+                        "tertiary-fixed-dim": "#ffb874",
+                        "on-primary-fixed-variant": "#0040a0",
+                        "inverse-primary": "#1857c8",
+                        "on-primary-fixed": "#001847",
+                        "tertiary": "#ffb874",
+                        "on-error": "#690005",
+                        "tertiary-fixed": "#ffdcbf",
+                        "surface-container-highest": "#2b3640",
+                        "on-secondary-fixed-variant": "#42474f",
+                        "outline": "#8d909f",
+                        "primary-container": "#5b8cff",
+                        "secondary-fixed-dim": "#c2c6d0",
+                        "on-secondary-container": "#b7bcc6",
+                        "on-tertiary-container": "#412200",
+                        "surface-bright": "#2f3a44",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "on-primary-container": "#002665",
+                        "on-secondary": "#2c3138",
+                        "surface-container-high": "#202b35",
+                        "surface-container-low": "#111d26",
+                        "error-container": "#93000a",
+                        "secondary": "#c2c6d0",
+                        "surface-variant": "#2b3640",
+                        "on-tertiary-fixed": "#2d1600",
+                        "secondary-container": "#474c54",
+                        "surface-dim": "#09151d"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sidebar_width": "240px",
+                        "xs": "4px",
+                        "gutter": "16px",
+                        "xxl": "32px",
+                        "md": "12px",
+                        "xl": "24px",
+                        "lg": "16px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "body": ["Geist"],
+                        "mono-code": ["JetBrains Mono"],
+                        "section-title": ["Geist"],
+                        "metadata": ["Geist"],
+                        "page-title": ["Geist"],
+                        "mono-timer": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "body": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "mono-code": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "section-title": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "metadata": ["11px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "page-title": ["19px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "mono-timer": ["14px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Light Theme Overrides as per prompt, but mapping to the requested structure */
+        .light-theme {
+            --bg-light: #E8ECF1;
+            --surface-light: #F4F6F9;
+            --surface-alt-light: #DCE2EA;
+            --border-light: #C4CDD8;
+            --text-light: #1A222E;
+            --accent-light: #3B6FE0;
+            
+            background-color: var(--bg-light);
+            color: var(--text-light);
+        }
+        
+        .light-theme .side-nav { background-color: var(--surface-light); border-right: 1px solid var(--border-light); }
+        .light-theme .top-bar { background-color: var(--bg-light); border-bottom: 1px solid var(--border-light); }
+        .light-theme .card { background-color: var(--surface-light); border: 1px solid var(--border-light); }
+        .light-theme .nav-item.active { background-color: rgba(59, 111, 224, 0.1); color: var(--accent-light); border-left: 2px solid var(--accent-light); }
+        .light-theme .nav-item { color: #5a6677; }
+        .light-theme .nav-item:hover { background-color: var(--surface-alt-light); }
+        
+        .light-theme .btn-primary { background-color: var(--accent-light); color: #fff; }
+        .light-theme .btn-secondary { border: 1px solid var(--border-light); color: var(--text-light); }
+        .light-theme .input-field { background-color: var(--bg-light); border: 1px solid var(--border-light); color: var(--text-light); }
+        
+        .light-theme .text-muted { color: #5a6677; }
+        .light-theme .border-subtle { border-color: var(--border-light); }
+        
+        .compact-row { height: 40px; }
+    </style>
+</head>
+<body class="light-theme font-body text-body min-h-screen flex antialiased">
+<!-- SideNavBar -->
+<nav class="side-nav w-sidebar_width h-full fixed left-0 top-0 flex flex-col py-lg space-y-xs z-40 transition-all duration-150">
+<div class="px-lg mb-xl">
+<h1 class="font-page-title text-page-title font-bold text-light">DevDesk</h1>
+<p class="font-metadata text-metadata text-muted mt-1">Productivity Engine</p>
+</div>
+<div class="flex-1 px-sm space-y-1">
+<a class="nav-item flex items-center px-md py-sm rounded-r-DEFAULT mx-xs transition-all duration-150" href="#">
+<span class="material-symbols-outlined mr-md text-[20px]">dashboard</span>
+<span class="font-section-title text-section-title">Dashboard</span>
+</a>
+<a class="nav-item flex items-center px-md py-sm rounded-r-DEFAULT mx-xs transition-all duration-150" href="#">
+<span class="material-symbols-outlined mr-md text-[20px]">today</span>
+<span class="font-section-title text-section-title">My Day</span>
+</a>
+<a class="nav-item active flex items-center px-md py-sm rounded-r-DEFAULT mx-xs transition-all duration-150" href="#">
+<span class="material-symbols-outlined mr-md text-[20px]">check_circle</span>
+<span class="font-section-title text-section-title">Tasks</span>
+</a>
+<a class="nav-item flex items-center px-md py-sm rounded-r-DEFAULT mx-xs transition-all duration-150" href="#">
+<span class="material-symbols-outlined mr-md text-[20px]">timer</span>
+<span class="font-section-title text-section-title">Focus</span>
+</a>
+<a class="nav-item flex items-center px-md py-sm rounded-r-DEFAULT mx-xs transition-all duration-150" href="#">
+<span class="material-symbols-outlined mr-md text-[20px]">folder</span>
+<span class="font-section-title text-section-title">Projects</span>
+</a>
+<a class="nav-item flex items-center px-md py-sm rounded-r-DEFAULT mx-xs transition-all duration-150" href="#">
+<span class="material-symbols-outlined mr-md text-[20px]">settings</span>
+<span class="font-section-title text-section-title">Settings</span>
+</a>
+</div>
+<div class="mt-auto px-lg pt-lg border-t border-subtle">
+<div class="flex items-center space-x-md">
+<img class="w-8 h-8 rounded-full object-cover border border-subtle" data-alt="A professional headshot of a software developer in a modern, light-filled office environment. High key lighting, clean corporate aesthetic, subtle blue tones in the background to match the UI theme." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUBvo6aXTO21w6hHFbUszFKcHY3a2LVdXZlRA6ikuiIbpLQLy0riXjQG49lxGAbaP6BMj3rspPmtmJx8SJyjxzBbTxhJlK4rKIMsv5XVh19nh0tfBHb0xCXINucyemi5ReeUZfNbXSDCph-urlXj96SogKQpOT9IEm3wLQR-YZ2Z7xl44O8r4KTNhU1tKonbUTF_qoBfxhDSsPUUKG1c0i5O_VsamYCOvHi35Bd61NXcSAxcGGgunC-Q">
+<div>
+<p class="font-section-title text-section-title">Alex Mercer</p>
+<p class="font-metadata text-metadata text-muted">alex@devdesk.app</p>
+</div>
+</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 ml-[240px] flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="top-bar h-[48px] w-full flex items-center justify-between px-lg z-30 sticky top-0">
+<div class="flex items-center flex-1 max-w-md">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-muted text-[18px]">search</span>
+<input class="input-field w-full pl-[32px] pr-sm py-1 rounded-DEFAULT font-body text-body focus:outline-none focus:ring-1 focus:ring-[#3B6FE0] focus:border-[#3B6FE0] h-[28px] transition-all" placeholder="Search tasks (Cmd+K)" type="text">
+</div>
+</div>
+<div class="flex items-center space-x-sm">
+<button class="p-1 rounded-DEFAULT hover:bg-[var(--surface-alt-light)] text-muted transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<button class="p-1 rounded-DEFAULT hover:bg-[var(--surface-alt-light)] text-muted transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</button>
+<div class="w-[1px] h-[24px] bg-[var(--border-light)] mx-xs"></div>
+<button class="btn-primary px-md py-1 rounded-DEFAULT font-section-title text-section-title flex items-center space-x-xs h-[28px] cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined text-[16px]">play_arrow</span>
+<span>Focus</span>
+</button>
+</div>
+</header>
+<!-- Canvas -->
+<div class="p-xl flex-1 flex flex-col gap-lg max-w-[1200px] w-full mx-auto">
+<!-- Page Header -->
+<div class="flex justify-between items-end mb-sm">
+<div>
+<h2 class="font-page-title text-page-title">Tasks Inventory</h2>
+<p class="font-body text-body text-muted mt-1">Manage and track all technical debt and feature requests.</p>
+</div>
+<div class="flex gap-sm">
+<button class="btn-secondary px-md py-1 rounded-DEFAULT font-section-title text-section-title h-[32px] flex items-center gap-xs cursor-pointer">
+<span class="material-symbols-outlined text-[16px]">filter_list</span>
+<span>Filter</span>
+</button>
+<button class="btn-primary px-md py-1 rounded-DEFAULT font-section-title text-section-title h-[32px] flex items-center gap-xs cursor-pointer">
+<span class="material-symbols-outlined text-[16px]">add</span>
+<span>New Task <span class="ml-2 font-mono-code text-[10px] bg-black/10 px-1 rounded opacity-80">N</span></span>
+</button>
+</div>
+</div>
+<!-- Bento/Grid Layout for Inventory -->
+<div class="grid grid-cols-1 xl:grid-cols-4 gap-lg flex-1">
+<!-- Main Task List (Span 3 cols) -->
+<div class="xl:col-span-3 card rounded-lg flex flex-col overflow-hidden">
+<!-- Toolbar -->
+<div class="border-b border-subtle p-sm flex items-center justify-between bg-[var(--surface-light)]">
+<div class="flex space-x-xs">
+<button class="px-md py-1 rounded bg-[var(--surface-alt-light)] font-section-title text-section-title text-light text-[12px]">All Open (42)</button>
+<button class="px-md py-1 rounded hover:bg-[var(--surface-alt-light)] text-muted font-section-title text-section-title text-[12px] transition-colors">High Priority (8)</button>
+<button class="px-md py-1 rounded hover:bg-[var(--surface-alt-light)] text-muted font-section-title text-section-title text-[12px] transition-colors">Blocked (2)</button>
+</div>
+<div class="flex items-center space-x-xs text-muted">
+<span class="material-symbols-outlined text-[18px] cursor-pointer hover:text-[var(--text-light)]">view_list</span>
+<span class="material-symbols-outlined text-[18px] cursor-pointer hover:text-[var(--text-light)] opacity-50">view_kanban</span>
+</div>
+</div>
+<!-- List Header -->
+<div class="grid grid-cols-[auto_1fr_120px_100px_80px_40px] gap-sm px-md py-xs border-b border-subtle bg-[var(--surface-light)] font-metadata text-metadata text-muted items-center">
+<div class="w-6"></div>
+<div>Task Title</div>
+<div>Project</div>
+<div>Status</div>
+<div>Estimate</div>
+<div></div>
+</div>
+<!-- Task Rows (Compact 40px) -->
+<div class="flex-1 overflow-y-auto">
+<!-- Row 1 -->
+<div class="grid grid-cols-[auto_1fr_120px_100px_80px_40px] gap-sm px-md border-b border-subtle items-center compact-row hover:bg-[var(--surface-alt-light)] transition-colors group cursor-pointer">
+<div class="w-6 flex items-center justify-center">
+<input class="rounded-[3px] border-[var(--border-light)] text-[var(--accent-light)] focus:ring-[var(--accent-light)]" type="checkbox">
+</div>
+<div class="flex items-center space-x-sm truncate">
+<span class="material-symbols-outlined text-[#E05252] text-[16px]" style="font-variation-settings: 'FILL' 1;">priority_high</span>
+<span class="font-body text-body font-medium truncate">Refactor authentication middleware</span>
+</div>
+<div class="font-body text-body text-muted truncate">Core Platform</div>
+<div>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded-sm bg-[#E05252]/10 text-[#E05252] font-metadata text-[10px] font-semibold border border-[#E05252]/20">In Progress</span>
+</div>
+<div class="font-mono-code text-mono-code text-muted">3h 00m</div>
+<div class="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[16px] text-muted hover:text-[var(--text-light)]">more_horiz</span>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="grid grid-cols-[auto_1fr_120px_100px_80px_40px] gap-sm px-md border-b border-subtle items-center compact-row hover:bg-[var(--surface-alt-light)] transition-colors group cursor-pointer">
+<div class="w-6 flex items-center justify-center">
+<input class="rounded-[3px] border-[var(--border-light)] text-[var(--accent-light)] focus:ring-[var(--accent-light)]" type="checkbox">
+</div>
+<div class="flex items-center space-x-sm truncate">
+<span class="material-symbols-outlined text-[#F2994A] text-[16px]">arrow_upward</span>
+<span class="font-body text-body truncate">Update dependencies for React 18</span>
+</div>
+<div class="font-body text-body text-muted truncate">Web Client</div>
+<div>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded-sm bg-[var(--surface-alt-light)] text-muted font-metadata text-[10px] font-semibold border border-[var(--border-light)]">Todo</span>
+</div>
+<div class="font-mono-code text-mono-code text-muted">1h 30m</div>
+<div class="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[16px] text-muted hover:text-[var(--text-light)]">more_horiz</span>
+</div>
+</div>
+<!-- Row 3 -->
+<div class="grid grid-cols-[auto_1fr_120px_100px_80px_40px] gap-sm px-md border-b border-subtle items-center compact-row hover:bg-[var(--surface-alt-light)] transition-colors group cursor-pointer bg-[var(--surface-alt-light)]/50">
+<div class="w-6 flex items-center justify-center">
+<input checked="" class="rounded-[3px] border-[var(--border-light)] text-[var(--accent-light)] focus:ring-[var(--accent-light)]" type="checkbox">
+</div>
+<div class="flex items-center space-x-sm truncate opacity-60">
+<span class="material-symbols-outlined text-muted text-[16px]">drag_handle</span>
+<span class="font-body text-body truncate line-through">Implement dark mode toggle</span>
+</div>
+<div class="font-body text-body text-muted truncate opacity-60">Design System</div>
+<div class="opacity-60">
+<span class="inline-flex items-center px-1.5 py-0.5 rounded-sm bg-[#27AE60]/10 text-[#27AE60] font-metadata text-[10px] font-semibold border border-[#27AE60]/20">Done</span>
+</div>
+<div class="font-mono-code text-mono-code text-muted opacity-60">--</div>
+<div class="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[16px] text-muted hover:text-[var(--text-light)]">more_horiz</span>
+</div>
+</div>
+<!-- Row 4 -->
+<div class="grid grid-cols-[auto_1fr_120px_100px_80px_40px] gap-sm px-md border-b border-subtle items-center compact-row hover:bg-[var(--surface-alt-light)] transition-colors group cursor-pointer">
+<div class="w-6 flex items-center justify-center">
+<input class="rounded-[3px] border-[var(--border-light)] text-[var(--accent-light)] focus:ring-[var(--accent-light)]" type="checkbox">
+</div>
+<div class="flex items-center space-x-sm truncate">
+<span class="material-symbols-outlined text-[#F2994A] text-[16px]">arrow_upward</span>
+<span class="font-body text-body truncate">Fix race condition in state management</span>
+</div>
+<div class="font-body text-body text-muted truncate">Core Platform</div>
+<div>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded-sm bg-[#9B51E0]/10 text-[#9B51E0] font-metadata text-[10px] font-semibold border border-[#9B51E0]/20">Blocked</span>
+</div>
+<div class="font-mono-code text-mono-code text-muted">4h 00m</div>
+<div class="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[16px] text-muted hover:text-[var(--text-light)]">more_horiz</span>
+</div>
+</div>
+<!-- Row 5 -->
+<div class="grid grid-cols-[auto_1fr_120px_100px_80px_40px] gap-sm px-md border-b border-subtle items-center compact-row hover:bg-[var(--surface-alt-light)] transition-colors group cursor-pointer">
+<div class="w-6 flex items-center justify-center">
+<input class="rounded-[3px] border-[var(--border-light)] text-[var(--accent-light)] focus:ring-[var(--accent-light)]" type="checkbox">
+</div>
+<div class="flex items-center space-x-sm truncate">
+<span class="material-symbols-outlined text-[#2D9CDB] text-[16px]">arrow_downward</span>
+<span class="font-body text-body truncate">Update documentation for API v2</span>
+</div>
+<div class="font-body text-body text-muted truncate">Docs</div>
+<div>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded-sm bg-[var(--surface-alt-light)] text-muted font-metadata text-[10px] font-semibold border border-[var(--border-light)]">Backlog</span>
+</div>
+<div class="font-mono-code text-mono-code text-muted">1h 00m</div>
+<div class="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[16px] text-muted hover:text-[var(--text-light)]">more_horiz</span>
+</div>
+</div>
+</div>
+<div class="p-xs bg-[var(--surface-light)] border-t border-subtle font-metadata text-metadata text-muted flex justify-between items-center">
+<span>Showing 1-5 of 42 tasks</span>
+<div class="flex items-center space-x-xs">
+<button class="p-1 hover:bg-[var(--surface-alt-light)] rounded"><span class="material-symbols-outlined text-[14px]">chevron_left</span></button>
+<span>1 / 9</span>
+<button class="p-1 hover:bg-[var(--surface-alt-light)] rounded"><span class="material-symbols-outlined text-[14px]">chevron_right</span></button>
+</div>
+</div>
+</div>
+<!-- Right Sidebar / Context Area (Span 1 col) -->
+<div class="flex flex-col gap-lg">
+<!-- Quick Stats -->
+<div class="card rounded-lg p-md">
+<h3 class="font-section-title text-section-title mb-md">Sprint Overview</h3>
+<div class="space-y-sm">
+<div class="flex justify-between items-center">
+<span class="font-body text-body text-muted">Completion</span>
+<span class="font-mono-code text-mono-code font-bold">64%</span>
+</div>
+<div class="w-full bg-[var(--surface-alt-light)] h-[4px] rounded-full overflow-hidden">
+<div class="bg-[var(--accent-light)] h-full" style="width: 64%"></div>
+</div>
+<div class="pt-sm grid grid-cols-2 gap-xs">
+<div class="bg-[var(--surface-alt-light)] p-sm rounded border border-subtle">
+<div class="font-metadata text-metadata text-muted">Hours Left</div>
+<div class="font-mono-code text-[14px] mt-1">12.5h</div>
+</div>
+<div class="bg-[var(--surface-alt-light)] p-sm rounded border border-subtle">
+<div class="font-metadata text-metadata text-muted">Velocity</div>
+<div class="font-mono-code text-[14px] mt-1">4.2<span class="text-[10px] text-muted">/d</span></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Labels / Tags -->
+<div class="card rounded-lg p-md flex-1">
+<h3 class="font-section-title text-section-title mb-md flex justify-between items-center">
+                            Labels
+                            <span class="material-symbols-outlined text-[16px] text-muted cursor-pointer hover:text-[var(--text-light)]">add</span>
+</h3>
+<div class="flex flex-wrap gap-xs">
+<span class="px-2 py-1 rounded bg-[#E05252]/10 text-[#E05252] border border-[#E05252]/20 font-metadata text-metadata cursor-pointer hover:bg-[#E05252]/20 transition-colors">bug (12)</span>
+<span class="px-2 py-1 rounded bg-[#2D9CDB]/10 text-[#2D9CDB] border border-[#2D9CDB]/20 font-metadata text-metadata cursor-pointer hover:bg-[#2D9CDB]/20 transition-colors">feature (24)</span>
+<span class="px-2 py-1 rounded bg-[#F2C94C]/10 text-[#F2C94C] border border-[#F2C94C]/20 font-metadata text-metadata cursor-pointer hover:bg-[#F2C94C]/20 transition-colors">tech-debt (6)</span>
+<span class="px-2 py-1 rounded bg-[#9B51E0]/10 text-[#9B51E0] border border-[#9B51E0]/20 font-metadata text-metadata cursor-pointer hover:bg-[#9B51E0]/20 transition-colors">design (3)</span>
+<span class="px-2 py-1 rounded bg-[var(--surface-alt-light)] text-muted border border-[var(--border-light)] font-metadata text-metadata cursor-pointer hover:bg-[var(--border-light)] transition-colors">optimization (1)</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

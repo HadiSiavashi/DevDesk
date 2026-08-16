@@ -1,0 +1,431 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>DevDesk - Task Detail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#ffdad6",
+                        "outline-variant": "#434653",
+                        "surface-dim": "#09151d",
+                        "tertiary-fixed-dim": "#ffb874",
+                        "outline": "#8d909f",
+                        "surface-container": "#15212a",
+                        "inverse-surface": "#d8e4f1",
+                        "on-secondary-fixed-variant": "#42474f",
+                        "tertiary-fixed": "#ffdcbf",
+                        "surface-tint": "#b2c5ff",
+                        "on-surface-variant": "#c3c6d6",
+                        "on-surface": "#d8e4f1",
+                        "on-tertiary-fixed": "#2d1600",
+                        "tertiary": "#ffb874",
+                        "on-secondary": "#2c3138",
+                        "secondary": "#c2c6d0",
+                        "on-secondary-container": "#b7bcc6",
+                        "inverse-primary": "#1857c8",
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed-variant": "#6a3b00",
+                        "surface-bright": "#2f3a44",
+                        "on-error": "#690005",
+                        "on-secondary-fixed": "#171c23",
+                        "secondary-fixed": "#dee2ed",
+                        "on-primary-fixed": "#001847",
+                        "on-primary": "#002c72",
+                        "surface-container-low": "#111d26",
+                        "surface-container-highest": "#2b3640",
+                        "on-primary-fixed-variant": "#0040a0",
+                        "primary-container": "#5b8cff",
+                        "on-primary-container": "#002665",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "surface-container-high": "#202b35",
+                        "error-container": "#93000a",
+                        "on-tertiary-container": "#412200",
+                        "secondary-container": "#474c54",
+                        "surface-container-lowest": "#040f18",
+                        "inverse-on-surface": "#26323b",
+                        "on-tertiary": "#4b2800",
+                        "tertiary-container": "#d47b00",
+                        "background": "#09151d",
+                        "on-background": "#d8e4f1",
+                        "secondary-fixed-dim": "#c2c6d0",
+                        "surface": "#09151d",
+                        "primary-fixed": "#dae2ff",
+                        "surface-variant": "#2b3640",
+                        "primary": "#b2c5ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "gutter": "16px",
+                        "lg": "16px",
+                        "md": "12px",
+                        "sidebar_width": "240px",
+                        "xl": "24px",
+                        "sm": "8px",
+                        "xxl": "32px"
+                    },
+                    "fontFamily": {
+                        "mono-timer": ["JetBrains Mono"],
+                        "metadata": ["Geist", "sans-serif"],
+                        "page-title": ["Geist", "sans-serif"],
+                        "body": ["Geist", "sans-serif"],
+                        "section-title": ["Geist", "sans-serif"],
+                        "mono-code": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "mono-timer": ["14px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "metadata": ["11px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "page-title": ["19px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "section-title": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "mono-code": ["12px", { "lineHeight": "18px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Custom Scrollbar to match aesthetic */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #26303B; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #434653; }
+        
+        /* Utility for input resets matching the design system */
+        .ds-input {
+            background-color: theme('colors.background');
+            border: 1px solid theme('colors.outline-variant');
+            color: theme('colors.on-surface');
+            border-radius: theme('borderRadius.DEFAULT');
+        }
+        .ds-input:focus {
+            outline: none;
+            border-color: theme('colors.primary-container');
+            box-shadow: 0 0 0 1px theme('colors.primary-container');
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface h-screen w-screen overflow-hidden flex font-body text-body">
+<!-- SideNavBar (Shared Component) -->
+<nav class="bg-surface-container-low dark:bg-surface-container-low docked h-full w-[240px] rtl:right-0 ltr:left-0 border-r border-outline-variant dark:border-outline-variant rtl:border-l rtl:border-r-0 flat no shadows flex flex-col h-screen py-md overflow-y-auto shrink-0 transition-all duration-200 ease-in-out">
+<div class="px-gutter mb-xl">
+<h1 class="font-page-title text-page-title font-bold text-on-surface">DevDesk</h1>
+<p class="font-metadata text-metadata text-on-surface-variant mt-xs">Productivity Engine</p>
+</div>
+<ul class="flex flex-col gap-[2px]">
+<!-- Loop through tab_labels from JSON. Set "Tasks" to active. -->
+<li>
+<a class="flex items-center gap-sm px-gutter py-sm text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[18px]">dashboard</span>
+<span>Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-sm px-gutter py-sm text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[18px]">sunny</span>
+<span>My Day</span>
+</a>
+</li>
+<!-- Active Tab: Tasks -->
+<li>
+<a class="flex items-center gap-sm px-gutter py-sm bg-secondary-container dark:bg-secondary-container border-l-2 border-primary dark:border-primary-fixed text-on-secondary-container transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+<span>Tasks</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-sm px-gutter py-sm text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[18px]">timer</span>
+<span>Focus</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-sm px-gutter py-sm text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[18px]">account_tree</span>
+<span>Projects</span>
+</a>
+</li>
+<!-- Skipping remaining 12 tabs for brevity in effort 0.25, but representing the structure -->
+<li>
+<a class="flex items-center gap-sm px-gutter py-sm text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[18px]">calendar_today</span>
+<span>Calendar</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-sm px-gutter py-sm text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-container-highest dark:hover:bg-surface-container-highest transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+<span>Settings</span>
+</a>
+</li>
+</ul>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col min-w-0">
+<!-- TopNavBar (Shared Component) -->
+<header class="bg-surface dark:bg-surface docked full-width top-0 h-[48px] border-b border-outline-variant dark:border-outline-variant flat no shadows flex justify-between items-center w-full px-lg rtl:flex-row-reverse shrink-0 transition-colors duration-150 ease-in-out">
+<!-- Search Bar -->
+<div class="flex items-center">
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant text-[16px]">search</span>
+<input class="ds-input w-full pl-xl pr-sm py-[4px] font-body text-body bg-surface-container-highest border-transparent focus:border-primary-container" placeholder="Search tasks, projects..." type="text">
+<div class="absolute right-sm top-1/2 -translate-y-1/2 flex gap-xs">
+<span class="font-metadata text-metadata text-outline bg-surface px-xs rounded-sm border border-outline-variant">Ctrl</span>
+<span class="font-metadata text-metadata text-outline bg-surface px-xs rounded-sm border border-outline-variant">K</span>
+</div>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-sm">
+<button class="text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-container-high p-xs rounded-DEFAULT flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">timer</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-container-high p-xs rounded-DEFAULT flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<div class="w-px h-4 bg-outline-variant mx-xs"></div>
+<button class="bg-primary-container text-on-primary-container hover:bg-surface-tint font-section-title text-section-title px-md py-[4px] rounded flex items-center gap-xs transition-colors">
+<span class="material-symbols-outlined text-[16px]">add</span>
+                    New
+                </button>
+</div>
+</header>
+<!-- Workspace Canvas (Task Detail) -->
+<main class="flex-1 overflow-y-auto p-lg flex flex-col gap-lg lg:flex-row">
+<!-- Left Column: Main Content -->
+<div class="flex-1 flex flex-col gap-xl min-w-[500px]">
+<!-- Header -->
+<div class="flex items-start justify-between gap-md">
+<div class="flex items-center gap-sm">
+<button class="text-on-surface-variant hover:text-on-surface hover:bg-surface-container p-xs rounded-DEFAULT transition-colors flex items-center">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div class="flex items-center gap-sm">
+<span class="font-metadata text-metadata text-on-surface-variant">TASK-482</span>
+<span class="bg-surface-bright text-secondary border border-outline-variant px-sm py-[2px] rounded-DEFAULT font-metadata text-metadata flex items-center gap-[4px]">
+<span class="w-[6px] h-[6px] rounded-full bg-tertiary-container"></span>
+                                In Progress
+                            </span>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<button class="border border-outline-variant text-on-surface hover:bg-surface-container px-md py-[4px] rounded font-section-title text-section-title transition-colors flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">play_arrow</span>
+                            Start Focus
+                        </button>
+<button class="bg-primary-container text-on-primary-container hover:bg-surface-tint px-md py-[4px] rounded font-section-title text-section-title transition-colors flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">check</span>
+                            Complete
+                        </button>
+</div>
+</div>
+<!-- Title -->
+<div>
+<input class="w-full bg-transparent border-transparent hover:border-outline-variant focus:border-primary-container focus:bg-background px-sm py-xs -ml-sm font-page-title text-page-title text-on-surface rounded-DEFAULT transition-colors outline-none placeholder-outline-variant" type="text" value="Implement Notification Batching Logic">
+</div>
+<!-- Description -->
+<div class="flex flex-col gap-sm">
+<div class="flex items-center justify-between border-b border-outline-variant pb-xs">
+<h3 class="font-section-title text-section-title text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">description</span>
+                            Description
+                        </h3>
+<div class="flex gap-xs text-on-surface-variant">
+<button class="hover:text-on-surface p-[2px]"><span class="material-symbols-outlined text-[16px]">format_bold</span></button>
+<button class="hover:text-on-surface p-[2px]"><span class="material-symbols-outlined text-[16px]">format_italic</span></button>
+<button class="hover:text-on-surface p-[2px]"><span class="material-symbols-outlined text-[16px]">link</span></button>
+</div>
+</div>
+<textarea class="ds-input w-full min-h-[150px] p-sm resize-y" placeholder="Add details about this task...">The current notification system sends individual events which is overwhelming the client in high-throughput scenarios.
+
+Acceptance Criteria:
+- Batch events within a 2-second window.
+- Aggregate duplicate IDs into a single summary notification.
+- Ensure ordering is preserved for unique event types.</textarea>
+</div>
+<!-- Checklist -->
+<div class="flex flex-col gap-sm">
+<div class="flex items-center justify-between border-b border-outline-variant pb-xs">
+<h3 class="font-section-title text-section-title text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">checklist</span>
+                            Checklist
+                        </h3>
+<span class="font-metadata text-metadata text-on-surface-variant">3/5 Completed</span>
+</div>
+<!-- Progress Bar -->
+<div class="h-1 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-[60%]"></div>
+</div>
+<div class="flex flex-col gap-xs mt-xs">
+<!-- Items -->
+<div class="flex items-center gap-sm group">
+<input checked="" class="w-4 h-4 bg-background border-outline-variant rounded-sm text-primary-container focus:ring-0 focus:ring-offset-0" type="checkbox">
+<span class="flex-1 text-on-surface-variant line-through">Create batching queue structure</span>
+<button class="opacity-0 group-hover:opacity-100 text-on-surface-variant hover:text-error transition-opacity p-[2px]"><span class="material-symbols-outlined text-[16px]">close</span></button>
+</div>
+<div class="flex items-center gap-sm group">
+<input checked="" class="w-4 h-4 bg-background border-outline-variant rounded-sm text-primary-container focus:ring-0 focus:ring-offset-0" type="checkbox">
+<span class="flex-1 text-on-surface-variant line-through">Implement debounce logic</span>
+<button class="opacity-0 group-hover:opacity-100 text-on-surface-variant hover:text-error transition-opacity p-[2px]"><span class="material-symbols-outlined text-[16px]">close</span></button>
+</div>
+<div class="flex items-center gap-sm group">
+<input checked="" class="w-4 h-4 bg-background border-outline-variant rounded-sm text-primary-container focus:ring-0 focus:ring-offset-0" type="checkbox">
+<span class="flex-1 text-on-surface-variant line-through">Write unit tests for queue</span>
+<button class="opacity-0 group-hover:opacity-100 text-on-surface-variant hover:text-error transition-opacity p-[2px]"><span class="material-symbols-outlined text-[16px]">close</span></button>
+</div>
+<div class="flex items-center gap-sm group">
+<input class="w-4 h-4 bg-background border-outline-variant rounded-sm text-primary-container focus:ring-0 focus:ring-offset-0" type="checkbox">
+<span class="flex-1">Integrate with websocket emitter</span>
+<button class="opacity-0 group-hover:opacity-100 text-on-surface-variant hover:text-error transition-opacity p-[2px]"><span class="material-symbols-outlined text-[16px]">close</span></button>
+</div>
+<div class="flex items-center gap-sm group">
+<input class="w-4 h-4 bg-background border-outline-variant rounded-sm text-primary-container focus:ring-0 focus:ring-offset-0" type="checkbox">
+<span class="flex-1">E2E load testing</span>
+<button class="opacity-0 group-hover:opacity-100 text-on-surface-variant hover:text-error transition-opacity p-[2px]"><span class="material-symbols-outlined text-[16px]">close</span></button>
+</div>
+<!-- Add Item -->
+<div class="flex items-center gap-sm mt-xs">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant ml-[2px]">add</span>
+<input class="flex-1 bg-transparent border-transparent focus:border-transparent focus:ring-0 p-0 text-on-surface placeholder-outline-variant" placeholder="Add an item..." type="text">
+</div>
+</div>
+</div>
+<!-- Attachments -->
+<div class="flex flex-col gap-sm mt-md">
+<div class="flex items-center justify-between border-b border-outline-variant pb-xs">
+<h3 class="font-section-title text-section-title text-on-surface flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">attach_file</span>
+                            Attachments
+                        </h3>
+<button class="text-on-surface-variant hover:text-on-surface flex items-center gap-xs font-metadata text-metadata">
+<span class="material-symbols-outlined text-[14px]">add</span> Add
+                        </button>
+</div>
+<div class="grid grid-cols-2 gap-sm">
+<!-- Attachment Card -->
+<div class="flex items-center gap-sm p-sm border border-outline-variant rounded bg-surface-container-low group">
+<div class="w-8 h-8 rounded bg-surface-bright flex items-center justify-center text-primary-container shrink-0">
+<span class="material-symbols-outlined text-[16px]">image</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="truncate text-on-surface font-body text-body">architecture_v2.png</p>
+<p class="font-metadata text-metadata text-on-surface-variant">1.2 MB</p>
+</div>
+<div class="flex gap-[2px] opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-xs text-on-surface-variant hover:text-primary transition-colors rounded hover:bg-surface"><span class="material-symbols-outlined text-[16px]">open_in_new</span></button>
+<button class="p-xs text-on-surface-variant hover:text-error transition-colors rounded hover:bg-surface"><span class="material-symbols-outlined text-[16px]">delete</span></button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Metadata Sidebar -->
+<div class="w-full lg:w-[320px] flex flex-col gap-md shrink-0 bg-surface border border-outline-variant rounded-lg p-md self-start">
+<h3 class="font-section-title text-section-title border-b border-outline-variant pb-xs mb-xs">Properties</h3>
+<!-- Fields Grid -->
+<div class="flex flex-col gap-sm">
+<!-- Status -->
+<div class="flex flex-col gap-[4px]">
+<label class="font-metadata text-metadata text-on-surface-variant">Status</label>
+<select class="ds-input py-[4px] px-sm w-full text-sm">
+<option>Backlog</option>
+<option>Todo</option>
+<option selected="">In Progress</option>
+<option>Review</option>
+<option>Blocked</option>
+<option>Done</option>
+<option>Cancelled</option>
+</select>
+</div>
+<!-- Priority -->
+<div class="flex flex-col gap-[4px]">
+<label class="font-metadata text-metadata text-on-surface-variant">Priority</label>
+<select class="ds-input py-[4px] px-sm w-full text-sm">
+<option>Low</option>
+<option>Medium</option>
+<option selected="">High</option>
+<option>Critical</option>
+</select>
+</div>
+<!-- Due Date -->
+<div class="flex flex-col gap-[4px]">
+<label class="font-metadata text-metadata text-on-surface-variant">Due Date</label>
+<div class="relative w-full">
+<input class="ds-input py-[4px] px-sm w-full text-sm pl-8" type="date">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-[14px] text-on-surface-variant pointer-events-none">calendar_today</span>
+</div>
+</div>
+<!-- Time Tracking Split -->
+<div class="grid grid-cols-2 gap-sm">
+<div class="flex flex-col gap-[4px]">
+<label class="font-metadata text-metadata text-on-surface-variant">Est. Min</label>
+<input class="ds-input py-[4px] px-sm w-full text-sm font-mono-timer text-mono-timer text-right" type="number" value="120">
+</div>
+<div class="flex flex-col gap-[4px]">
+<label class="font-metadata text-metadata text-on-surface-variant">Actual Min</label>
+<input class="ds-input py-[4px] px-sm w-full text-sm font-mono-timer text-mono-timer text-right text-tertiary-container" type="number" value="45">
+</div>
+</div>
+<!-- Project -->
+<div class="flex flex-col gap-[4px]">
+<label class="font-metadata text-metadata text-on-surface-variant">Project</label>
+<select class="ds-input py-[4px] px-sm w-full text-sm">
+<option selected="">Core Platform</option>
+<option>Mobile App</option>
+<option>Marketing Site</option>
+</select>
+</div>
+<!-- Tags -->
+<div class="flex flex-col gap-[4px]">
+<label class="font-metadata text-metadata text-on-surface-variant">Tags</label>
+<div class="ds-input p-xs flex flex-wrap gap-xs min-h-[32px] items-center">
+<span class="bg-surface-bright text-on-surface-variant font-metadata text-metadata px-sm py-[2px] rounded-sm flex items-center gap-[4px]">
+                                backend <button class="hover:text-on-surface"><span class="material-symbols-outlined text-[10px]">close</span></button>
+</span>
+<span class="bg-surface-bright text-on-surface-variant font-metadata text-metadata px-sm py-[2px] rounded-sm flex items-center gap-[4px]">
+                                performance <button class="hover:text-on-surface"><span class="material-symbols-outlined text-[10px]">close</span></button>
+</span>
+<input class="bg-transparent border-none text-sm w-16 p-0 focus:ring-0" placeholder="Add..." type="text">
+</div>
+</div>
+</div>
+<!-- Footer Actions -->
+<div class="mt-xl flex flex-col gap-sm border-t border-outline-variant pt-md">
+<div class="flex items-center justify-between mb-xs">
+<span class="font-metadata text-metadata text-on-surface-variant flex items-center gap-xs">
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span> Unsaved changes
+                        </span>
+<span class="font-metadata text-metadata text-outline">Last edited 2m ago</span>
+</div>
+<button class="w-full bg-primary-container text-on-primary-container hover:bg-surface-tint py-[6px] rounded font-section-title text-section-title transition-colors flex justify-center items-center gap-sm">
+<span class="material-symbols-outlined text-[16px]">save</span>
+                        Save Changes
+                        <span class="font-mono-code text-[10px] opacity-70 border border-on-primary-container/30 px-[4px] rounded-sm ml-auto">Ctrl+S</span>
+</button>
+<div class="flex gap-sm">
+<button class="flex-1 border border-outline-variant text-on-surface hover:bg-surface-container py-[4px] rounded font-section-title text-section-title transition-colors flex justify-center items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">content_copy</span> Dup
+                        </button>
+<button class="flex-1 border border-error/30 text-error hover:bg-error/10 py-[4px] rounded font-section-title text-section-title transition-colors flex justify-center items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">delete</span> Delete
+                        </button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

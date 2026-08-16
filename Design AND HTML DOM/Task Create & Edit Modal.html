@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DevDesk - Task Modal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#ffdad6",
+                        "outline-variant": "#434653",
+                        "surface-dim": "#09151d",
+                        "tertiary-fixed-dim": "#ffb874",
+                        "outline": "#8d909f",
+                        "surface-container": "#15212a",
+                        "inverse-surface": "#d8e4f1",
+                        "on-secondary-fixed-variant": "#42474f",
+                        "tertiary-fixed": "#ffdcbf",
+                        "surface-tint": "#b2c5ff",
+                        "on-surface-variant": "#c3c6d6",
+                        "on-surface": "#d8e4f1",
+                        "on-tertiary-fixed": "#2d1600",
+                        "tertiary": "#ffb874",
+                        "on-secondary": "#2c3138",
+                        "secondary": "#c2c6d0",
+                        "on-secondary-container": "#b7bcc6",
+                        "inverse-primary": "#1857c8",
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed-variant": "#6a3b00",
+                        "surface-bright": "#2f3a44",
+                        "on-error": "#690005",
+                        "on-secondary-fixed": "#171c23",
+                        "secondary-fixed": "#dee2ed",
+                        "on-primary-fixed": "#001847",
+                        "on-primary": "#002c72",
+                        "surface-container-low": "#111d26",
+                        "surface-container-highest": "#2b3640",
+                        "on-primary-fixed-variant": "#0040a0",
+                        "primary-container": "#5b8cff",
+                        "on-primary-container": "#002665",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "surface-container-high": "#202b35",
+                        "error-container": "#93000a",
+                        "on-tertiary-container": "#412200",
+                        "secondary-container": "#474c54",
+                        "surface-container-lowest": "#040f18",
+                        "inverse-on-surface": "#26323b",
+                        "on-tertiary": "#4b2800",
+                        "tertiary-container": "#d47b00",
+                        "background": "#09151d",
+                        "on-background": "#d8e4f1",
+                        "secondary-fixed-dim": "#c2c6d0",
+                        "surface": "#09151d",
+                        "primary-fixed": "#dae2ff",
+                        "surface-variant": "#2b3640",
+                        "primary": "#b2c5ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "gutter": "16px",
+                        "lg": "16px",
+                        "md": "12px",
+                        "sidebar_width": "240px",
+                        "xl": "24px",
+                        "sm": "8px",
+                        "xxl": "32px"
+                    },
+                    "fontFamily": {
+                        "mono-timer": ["JetBrains Mono"],
+                        "metadata": ["Geist"],
+                        "page-title": ["Geist"],
+                        "body": ["Geist"],
+                        "section-title": ["Geist"],
+                        "mono-code": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "mono-timer": ["14px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "metadata": ["11px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "page-title": ["19px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "section-title": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "mono-code": ["12px", { "lineHeight": "18px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #26303B;
+            border-radius: 10px;
+        }
+        
+        /* Modal specific input styles to match Windows native feel */
+        .modal-input {
+            background-color: #0B0F14;
+            border: 1px solid #26303B;
+            color: #d8e4f1;
+            transition: all 0.1s ease;
+        }
+        .modal-input:focus {
+            outline: none;
+            border-color: #5B8CFF;
+            box-shadow: 0 0 0 2px rgba(91, 140, 255, 0.2);
+        }
+        
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body min-h-screen flex antialiased">
+<!-- Mock Background (Screen 2 style) -->
+<div class="fixed inset-0 z-0 flex">
+<!-- Mock Sidebar -->
+<div class="w-sidebar_width bg-surface-container-low border-r border-outline-variant h-full flex flex-col hidden md:flex">
+<div class="p-lg border-b border-outline-variant font-page-title text-page-title font-bold text-on-surface">DevDesk</div>
+<div class="p-md flex-1 custom-scrollbar overflow-y-auto">
+<div class="px-md py-sm rounded-DEFAULT text-on-surface-variant font-section-title text-section-title hover:bg-surface-container-highest cursor-pointer flex items-center gap-md"><span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>Dashboard</div>
+<div class="px-md py-sm rounded-DEFAULT text-on-surface-variant font-section-title text-section-title hover:bg-surface-container-highest cursor-pointer flex items-center gap-md"><span class="material-symbols-outlined" data-icon="sunny">sunny</span>My Day</div>
+<div class="px-md py-sm rounded-DEFAULT bg-secondary-container border-l-2 border-primary-fixed text-on-secondary-container font-section-title text-section-title flex items-center gap-md"><span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>Tasks</div>
+</div>
+</div>
+<!-- Mock Main Content -->
+<div class="flex-1 flex flex-col h-full bg-background">
+<div class="h-[48px] bg-surface border-b border-outline-variant flex justify-between items-center w-full px-lg">
+<div class="font-page-title text-page-title text-on-surface md:hidden">DevDesk</div>
+<div class="hidden md:block"></div>
+<div class="flex items-center gap-md text-primary">
+<span class="material-symbols-outlined cursor-pointer hover:bg-surface-container-high rounded p-sm" data-icon="timer">timer</span>
+<span class="material-symbols-outlined cursor-pointer hover:bg-surface-container-high rounded p-sm" data-icon="notifications">notifications</span>
+</div>
+</div>
+<div class="p-xl flex-1">
+<h1 class="font-page-title text-page-title mb-lg">Active Tasks</h1>
+<!-- Dummy content to show transparency -->
+<div class="space-y-sm">
+<div class="bg-surface border border-outline-variant rounded-DEFAULT p-md opacity-50">Task 1</div>
+<div class="bg-surface border border-outline-variant rounded-DEFAULT p-md opacity-50">Task 2</div>
+<div class="bg-surface border border-outline-variant rounded-DEFAULT p-md opacity-50">Task 3</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Overlay Backdrop -->
+<div class="fixed inset-0 bg-[#000000] bg-opacity-60 z-40 flex items-center justify-center p-gutter backdrop-blur-[2px]">
+<!-- Modal Container -->
+<div class="bg-surface border border-outline-variant rounded-xl w-full max-w-[520px] shadow-2xl overflow-hidden flex flex-col transform transition-all">
+<!-- Modal Header -->
+<div class="px-lg py-md border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+<h2 class="font-section-title text-section-title text-on-surface m-0">Create Task</h2>
+<button aria-label="Close" class="text-on-surface-variant hover:text-on-surface transition-colors focus:outline-none">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<!-- Modal Body -->
+<div class="p-lg flex flex-col gap-md bg-surface custom-scrollbar max-h-[716px] overflow-y-auto">
+<!-- Title Field -->
+<div class="flex flex-col gap-xs">
+<label class="font-metadata text-metadata text-on-surface-variant">Title</label>
+<input autofocus="" class="modal-input rounded-DEFAULT px-sm py-[6px] font-body text-body w-full" placeholder="What needs to be done?" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<!-- Project Select -->
+<div class="flex flex-col gap-xs">
+<label class="font-metadata text-metadata text-on-surface-variant">Project</label>
+<select class="modal-input rounded-DEFAULT px-sm py-[6px] font-body text-body w-full appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23c3c6d6%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-no-repeat bg-right bg-[length:16px]">
+<option>DevDesk Core</option>
+<option>Marketing Site</option>
+<option>Internal Tools</option>
+</select>
+</div>
+<!-- Priority (Segmented Control style) -->
+<div class="flex flex-col gap-xs">
+<label class="font-metadata text-metadata text-on-surface-variant">Priority</label>
+<div class="flex bg-background border border-outline-variant rounded-DEFAULT p-[2px]">
+<button class="flex-1 py-[4px] px-sm font-metadata text-metadata text-on-surface-variant hover:text-on-surface rounded-sm transition-colors text-center">Low</button>
+<button class="flex-1 py-[4px] px-sm font-metadata text-metadata bg-surface-bright text-on-surface rounded-sm shadow-sm transition-colors text-center">Med</button>
+<button class="flex-1 py-[4px] px-sm font-metadata text-metadata text-on-surface-variant hover:text-on-surface rounded-sm transition-colors text-center">High</button>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<!-- Due Date -->
+<div class="flex flex-col gap-xs">
+<label class="font-metadata text-metadata text-on-surface-variant">Due Date</label>
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant text-[16px] pointer-events-none">calendar_today</span>
+<input class="modal-input rounded-DEFAULT pl-[28px] pr-sm py-[6px] font-body text-body w-full" placeholder="YYYY-MM-DD" type="text"/>
+</div>
+</div>
+<!-- Estimate -->
+<div class="flex flex-col gap-xs">
+<label class="font-metadata text-metadata text-on-surface-variant">Estimate (mins)</label>
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant text-[16px] pointer-events-none">timer</span>
+<input class="modal-input rounded-DEFAULT pl-[28px] pr-sm py-[6px] font-mono-timer text-mono-timer w-full" type="number" value="30"/>
+</div>
+</div>
+</div>
+<!-- Tags -->
+<div class="flex flex-col gap-xs">
+<label class="font-metadata text-metadata text-on-surface-variant">Tags</label>
+<div class="modal-input rounded-DEFAULT p-xs flex flex-wrap gap-xs items-center min-h-[34px] cursor-text">
+<div class="bg-surface-container-high text-outline font-metadata text-metadata px-sm py-[2px] rounded-sm flex items-center gap-[2px]">
+                            frontend <span class="material-symbols-outlined text-[12px] cursor-pointer hover:text-on-surface">close</span>
+</div>
+<div class="bg-surface-container-high text-outline font-metadata text-metadata px-sm py-[2px] rounded-sm flex items-center gap-[2px]">
+                            bug <span class="material-symbols-outlined text-[12px] cursor-pointer hover:text-on-surface">close</span>
+</div>
+<input class="bg-transparent border-none p-0 m-0 text-body font-body text-on-surface focus:ring-0 flex-1 min-w-[50px] outline-none placeholder-on-surface-variant" placeholder="Add tag..." type="text"/>
+</div>
+</div>
+</div>
+<!-- Modal Footer -->
+<div class="px-lg py-md border-t border-outline-variant bg-surface-container-low flex justify-end items-center gap-md">
+<button class="px-md py-[6px] rounded-lg border border-outline-variant bg-transparent text-on-surface font-section-title text-section-title hover:bg-surface-bright transition-colors focus:outline-none">
+                    Cancel
+                </button>
+<!-- Saving State Button -->
+<button class="px-md py-[6px] rounded-lg border border-transparent bg-primary-container text-[#F3F6F9] font-section-title text-section-title hover:bg-opacity-90 transition-colors focus:outline-none flex items-center gap-sm opacity-80 cursor-wait">
+<span class="material-symbols-outlined text-[16px] spinner" data-weight="fill">progress_activity</span>
+                    Saving...
+                </button>
+<!-- Normal Save Button (Hidden for demonstration of Saving state)
+                <button class="px-md py-[6px] rounded-lg border border-transparent bg-primary-container text-[#F3F6F9] font-section-title text-section-title hover:bg-opacity-90 transition-colors focus:outline-none flex items-center gap-sm">
+                    Save <span class="bg-surface-dim text-[#F3F6F9] text-[10px] px-[4px] py-[1px] rounded-sm ml-xs font-mono-code opacity-70">Ctrl+Enter</span>
+                </button>
+                -->
+</div>
+</div>
+</div>
+</body></html>

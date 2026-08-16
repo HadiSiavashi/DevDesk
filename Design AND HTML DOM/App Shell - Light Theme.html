@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DevDesk - Dashboard</title>
+<!-- Google Fonts: Geist & JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config injected from system prompt (Dark mode forced to match requirements, but applying light theme visually as requested via custom config override for this specific mock) -->
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        // Using Light Palette overrides as requested by user, mapping them to the system tokens where appropriate to maintain class structure while meeting visual request.
+                        "background": "#E8ECF1", // Light Palette override
+                        "surface": "#F4F6F9", // Light Palette override
+                        "surface-container-low": "#F4F6F9", // Using Surface
+                        "surface-container": "#DCE2EA", // Using Surface Alt
+                        "surface-container-highest": "#DCE2EA",
+                        "outline-variant": "#C4CDD8", // Border
+                        "primary": "#3B6FE0", // Accent
+                        "primary-container": "#3B6FE0",
+                        "on-surface": "#1A222E", // Text Primary
+                        "on-surface-variant": "#434653", // Muted text
+                        "on-background": "#1A222E",
+                        
+                        // Retaining other tokens from system for completeness, though they might clash visually if used extensively. The core structural tokens above are overridden.
+                        "secondary-fixed": "#dee2ed",
+                        "inverse-surface": "#1A222E",
+                        "surface-tint": "#b2c5ff",
+                        "on-secondary-fixed": "#171c23",
+                        "inverse-on-surface": "#F4F6F9",
+                        "surface-container-lowest": "#FFFFFF",
+                        "on-error-container": "#ffdad6",
+                        "error": "#ffb4ab",
+                        "on-tertiary": "#4b2800",
+                        "on-primary": "#FFFFFF",
+                        "on-tertiary-fixed-variant": "#6a3b00",
+                        "primary-fixed": "#dae2ff",
+                        "tertiary-container": "#d47b00",
+                        "tertiary-fixed-dim": "#ffb874",
+                        "on-primary-fixed-variant": "#0040a0",
+                        "inverse-primary": "#1857c8",
+                        "on-primary-fixed": "#001847",
+                        "tertiary": "#ffb874",
+                        "on-error": "#690005",
+                        "tertiary-fixed": "#ffdcbf",
+                        "on-secondary-fixed-variant": "#42474f",
+                        "outline": "#8d909f",
+                        "secondary-fixed-dim": "#c2c6d0",
+                        "on-secondary-container": "#b7bcc6",
+                        "on-tertiary-container": "#412200",
+                        "surface-bright": "#F4F6F9",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "on-primary-container": "#FFFFFF",
+                        "on-secondary": "#2c3138",
+                        "surface-container-high": "#DCE2EA",
+                        "error-container": "#93000a",
+                        "secondary": "#c2c6d0",
+                        "surface-variant": "#DCE2EA",
+                        "on-tertiary-fixed": "#2d1600",
+                        "secondary-container": "#474c54",
+                        "surface-dim": "#E8ECF1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sidebar_width": "240px",
+                        "xs": "4px",
+                        "gutter": "16px",
+                        "xxl": "32px",
+                        "md": "12px",
+                        "xl": "24px",
+                        "lg": "16px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "body": ["Geist"],
+                        "mono-code": ["JetBrains Mono"],
+                        "section-title": ["Geist"],
+                        "metadata": ["Geist"],
+                        "page-title": ["Geist"],
+                        "mono-timer": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "body": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "mono-code": ["12px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "section-title": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "metadata": ["11px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "page-title": ["19px", {"lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "mono-timer": ["14px", {"lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Base styles to enforce scrollbar and selection behavior */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #C4CDD8;
+            border-radius: 10px;
+        }
+        ::selection {
+            background: #3B6FE0;
+            color: #FFFFFF;
+        }
+        body {
+            background-color: #E8ECF1; /* Fallback */
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body h-screen w-screen overflow-hidden flex">
+<!-- JSON Component: SideNavBar -->
+<nav class="bg-surface-container-low text-primary font-section-title text-section-title w-sidebar_width h-full fixed left-0 top-0 border-r border-outline-variant flex flex-col py-lg space-y-xs z-40 transition-all duration-150">
+<!-- Header area -->
+<div class="px-lg pb-xl flex items-center gap-md mb-md">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined" style="font-size: 20px;">developer_board</span>
+</div>
+<div>
+<h1 class="font-page-title text-page-title font-bold text-on-surface leading-tight">DevDesk</h1>
+<p class="font-metadata text-metadata text-on-surface-variant">Productivity Engine</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<div class="flex-1 flex flex-col gap-xs px-sm">
+<!-- Active state logic: 'Dashboard' is active based on context -->
+<a class="bg-primary-container/20 text-primary border-l-2 border-primary hover:bg-surface-container-high transition-all duration-150 flex items-center gap-md px-md py-sm rounded-r-lg group" href="#">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high transition-all duration-150 flex items-center gap-md px-md py-sm rounded-lg border-l-2 border-transparent group" href="#">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:scale-110 transition-transform">today</span>
+<span>My Day</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high transition-all duration-150 flex items-center gap-md px-md py-sm rounded-lg border-l-2 border-transparent group" href="#">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:scale-110 transition-transform">check_circle</span>
+<span>Tasks</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high transition-all duration-150 flex items-center gap-md px-md py-sm rounded-lg border-l-2 border-transparent group" href="#">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:scale-110 transition-transform">timer</span>
+<span>Focus</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high transition-all duration-150 flex items-center gap-md px-md py-sm rounded-lg border-l-2 border-transparent group" href="#">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:scale-110 transition-transform">folder</span>
+<span>Projects</span>
+</a>
+</div>
+<!-- Bottom Settings -->
+<div class="px-sm mt-auto">
+<a class="text-on-surface-variant hover:bg-surface-container-high transition-all duration-150 flex items-center gap-md px-md py-sm rounded-lg border-l-2 border-transparent group" href="#">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:rotate-45 transition-transform">settings</span>
+<span>Settings</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="flex-1 ml-[240px] flex flex-col h-full overflow-hidden">
+<!-- JSON Component: TopAppBar -->
+<header class="bg-background text-primary font-body text-body h-[48px] w-full flex items-center border-b border-outline-variant fixed top-0 left-[240px] right-0 z-50 px-lg justify-between shadow-none w-[calc(100%-240px)]">
+<!-- Search Bar on Left -->
+<div class="flex-1 flex items-center max-w-md">
+<div class="relative w-full group">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+<input class="w-full bg-background border border-outline-variant rounded-lg pl-[32px] pr-sm py-[4px] text-body text-on-surface focus:outline-none focus:border-primary focus:ring-0 transition-colors placeholder-on-surface-variant/50" placeholder="Search everywhere..." type="text"/>
+<div class="absolute right-sm top-1/2 -translate-y-1/2 flex gap-1">
+<span class="font-mono-code text-[10px] bg-surface-container px-1 py-0.5 rounded text-on-surface-variant border border-outline-variant/50">Ctrl+K</span>
+</div>
+</div>
+</div>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-sm">
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-on-surface hover:bg-surface-container-highest transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-on-surface hover:bg-surface-container-highest transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</button>
+<div class="w-[1px] h-4 bg-outline-variant mx-xs"></div>
+<button class="bg-primary hover:bg-primary/90 text-on-primary font-section-title text-section-title px-md py-sm rounded-lg flex items-center gap-xs cursor-pointer active:opacity-80 transition-colors">
+<span class="material-symbols-outlined text-[18px]">timer</span>
+                    Focus
+                </button>
+</div>
+</header>
+<!-- Main Content Canvas (Scrollable) -->
+<main class="flex-1 mt-[48px] overflow-y-auto p-gutter lg:p-xl bg-background">
+<!-- Page Header -->
+<div class="mb-xl flex items-end justify-between">
+<div>
+<h2 class="font-page-title text-page-title text-on-surface mb-xs">Good Morning, Developer</h2>
+<p class="font-body text-body text-on-surface-variant">Here is your productivity overview for today.</p>
+</div>
+<div class="font-mono-timer text-mono-timer text-on-surface bg-surface-container px-md py-sm rounded-lg border border-outline-variant flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary text-[16px]">calendar_today</span>
+                    OCT 24, 2023
+                </div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-gutter auto-rows-[minmax(120px,auto)]">
+<!-- Quick Stats -->
+<div class="col-span-1 md:col-span-2 xl:col-span-1 bg-surface border border-outline-variant rounded-xl p-lg flex flex-col justify-between">
+<div class="flex items-center justify-between mb-md">
+<span class="font-section-title text-section-title text-on-surface">Deep Work</span>
+<span class="material-symbols-outlined text-primary">analytics</span>
+</div>
+<div>
+<div class="font-mono-timer text-[32px] font-medium text-on-surface leading-none mb-xs">4h 12m</div>
+<div class="flex items-center gap-xs text-metadata font-metadata text-primary">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+                            +45m vs yesterday
+                        </div>
+</div>
+</div>
+<div class="col-span-1 bg-surface border border-outline-variant rounded-xl p-lg flex flex-col justify-between">
+<div class="flex items-center justify-between mb-md">
+<span class="font-section-title text-section-title text-on-surface">Tasks Done</span>
+<span class="material-symbols-outlined text-on-surface-variant">check_circle</span>
+</div>
+<div>
+<div class="font-mono-timer text-[32px] font-medium text-on-surface leading-none mb-xs">12/18</div>
+<div class="w-full bg-background rounded-full h-1 mt-sm">
+<div class="bg-primary h-1 rounded-full" style="width: 66%"></div>
+</div>
+</div>
+</div>
+<!-- Priority Task Card (Large) -->
+<div class="col-span-1 md:col-span-3 xl:col-span-2 row-span-2 bg-surface border border-outline-variant rounded-xl overflow-hidden flex flex-col">
+<div class="p-lg border-b border-outline-variant bg-surface-container flex items-center justify-between">
+<h3 class="font-section-title text-section-title text-on-surface flex items-center gap-sm">
+<span class="material-symbols-outlined text-error text-[18px]">priority_high</span>
+                            Current Focus
+                        </h3>
+<span class="bg-primary-container/20 text-primary font-metadata px-sm py-0.5 rounded text-[10px] uppercase tracking-wider font-semibold border border-primary/20">In Progress</span>
+</div>
+<div class="p-lg flex-1 flex flex-col">
+<h4 class="font-body text-[16px] font-semibold text-on-surface mb-sm">Implement Authentication Flow UI</h4>
+<p class="font-body text-body text-on-surface-variant mb-lg line-clamp-2">Design and implement the login, registration, and password reset screens using the new design system components.</p>
+<div class="mt-auto space-y-md">
+<div class="flex items-center justify-between text-metadata font-metadata text-on-surface-variant">
+<span>Subtasks (3/5)</span>
+<span>60%</span>
+</div>
+<div class="space-y-xs">
+<div class="flex items-start gap-sm bg-background p-sm rounded border border-outline-variant opacity-60">
+<span class="material-symbols-outlined text-primary text-[16px]">check_box</span>
+<span class="font-body text-body text-on-surface line-through">Setup OAuth providers</span>
+</div>
+<div class="flex items-start gap-sm bg-surface-container-high p-sm rounded border border-primary/50">
+<span class="material-symbols-outlined text-on-surface-variant text-[16px]">check_box_outline_blank</span>
+<span class="font-body text-body text-on-surface">Build responsive form layouts</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Recent Activity List -->
+<div class="col-span-1 md:col-span-2 xl:col-span-2 row-span-2 bg-surface border border-outline-variant rounded-xl flex flex-col">
+<div class="p-lg border-b border-outline-variant flex items-center justify-between">
+<h3 class="font-section-title text-section-title text-on-surface">Activity Stream</h3>
+<button class="text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined text-[18px]">more_horiz</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto p-sm space-y-[2px]">
+<!-- Activity Item -->
+<div class="p-sm hover:bg-surface-container-high rounded-lg flex gap-md transition-colors cursor-pointer group">
+<div class="w-8 h-8 rounded bg-background border border-outline-variant flex items-center justify-center shrink-0 group-hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant text-[16px] group-hover:text-primary transition-colors">commit</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-body text-body text-on-surface truncate">Pushed to branch <span class="font-mono-code bg-surface-container px-1 py-0.5 rounded text-xs border border-outline-variant">feature/auth</span></p>
+<p class="font-metadata text-metadata text-on-surface-variant mt-[2px]">10 mins ago</p>
+</div>
+</div>
+<!-- Activity Item -->
+<div class="p-sm hover:bg-surface-container-high rounded-lg flex gap-md transition-colors cursor-pointer group">
+<div class="w-8 h-8 rounded bg-background border border-outline-variant flex items-center justify-center shrink-0 group-hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant text-[16px] group-hover:text-primary transition-colors">check_circle</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-body text-body text-on-surface truncate">Completed task <span class="font-medium">Setup Database Schema</span></p>
+<p class="font-metadata text-metadata text-on-surface-variant mt-[2px]">2 hours ago</p>
+</div>
+</div>
+<!-- Activity Item -->
+<div class="p-sm hover:bg-surface-container-high rounded-lg flex gap-md transition-colors cursor-pointer group">
+<div class="w-8 h-8 rounded bg-background border border-outline-variant flex items-center justify-center shrink-0 group-hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant text-[16px] group-hover:text-primary transition-colors">forum</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-body text-body text-on-surface truncate">Commented on <span class="font-medium">PR #142</span></p>
+<p class="font-metadata text-metadata text-on-surface-variant mt-[2px]">Yesterday</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

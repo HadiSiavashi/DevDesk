@@ -1,0 +1,499 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>DevDesk - Notes</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary": "#c2c6d0",
+                      "surface": "#09151d",
+                      "secondary-container": "#474c54",
+                      "on-tertiary-container": "#412200",
+                      "on-primary-fixed": "#001847",
+                      "on-secondary": "#2c3138",
+                      "surface-bright": "#2f3a44",
+                      "outline": "#8d909f",
+                      "primary-fixed-dim": "#b2c5ff",
+                      "on-tertiary-fixed": "#2d1600",
+                      "surface-container": "#15212a",
+                      "on-primary-container": "#002665",
+                      "tertiary-fixed": "#ffdcbf",
+                      "on-tertiary-fixed-variant": "#6a3b00",
+                      "error": "#ffb4ab",
+                      "on-surface-variant": "#c3c6d6",
+                      "on-primary": "#002c72",
+                      "surface-container-high": "#202b35",
+                      "surface-tint": "#b2c5ff",
+                      "tertiary-container": "#d47b00",
+                      "inverse-surface": "#d8e4f1",
+                      "secondary-fixed-dim": "#c2c6d0",
+                      "secondary-fixed": "#dee2ed",
+                      "on-secondary-container": "#b7bcc6",
+                      "primary-fixed": "#dae2ff",
+                      "surface-dim": "#09151d",
+                      "on-secondary-fixed-variant": "#42474f",
+                      "inverse-primary": "#1857c8",
+                      "primary": "#b2c5ff",
+                      "on-error-container": "#ffdad6",
+                      "surface-container-highest": "#2b3640",
+                      "on-surface": "#d8e4f1",
+                      "inverse-on-surface": "#26323b",
+                      "on-primary-fixed-variant": "#0040a0",
+                      "surface-variant": "#2b3640",
+                      "error-container": "#93000a",
+                      "on-background": "#d8e4f1",
+                      "background": "#09151d",
+                      "on-secondary-fixed": "#171c23",
+                      "tertiary": "#ffb874",
+                      "surface-container-lowest": "#040f18",
+                      "surface-container-low": "#111d26",
+                      "on-tertiary": "#4b2800",
+                      "primary-container": "#5b8cff",
+                      "outline-variant": "#434653",
+                      "on-error": "#690005",
+                      "tertiary-fixed-dim": "#ffb874"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "xl": "24px",
+                      "lg": "16px",
+                      "sidebar_width": "240px",
+                      "xxl": "32px",
+                      "md": "12px",
+                      "gutter": "16px",
+                      "sm": "8px",
+                      "xs": "4px"
+              },
+              "fontFamily": {
+                      "body": [
+                              "Geist"
+                      ],
+                      "mono-timer": [
+                              "JetBrains Mono"
+                      ],
+                      "mono-code": [
+                              "JetBrains Mono"
+                      ],
+                      "metadata": [
+                              "Geist"
+                      ],
+                      "page-title": [
+                              "Geist"
+                      ],
+                      "section-title": [
+                              "Geist"
+                      ]
+              },
+              "fontSize": {
+                      "body": [
+                              "13px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "mono-timer": [
+                              "14px",
+                              {
+                                      "lineHeight": "14px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "mono-code": [
+                              "12px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "metadata": [
+                              "11px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "page-title": [
+                              "19px",
+                              {
+                                      "lineHeight": "24px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "section-title": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        body { background-color: #0B0F14; color: #d8e4f1; }
+        .sidebar { background-color: #0E131A; border-right: 1px solid #26303B; }
+        .topbar { background-color: #0B0F14; border-bottom: 1px solid #26303B; }
+        .surface { background-color: #11161D; border: 1px solid #26303B; }
+        .btn-primary { background-color: #5B8CFF; color: #F3F6F9; border-radius: 4px; }
+        .btn-secondary { background-color: transparent; border: 1px solid #26303B; border-radius: 4px; }
+        .input-bg { background-color: #0B0F14; border: 1px solid #26303B; }
+        .input-bg:focus { border-color: #5B8CFF; outline: none; box-shadow: 0 0 0 2px rgba(91, 140, 255, 0.2); }
+        .list-hover:hover { background-color: #171D26; }
+        .row-hover-actions { opacity: 0; transition: opacity 0.15s; }
+        .list-hover:hover .row-hover-actions { opacity: 1; }
+        
+        /* Thin Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #26303B; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #474c54; }
+      </style>
+</head>
+<body class="font-body text-body bg-background h-screen overflow-hidden flex selection:bg-primary-container selection:text-white">
+<!-- SideNavBar -->
+<aside class="sidebar w-sidebar_width h-screen fixed left-0 top-0 flex flex-col py-lg border-r border-outline-variant transition-all duration-150 ease-in-out z-20">
+<div class="px-lg mb-xl flex items-center gap-md">
+<div class="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center text-primary-container border border-outline-variant">
+<span class="material-symbols-outlined" style="font-size: 20px;">developer_board</span>
+</div>
+<div>
+<h1 class="font-page-title text-page-title font-bold text-on-surface">DevDesk</h1>
+<p class="font-metadata text-metadata text-secondary">v2.4.0</p>
+</div>
+</div>
+<div class="px-md mb-lg">
+<button class="w-full btn-primary py-[6px] px-md flex items-center justify-center gap-sm font-section-title text-section-title transition-colors hover:bg-opacity-90">
+<span class="material-symbols-outlined" style="font-size: 18px;">add</span>
+                New Project
+            </button>
+</div>
+<nav class="flex-1 overflow-y-auto px-sm flex flex-col gap-[2px]">
+<a class="flex items-center gap-md px-md py-[6px] rounded text-secondary hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-size: 18px;">home</span>
+<span>Primary</span>
+</a>
+<a class="flex items-center gap-md px-md py-[6px] rounded text-secondary hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-size: 18px;">inbox</span>
+<span>Inbox</span>
+</a>
+<a class="flex items-center gap-md px-md py-[6px] rounded text-secondary hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-size: 18px;">domain</span>
+<span>Work</span>
+</a>
+<a class="flex items-center gap-md px-md py-[6px] rounded bg-[#1A2A4A] text-primary border-l-2 border-[#5B8CFF] font-bold" href="#">
+<span class="material-symbols-outlined" data-weight="fill" style="font-variation-settings: 'FILL' 1;">note</span>
+<span>Notes</span>
+</a>
+<a class="flex items-center gap-md px-md py-[6px] rounded text-secondary hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-size: 18px;">account_tree</span>
+<span>Projects</span>
+</a>
+<a class="flex items-center gap-md px-md py-[6px] rounded text-secondary hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-size: 18px;">code</span>
+<span>Developer</span>
+</a>
+<a class="flex items-center gap-md px-md py-[6px] rounded text-secondary hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-size: 18px;">terminal</span>
+<span>Terminal</span>
+</a>
+<a class="flex items-center gap-md px-md py-[6px] rounded text-secondary hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-size: 18px;">insights</span>
+<span>Insights</span>
+</a>
+<a class="flex items-center gap-md px-md py-[6px] rounded text-secondary hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-size: 18px;">monitoring</span>
+<span>Analytics</span>
+</a>
+</nav>
+<div class="mt-auto px-sm pt-md border-t border-outline-variant flex flex-col gap-[2px]">
+<a class="flex items-center gap-md px-md py-[6px] rounded text-secondary hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-size: 18px;">settings</span>
+<span>Settings</span>
+</a>
+<a class="flex items-center gap-md px-md py-[6px] rounded text-secondary hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-size: 18px;">menu_book</span>
+<span>Documentation</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-sidebar_width flex-1 flex flex-col h-screen relative">
+<!-- TopAppBar -->
+<header class="topbar h-[48px] fixed top-0 right-0 left-sidebar_width flex justify-between items-center px-lg border-b border-outline-variant z-10">
+<div class="flex items-center w-1/3">
+<div class="relative w-full max-w-[320px]">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-secondary" style="font-size: 16px;">search</span>
+<input class="w-full input-bg text-on-surface font-body text-body rounded pl-xl pr-sm py-[4px] focus:outline-none placeholder-secondary transition-all" placeholder="Search notes... (Ctrl+K)" type="text">
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="btn-secondary py-[4px] px-md text-secondary hover:text-on-surface transition-colors flex items-center gap-xs text-xs font-medium">
+                    Focus On
+                    <kbd class="font-mono-code text-[10px] bg-surface-container-highest px-1 rounded ml-1 border border-outline-variant">F</kbd>
+</button>
+<button class="btn-primary py-[4px] px-md flex items-center gap-xs text-xs font-medium transition-colors hover:bg-opacity-90">
+                    Deploy
+                    <kbd class="font-mono-code text-[10px] bg-white/20 px-1 rounded ml-1">D</kbd>
+</button>
+<div class="h-4 w-px bg-outline-variant mx-xs"></div>
+<button class="text-on-surface-variant hover:bg-surface-container-highest p-1 rounded transition-colors duration-100">
+<span class="material-symbols-outlined" style="font-size: 20px;">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-highest p-1 rounded transition-colors duration-100">
+<span class="material-symbols-outlined" style="font-size: 20px;">history</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-highest p-1 rounded transition-colors duration-100">
+<span class="material-symbols-outlined" style="font-size: 20px;">help_outline</span>
+</button>
+<div class="ml-sm w-7 h-7 rounded-full bg-surface-container-high border border-outline-variant overflow-hidden cursor-pointer">
+<img class="w-full h-full object-cover" data-alt="A small, professional user avatar portrait of a person against a dark, moody background, lit with soft blue rim lighting, minimalist and crisp." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB03XP_RrglJlSTa7O4WB1yea0P2EQIQy8RRbKWgydKVEZYO-w_myx45Z1O3YSgXXyhdDoN9HyoyW2GUFdIlQYqd_-KOI0nbcnVYEz40fDMtzPhqoLnbC9U9tmsevdCi33di_2oGqT44T97R_tw1jA2olRKRNE5kkYy0_1rCfDlsRVzja-arFI-tUDpOt-CieOmV_LU-WB0kEH0YwONuO6eo0LmbfOYNzg7p-R4WMmZ8jiK7bU55edczg">
+</div>
+</div>
+</header>
+<!-- Notes Content -->
+<div class="pt-[48px] flex-1 flex flex-col h-full overflow-hidden bg-background">
+<!-- Page Header -->
+<div class="px-xl py-lg flex justify-between items-end border-b border-outline-variant">
+<div>
+<h2 class="font-page-title text-page-title text-on-surface mb-xs">Notes</h2>
+<p class="font-body text-body text-secondary">42 active documents • Last sync 2m ago</p>
+</div>
+<div class="flex gap-sm">
+<button class="btn-secondary py-[6px] px-md flex items-center gap-xs font-section-title text-section-title hover:bg-surface-container transition-colors text-secondary">
+<span class="material-symbols-outlined" style="font-size: 16px;">filter_list</span>
+                        Filter
+                    </button>
+<button class="btn-primary py-[6px] px-md flex items-center gap-xs font-section-title text-section-title transition-colors hover:bg-opacity-90">
+<span class="material-symbols-outlined" style="font-size: 16px;">edit_document</span>
+                        New Note
+                        <kbd class="font-mono-code text-[10px] bg-white/20 px-1 rounded ml-1">N</kbd>
+</button>
+</div>
+</div>
+<!-- List Header (Columns) -->
+<div class="px-xl py-sm flex items-center border-b border-outline-variant text-metadata font-metadata text-secondary uppercase tracking-wider bg-surface-container-lowest">
+<div class="w-8 text-center flex-shrink-0"></div> <!-- Pin col -->
+<div class="flex-1 min-w-0 pr-4">Title</div>
+<div class="w-32 flex-shrink-0 pr-4 hidden md:block">Project</div>
+<div class="w-32 flex-shrink-0 text-right">Updated</div>
+<div class="w-24 flex-shrink-0 text-right"></div> <!-- Actions col -->
+</div>
+<!-- Notes List -->
+<div class="flex-1 overflow-y-auto pb-xl">
+<!-- Pinned Section -->
+<div class="px-lg py-xs text-metadata font-metadata text-secondary bg-surface-container-low border-b border-outline-variant sticky top-0 z-10 flex items-center gap-xs">
+<span class="material-symbols-outlined" style="font-size: 14px;">push_pin</span>
+                    Pinned
+                </div>
+<!-- Row 1 (Pinned) -->
+<div class="list-hover flex items-center px-xl py-xs border-b border-outline-variant border-opacity-50 cursor-pointer h-[38px] group relative">
+<div class="w-8 text-center flex-shrink-0 text-tertiary">
+<span class="material-symbols-outlined" data-weight="fill" style="font-variation-settings: 'FILL' 1;">push_pin</span>
+</div>
+<div class="flex-1 min-w-0 pr-4 flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary-container" style="font-size: 16px;">description</span>
+<span class="font-body text-body text-on-surface truncate font-medium">DevDesk Core Architecture V2</span>
+</div>
+<div class="w-32 flex-shrink-0 pr-4 hidden md:block">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-metadata bg-[#171D26] text-[#9AA6B2] border border-outline-variant">DevDesk Core</span>
+</div>
+<div class="w-32 flex-shrink-0 text-right font-mono-code text-mono-code text-secondary group-hover:hidden">
+                        2h ago
+                    </div>
+<!-- Hover Actions -->
+<div class="w-32 flex-shrink-0 row-hover-actions absolute right-xl top-0 h-full flex items-center justify-end gap-xs bg-gradient-to-l from-[#171D26] via-[#171D26] to-transparent pl-8">
+<button class="p-1 text-secondary hover:text-primary-container transition-colors rounded hover:bg-surface-bright" title="Open">
+<span class="material-symbols-outlined" style="font-size: 16px;">open_in_new</span>
+</button>
+<button class="p-1 text-tertiary hover:text-on-surface transition-colors rounded hover:bg-surface-bright" title="Unpin">
+<span class="material-symbols-outlined" style="font-size: 16px;">push_pin</span>
+</button>
+<button class="p-1 text-secondary hover:text-error transition-colors rounded hover:bg-surface-bright" title="Delete">
+<span class="material-symbols-outlined" style="font-size: 16px;">delete</span>
+</button>
+</div>
+</div>
+<!-- Row 2 (Pinned) -->
+<div class="list-hover flex items-center px-xl py-xs border-b border-outline-variant border-opacity-50 cursor-pointer h-[38px] group relative">
+<div class="w-8 text-center flex-shrink-0 text-tertiary">
+<span class="material-symbols-outlined" data-weight="fill" style="font-variation-settings: 'FILL' 1;">push_pin</span>
+</div>
+<div class="flex-1 min-w-0 pr-4 flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary" style="font-size: 16px;">markdown</span>
+<span class="font-body text-body text-on-surface truncate font-medium">Q3 OKRs Draft</span>
+</div>
+<div class="w-32 flex-shrink-0 pr-4 hidden md:block">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-metadata bg-[#171D26] text-[#9AA6B2] border border-outline-variant">Management</span>
+</div>
+<div class="w-32 flex-shrink-0 text-right font-mono-code text-mono-code text-secondary group-hover:hidden">
+                        Yesterday
+                    </div>
+<!-- Hover Actions -->
+<div class="w-32 flex-shrink-0 row-hover-actions absolute right-xl top-0 h-full flex items-center justify-end gap-xs bg-gradient-to-l from-[#171D26] via-[#171D26] to-transparent pl-8">
+<button class="p-1 text-secondary hover:text-primary-container transition-colors rounded hover:bg-surface-bright" title="Open">
+<span class="material-symbols-outlined" style="font-size: 16px;">open_in_new</span>
+</button>
+<button class="p-1 text-tertiary hover:text-on-surface transition-colors rounded hover:bg-surface-bright" title="Unpin">
+<span class="material-symbols-outlined" style="font-size: 16px;">push_pin</span>
+</button>
+<button class="p-1 text-secondary hover:text-error transition-colors rounded hover:bg-surface-bright" title="Delete">
+<span class="material-symbols-outlined" style="font-size: 16px;">delete</span>
+</button>
+</div>
+</div>
+<!-- Recent Section -->
+<div class="px-lg py-xs mt-sm text-metadata font-metadata text-secondary bg-surface-container-low border-b border-outline-variant sticky top-0 z-10 flex items-center gap-xs">
+<span class="material-symbols-outlined" style="font-size: 14px;">history</span>
+                    Recent
+                </div>
+<!-- Row 3 -->
+<div class="list-hover flex items-center px-xl py-xs border-b border-outline-variant border-opacity-50 cursor-pointer h-[38px] group relative">
+<div class="w-8 text-center flex-shrink-0 text-outline">
+</div>
+<div class="flex-1 min-w-0 pr-4 flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary-container" style="font-size: 16px;">description</span>
+<span class="font-body text-body text-on-surface truncate">API Endpoint Documentation - Auth</span>
+</div>
+<div class="w-32 flex-shrink-0 pr-4 hidden md:block">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-metadata bg-[#171D26] text-[#9AA6B2] border border-outline-variant">Backend</span>
+</div>
+<div class="w-32 flex-shrink-0 text-right font-mono-code text-mono-code text-secondary group-hover:hidden">
+                        Today, 09:41
+                    </div>
+<!-- Hover Actions -->
+<div class="w-32 flex-shrink-0 row-hover-actions absolute right-xl top-0 h-full flex items-center justify-end gap-xs bg-gradient-to-l from-[#171D26] via-[#171D26] to-transparent pl-8">
+<button class="p-1 text-secondary hover:text-primary-container transition-colors rounded hover:bg-surface-bright" title="Open">
+<span class="material-symbols-outlined" style="font-size: 16px;">open_in_new</span>
+</button>
+<button class="p-1 text-secondary hover:text-tertiary transition-colors rounded hover:bg-surface-bright" title="Pin">
+<span class="material-symbols-outlined" style="font-size: 16px;">push_pin</span>
+</button>
+<button class="p-1 text-secondary hover:text-error transition-colors rounded hover:bg-surface-bright" title="Delete">
+<span class="material-symbols-outlined" style="font-size: 16px;">delete</span>
+</button>
+</div>
+</div>
+<!-- Row 4 (Selected state example) -->
+<div class="flex items-center px-xl py-xs border-b border-outline-variant border-opacity-50 cursor-pointer h-[38px] group relative bg-[#1A2A4A] border-l-2 border-l-[#5B8CFF]">
+<div class="w-8 text-center flex-shrink-0 text-outline -ml-[2px]"> <!-- compensate for border -->
+</div>
+<div class="flex-1 min-w-0 pr-4 flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary-container" style="font-size: 16px;">list_alt</span>
+<span class="font-body text-body text-primary-container truncate font-medium">Weekly Sync Meeting Notes</span>
+</div>
+<div class="w-32 flex-shrink-0 pr-4 hidden md:block">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-metadata bg-[#171D26] text-[#9AA6B2] border border-outline-variant">Team</span>
+</div>
+<div class="w-32 flex-shrink-0 text-right font-mono-code text-mono-code text-primary-container group-hover:hidden">
+                        Yesterday
+                    </div>
+<!-- Hover Actions -->
+<div class="w-32 flex-shrink-0 row-hover-actions absolute right-xl top-0 h-full flex items-center justify-end gap-xs bg-gradient-to-l from-[#1A2A4A] via-[#1A2A4A] to-transparent pl-8">
+<button class="p-1 text-primary hover:text-white transition-colors rounded hover:bg-white/10" title="Open">
+<span class="material-symbols-outlined" style="font-size: 16px;">open_in_new</span>
+</button>
+<button class="p-1 text-primary hover:text-tertiary transition-colors rounded hover:bg-white/10" title="Pin">
+<span class="material-symbols-outlined" style="font-size: 16px;">push_pin</span>
+</button>
+<button class="p-1 text-primary hover:text-error transition-colors rounded hover:bg-white/10" title="Delete">
+<span class="material-symbols-outlined" style="font-size: 16px;">delete</span>
+</button>
+</div>
+</div>
+<!-- Row 5 -->
+<div class="list-hover flex items-center px-xl py-xs border-b border-outline-variant border-opacity-50 cursor-pointer h-[38px] group relative">
+<div class="w-8 text-center flex-shrink-0 text-outline">
+</div>
+<div class="flex-1 min-w-0 pr-4 flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary" style="font-size: 16px;">code</span>
+<span class="font-body text-body text-on-surface truncate">Snippet: Retry Logic Wrap</span>
+</div>
+<div class="w-32 flex-shrink-0 pr-4 hidden md:block">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-metadata bg-[#171D26] text-[#9AA6B2] border border-outline-variant">Snippets</span>
+</div>
+<div class="w-32 flex-shrink-0 text-right font-mono-code text-mono-code text-secondary group-hover:hidden">
+                        Oct 24
+                    </div>
+<!-- Hover Actions -->
+<div class="w-32 flex-shrink-0 row-hover-actions absolute right-xl top-0 h-full flex items-center justify-end gap-xs bg-gradient-to-l from-[#171D26] via-[#171D26] to-transparent pl-8">
+<button class="p-1 text-secondary hover:text-primary-container transition-colors rounded hover:bg-surface-bright" title="Open">
+<span class="material-symbols-outlined" style="font-size: 16px;">open_in_new</span>
+</button>
+<button class="p-1 text-secondary hover:text-tertiary transition-colors rounded hover:bg-surface-bright" title="Pin">
+<span class="material-symbols-outlined" style="font-size: 16px;">push_pin</span>
+</button>
+<button class="p-1 text-secondary hover:text-error transition-colors rounded hover:bg-surface-bright" title="Delete">
+<span class="material-symbols-outlined" style="font-size: 16px;">delete</span>
+</button>
+</div>
+</div>
+<!-- Row 6 -->
+<div class="list-hover flex items-center px-xl py-xs border-b border-outline-variant border-opacity-50 cursor-pointer h-[38px] group relative text-outline">
+<div class="w-8 text-center flex-shrink-0 text-outline">
+</div>
+<div class="flex-1 min-w-0 pr-4 flex items-center gap-sm opacity-70">
+<span class="material-symbols-outlined" style="font-size: 16px;">description</span>
+<span class="font-body text-body truncate line-through">Old Setup Instructions (Archived)</span>
+</div>
+<div class="w-32 flex-shrink-0 pr-4 hidden md:block opacity-70">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-metadata bg-transparent text-outline border border-outline border-opacity-30">Archive</span>
+</div>
+<div class="w-32 flex-shrink-0 text-right font-mono-code text-mono-code opacity-70 group-hover:hidden">
+                        Sep 12
+                    </div>
+<!-- Hover Actions -->
+<div class="w-32 flex-shrink-0 row-hover-actions absolute right-xl top-0 h-full flex items-center justify-end gap-xs bg-gradient-to-l from-[#171D26] via-[#171D26] to-transparent pl-8">
+<button class="p-1 text-secondary hover:text-primary-container transition-colors rounded hover:bg-surface-bright" title="Restore">
+<span class="material-symbols-outlined" style="font-size: 16px;">restore</span>
+</button>
+<button class="p-1 text-secondary hover:text-error transition-colors rounded hover:bg-surface-bright" title="Delete Permanently">
+<span class="material-symbols-outlined" style="font-size: 16px;">delete_forever</span>
+</button>
+</div>
+</div>
+<!-- Empty State Example (Hidden normally, here for demonstration if list was empty) -->
+<!--
+                <div class="flex flex-col items-center justify-center h-64 text-center">
+                    <div class="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center mb-md border border-outline-variant">
+                        <span class="material-symbols-outlined text-outline" style="font-size: 32px;">note_stack</span>
+                    </div>
+                    <h3 class="font-section-title text-section-title text-on-surface mb-xs">No notes yet</h3>
+                    <p class="font-body text-body text-secondary mb-lg max-w-sm">Jot down ideas, snippets, or project plans. Your notes sync securely across all your devices.</p>
+                    <button class="btn-primary py-[6px] px-md flex items-center gap-xs font-section-title text-section-title">
+                        <span class="material-symbols-outlined" style="font-size: 16px;">add</span>
+                        Create First Note
+                    </button>
+                </div>
+                -->
+</div>
+<!-- Status Bar -->
+<div class="h-6 bg-surface-container-lowest border-t border-outline-variant px-lg flex items-center justify-between text-metadata font-metadata text-secondary">
+<div class="flex items-center gap-md">
+<span class="flex items-center gap-xs"><span class="w-2 h-2 rounded-full bg-[#5B8CFF]"></span> Connected</span>
+<span>Storage: 45MB / 1GB</span>
+</div>
+<div class="flex gap-md">
+<span>Ctrl+K to search</span>
+<span>N for new</span>
+</div>
+</div>
+</div>
+</main>
+</body></html>

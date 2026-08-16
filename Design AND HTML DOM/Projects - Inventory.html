@@ -1,0 +1,351 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>DevDesk - Projects</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-low": "#111d26",
+                      "tertiary-container": "#d47b00",
+                      "on-secondary-fixed": "#171c23",
+                      "outline": "#8d909f",
+                      "tertiary-fixed": "#ffdcbf",
+                      "on-error": "#690005",
+                      "background": "#09151d",
+                      "inverse-primary": "#1857c8",
+                      "on-error-container": "#ffdad6",
+                      "error-container": "#93000a",
+                      "surface-container-high": "#202b35",
+                      "inverse-surface": "#d8e4f1",
+                      "on-primary-fixed": "#001847",
+                      "on-primary-fixed-variant": "#0040a0",
+                      "surface-container-highest": "#2b3640",
+                      "secondary-fixed-dim": "#c2c6d0",
+                      "error": "#ffb4ab",
+                      "outline-variant": "#434653",
+                      "secondary-fixed": "#dee2ed",
+                      "surface-container": "#15212a",
+                      "on-surface": "#d8e4f1",
+                      "surface-dim": "#09151d",
+                      "inverse-on-surface": "#26323b",
+                      "on-secondary": "#2c3138",
+                      "on-secondary-container": "#b7bcc6",
+                      "surface-container-lowest": "#040f18",
+                      "on-tertiary-fixed": "#2d1600",
+                      "on-tertiary": "#4b2800",
+                      "surface-tint": "#b2c5ff",
+                      "on-background": "#d8e4f1",
+                      "on-surface-variant": "#c3c6d6",
+                      "surface-bright": "#2f3a44",
+                      "surface": "#09151d",
+                      "secondary-container": "#474c54",
+                      "primary-fixed-dim": "#b2c5ff",
+                      "tertiary": "#ffb874",
+                      "secondary": "#c2c6d0",
+                      "primary-container": "#5b8cff",
+                      "tertiary-fixed-dim": "#ffb874",
+                      "surface-variant": "#2b3640",
+                      "on-tertiary-container": "#412200",
+                      "on-secondary-fixed-variant": "#42474f",
+                      "on-tertiary-fixed-variant": "#6a3b00",
+                      "on-primary": "#002c72",
+                      "primary": "#b2c5ff",
+                      "on-primary-container": "#002665",
+                      "primary-fixed": "#dae2ff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "md": "12px",
+                      "sm": "8px",
+                      "gutter": "16px",
+                      "xs": "4px",
+                      "xxl": "32px",
+                      "xl": "24px",
+                      "sidebar_width": "240px",
+                      "lg": "16px"
+              },
+              "fontFamily": {
+                      "metadata": [
+                              "Geist"
+                      ],
+                      "mono-code": [
+                              "JetBrains Mono"
+                      ],
+                      "page-title": [
+                              "Geist"
+                      ],
+                      "body": [
+                              "Geist"
+                      ],
+                      "mono-timer": [
+                              "JetBrains Mono"
+                      ],
+                      "section-title": [
+                              "Geist"
+                      ]
+              },
+              "fontSize": {
+                      "metadata": [
+                              "11px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "mono-code": [
+                              "12px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "page-title": [
+                              "19px",
+                              {
+                                      "lineHeight": "24px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body": [
+                              "13px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "mono-timer": [
+                              "14px",
+                              {
+                                      "lineHeight": "14px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "section-title": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        body { background-color: #0B0F14; }
+        .win-input:focus {
+            border-color: #5B8CFF;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(91, 140, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="text-on-background flex h-screen overflow-hidden font-body text-body">
+<!-- TopNavBar -->
+<div class="fixed top-0 left-0 right-0 z-50 h-[48px] w-full flex items-center justify-between px-gutter border-b border-outline-variant bg-background dark:bg-background text-primary dark:text-primary">
+<div class="flex items-center gap-lg">
+<span class="text-page-title font-page-title text-on-surface">DevDesk</span>
+</div>
+<div class="flex-1 flex justify-center px-lg">
+<div class="relative w-full max-w-md hidden md:block">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant text-[16px]">search</span>
+<input class="win-input w-full h-[32px] bg-[#0B0F14] border border-[#26303B] rounded text-on-surface text-body pl-[28px] pr-sm placeholder-on-surface-variant/50 transition-shadow" placeholder="Search projects (Ctrl+K)" type="text">
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<button class="w-[32px] h-[32px] flex items-center justify-center hover:bg-surface-container-high transition-colors rounded text-on-surface-variant cursor-default active:opacity-80">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
+</button>
+</div>
+</div>
+<!-- SideNavBar -->
+<nav class="fixed left-0 top-0 bottom-0 flex flex-col pt-[48px] w-sidebar_width h-full bg-surface-container-low dark:bg-surface-container-low border-r border-outline-variant z-40 transition-all duration-150 ease-in-out font-section-title text-section-title">
+<div class="p-gutter pb-sm">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded bg-primary-container text-on-primary-container flex items-center justify-center font-bold">U</div>
+<div>
+<div class="text-section-title font-section-title text-on-surface leading-tight">DevDesk</div>
+<div class="text-metadata font-metadata text-on-surface-variant leading-tight">Local-first</div>
+</div>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto px-xs py-sm flex flex-col gap-xs">
+<a class="flex items-center gap-md px-md py-sm rounded hover:bg-surface-container-highest transition-colors text-on-surface-variant" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="home">home</span>
+<span>Primary</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm bg-on-primary-fixed-variant/20 text-primary border-l-2 border-primary hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="folder" data-weight="fill" style="font-variation-settings: 'FILL' 1;">folder</span>
+<span>Projects</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded hover:bg-surface-container-highest transition-colors text-on-surface-variant" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="inbox">inbox</span>
+<span>Inbox</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded hover:bg-surface-container-highest transition-colors text-on-surface-variant" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="terminal">terminal</span>
+<span>Terminal</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded hover:bg-surface-container-highest transition-colors text-on-surface-variant" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="bug_report">bug_report</span>
+<span>Debugger</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded hover:bg-surface-container-highest transition-colors text-on-surface-variant" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="list_alt">list_alt</span>
+<span>Logs</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded hover:bg-surface-container-highest transition-colors text-on-surface-variant" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="insights">insights</span>
+<span>Analytics</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded hover:bg-surface-container-highest transition-colors text-on-surface-variant" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="bar_chart">bar_chart</span>
+<span>Reports</span>
+</a>
+</div>
+<div class="p-xs border-t border-outline-variant mt-auto">
+<a class="flex items-center gap-md px-md py-sm rounded hover:bg-surface-container-highest transition-colors text-on-surface-variant" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="help">help</span>
+<span>Help</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded hover:bg-surface-container-highest transition-colors text-on-surface-variant" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 ml-sidebar_width mt-[48px] p-xl overflow-y-auto bg-[#0B0F14]">
+<!-- Page Header -->
+<div class="flex items-center justify-between mb-xl">
+<h1 class="font-page-title text-page-title text-on-surface">Projects</h1>
+<button class="bg-[#5B8CFF] hover:bg-[#5B8CFF]/90 text-[#F3F6F9] px-md py-sm rounded-[4px] font-section-title text-section-title flex items-center gap-xs transition-colors">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                New Project
+            </button>
+</div>
+<!-- Project Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-gutter">
+<!-- Project Card 1 -->
+<div class="group bg-[#11161D] border border-[#26303B] rounded-[6px] overflow-hidden flex flex-col relative transition-colors hover:border-[#434653]">
+<!-- Accent Bar -->
+<div class="h-[4px] w-full bg-primary-container"></div>
+<div class="p-md flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-sm">
+<h2 class="font-section-title text-section-title text-on-surface truncate pr-sm">DevDesk Core</h2>
+<span class="material-symbols-outlined text-on-surface-variant text-[16px]">more_vert</span>
+</div>
+<p class="font-metadata text-metadata text-on-surface-variant mb-lg line-clamp-2">Main application repository. UI components and state management.</p>
+<div class="mt-auto">
+<div class="flex justify-between items-end mb-xs">
+<span class="font-metadata text-metadata text-on-surface-variant">Progress</span>
+<span class="font-mono-code text-mono-code text-primary">85%</span>
+</div>
+<div class="w-full bg-[#0B0F14] h-[4px] rounded-full overflow-hidden">
+<div class="bg-primary-container h-full" style="width: 85%"></div>
+</div>
+</div>
+</div>
+<!-- Hover Action -->
+<div class="absolute inset-0 bg-[#171D26]/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<button class="bg-transparent border border-[#26303B] text-on-surface px-md py-xs rounded-[4px] font-section-title text-section-title hover:bg-[#26303B] transition-colors">
+                        Open Project
+                    </button>
+</div>
+</div>
+<!-- Project Card 2 -->
+<div class="group bg-[#11161D] border border-[#26303B] rounded-[6px] overflow-hidden flex flex-col relative transition-colors hover:border-[#434653]">
+<div class="h-[4px] w-full bg-tertiary-container"></div>
+<div class="p-md flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-sm">
+<h2 class="font-section-title text-section-title text-on-surface truncate pr-sm">Neural Engine</h2>
+<span class="material-symbols-outlined text-on-surface-variant text-[16px]">more_vert</span>
+</div>
+<p class="font-metadata text-metadata text-on-surface-variant mb-lg line-clamp-2">AI inference worker pool and local LLM integration bindings.</p>
+<div class="mt-auto">
+<div class="flex justify-between items-end mb-xs">
+<span class="font-metadata text-metadata text-on-surface-variant">Progress</span>
+<span class="font-mono-code text-mono-code text-tertiary">42%</span>
+</div>
+<div class="w-full bg-[#0B0F14] h-[4px] rounded-full overflow-hidden">
+<div class="bg-tertiary-container h-full" style="width: 42%"></div>
+</div>
+</div>
+</div>
+<div class="absolute inset-0 bg-[#171D26]/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<button class="bg-transparent border border-[#26303B] text-on-surface px-md py-xs rounded-[4px] font-section-title text-section-title hover:bg-[#26303B] transition-colors">
+                        Open Project
+                    </button>
+</div>
+</div>
+<!-- Project Card 3 -->
+<div class="group bg-[#11161D] border border-[#26303B] rounded-[6px] overflow-hidden flex flex-col relative transition-colors hover:border-[#434653]">
+<div class="h-[4px] w-full bg-[#5B8CFF]"></div>
+<div class="p-md flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-sm">
+<h2 class="font-section-title text-section-title text-on-surface truncate pr-sm">Rust CLI Tool</h2>
+<span class="material-symbols-outlined text-on-surface-variant text-[16px]">more_vert</span>
+</div>
+<p class="font-metadata text-metadata text-on-surface-variant mb-lg line-clamp-2">High-performance file system watcher and sync utility.</p>
+<div class="mt-auto">
+<div class="flex justify-between items-end mb-xs">
+<span class="font-metadata text-metadata text-on-surface-variant">Progress</span>
+<span class="font-mono-code text-mono-code text-[#5B8CFF]">98%</span>
+</div>
+<div class="w-full bg-[#0B0F14] h-[4px] rounded-full overflow-hidden">
+<div class="bg-[#5B8CFF] h-full" style="width: 98%"></div>
+</div>
+</div>
+</div>
+<div class="absolute inset-0 bg-[#171D26]/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<button class="bg-transparent border border-[#26303B] text-on-surface px-md py-xs rounded-[4px] font-section-title text-section-title hover:bg-[#26303B] transition-colors">
+                        Open Project
+                    </button>
+</div>
+</div>
+<!-- Archived Project Card -->
+<div class="group bg-[#11161D]/50 border border-[#26303B]/50 rounded-[6px] overflow-hidden flex flex-col relative grayscale-[50%] opacity-70 hover:opacity-100 hover:grayscale-0 transition-all">
+<div class="h-[4px] w-full bg-outline-variant"></div>
+<div class="p-md flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-sm">
+<div class="flex items-center gap-xs">
+<h2 class="font-section-title text-section-title text-on-surface-variant truncate">Legacy API</h2>
+<span class="px-xs py-[2px] bg-[#171D26] text-outline font-metadata text-metadata rounded-[2px] border border-[#26303B]">Archived</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant text-[16px]">more_vert</span>
+</div>
+<p class="font-metadata text-metadata text-outline-variant mb-lg line-clamp-2">Deprecated v1 REST endpoints. Kept for reference only.</p>
+<div class="mt-auto">
+<div class="flex justify-between items-end mb-xs">
+<span class="font-metadata text-metadata text-outline-variant">Progress</span>
+<span class="font-mono-code text-mono-code text-outline-variant">100%</span>
+</div>
+<div class="w-full bg-[#0B0F14] h-[4px] rounded-full overflow-hidden">
+<div class="bg-outline-variant h-full" style="width: 100%"></div>
+</div>
+</div>
+</div>
+<div class="absolute inset-0 bg-[#171D26]/80 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<button class="bg-transparent border border-[#26303B] text-on-surface-variant px-md py-xs rounded-[4px] font-section-title text-section-title hover:bg-[#26303B] transition-colors">
+                        View Archive
+                    </button>
+</div>
+</div>
+</div>
+</main>
+</body></html>

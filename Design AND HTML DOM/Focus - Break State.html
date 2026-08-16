@@ -1,0 +1,332 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>DevDesk - Break</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        /* Custom scrollbar for minimalist look */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #26303B;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #434653;
+        }
+
+        /* Specific override for the timer color requested in prompt */
+        .text-success-timer {
+            color: #3CCB7F;
+        }
+    </style>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed-variant": "#6a3b00",
+                        "surface-variant": "#2b3640",
+                        "secondary": "#c2c6d0",
+                        "surface-container-low": "#111d26",
+                        "surface-bright": "#2f3a44",
+                        "on-error": "#690005",
+                        "tertiary-container": "#d47b00",
+                        "primary": "#b2c5ff",
+                        "outline-variant": "#434653",
+                        "inverse-primary": "#1857c8",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "on-primary-fixed": "#001847",
+                        "background": "#09151d",
+                        "on-tertiary-fixed": "#2d1600",
+                        "primary-container": "#5b8cff",
+                        "on-primary-fixed-variant": "#0040a0",
+                        "surface-tint": "#b2c5ff",
+                        "on-primary": "#002c72",
+                        "secondary-fixed": "#dee2ed",
+                        "inverse-surface": "#d8e4f1",
+                        "on-background": "#d8e4f1",
+                        "tertiary-fixed": "#ffdcbf",
+                        "outline": "#8d909f",
+                        "on-surface-variant": "#c3c6d6",
+                        "surface-container": "#15212a",
+                        "inverse-on-surface": "#26323b",
+                        "tertiary": "#ffb874",
+                        "on-error-container": "#ffdad6",
+                        "surface-dim": "#09151d",
+                        "on-secondary-container": "#b7bcc6",
+                        "secondary-container": "#474c54",
+                        "error": "#ffb4ab",
+                        "on-surface": "#d8e4f1",
+                        "on-tertiary": "#4b2800",
+                        "surface-container-lowest": "#040f18",
+                        "surface-container-high": "#202b35",
+                        "primary-fixed": "#dae2ff",
+                        "on-secondary-fixed": "#171c23",
+                        "error-container": "#93000a",
+                        "surface-container-highest": "#2b3640",
+                        "on-tertiary-container": "#412200",
+                        "on-secondary": "#2c3138",
+                        "on-secondary-fixed-variant": "#42474f",
+                        "on-primary-container": "#002665",
+                        "tertiary-fixed-dim": "#ffb874",
+                        "surface": "#09151d",
+                        "secondary-fixed-dim": "#c2c6d0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xl": "24px",
+                        "gutter": "16px",
+                        "md": "12px",
+                        "sm": "8px",
+                        "sidebar_width": "240px",
+                        "xxl": "32px",
+                        "xs": "4px",
+                        "lg": "16px"
+                    },
+                    "fontFamily": {
+                        "section-title": ["Geist"],
+                        "page-title": ["Geist"],
+                        "mono-code": ["JetBrains Mono"],
+                        "mono-timer": ["JetBrains Mono"],
+                        "body": ["Geist"],
+                        "metadata": ["Geist"]
+                    },
+                    "fontSize": {
+                        "section-title": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "page-title": ["19px", {"lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "mono-code": ["12px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "mono-timer": ["14px", {"lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "body": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "metadata": ["11px", {"lineHeight": "16px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background h-screen w-full flex overflow-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- Shared Component: SideNavBar -->
+<nav class="w-sidebar_width h-full fixed left-0 top-0 border-r border-outline-variant bg-surface-container-low flex flex-col py-lg space-y-xs z-40 hidden md:flex">
+<!-- Header -->
+<div class="px-lg pb-md mb-md border-b border-outline-variant flex items-center gap-md">
+<div class="w-8 h-8 rounded bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container text-[18px]">terminal</span>
+</div>
+<div>
+<h1 class="font-page-title text-page-title text-on-surface">DevDesk</h1>
+<p class="font-metadata text-metadata text-on-surface-variant">Productivity Engine</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<div class="flex flex-col flex-1 px-sm space-y-xs">
+<!-- Dashboard (Inactive) -->
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-all duration-150" href="#">
+<span class="material-symbols-outlined text-[18px]">dashboard</span>
+<span class="font-section-title text-section-title">Dashboard</span>
+</a>
+<!-- My Day (Inactive) -->
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-all duration-150" href="#">
+<span class="material-symbols-outlined text-[18px]">today</span>
+<span class="font-section-title text-section-title">My Day</span>
+</a>
+<!-- Tasks (Inactive) -->
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-all duration-150" href="#">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+<span class="font-section-title text-section-title">Tasks</span>
+</a>
+<!-- Focus (Active - Semantic Match) -->
+<a class="flex items-center gap-md px-md py-sm rounded-lg bg-primary-container/20 text-primary border-l-2 border-primary transition-all duration-150" href="#">
+<span class="material-symbols-outlined icon-fill text-[18px]">timer</span>
+<span class="font-section-title text-section-title">Focus</span>
+</a>
+<!-- Projects (Inactive) -->
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-all duration-150" href="#">
+<span class="material-symbols-outlined text-[18px]">folder</span>
+<span class="font-section-title text-section-title">Projects</span>
+</a>
+</div>
+<!-- Bottom Area -->
+<div class="px-sm mt-auto">
+<!-- Settings (Inactive) -->
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-all duration-150" href="#">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+<span class="font-section-title text-section-title">Settings</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 ml-0 md:ml-sidebar_width flex flex-col h-full relative">
+<!-- Shared Component: TopAppBar -->
+<header class="h-[48px] w-full flex items-center justify-between px-lg border-b border-outline-variant bg-background shrink-0 z-30">
+<!-- Left Side (Empty on Focus screen as navigation is in sidebar, but keeping structure if search was here) -->
+<div class="flex items-center">
+<!-- Mobile Menu Trigger (Visible only on mobile) -->
+<button class="md:hidden mr-md text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+<!-- Right Side (Trailing Actions & Custom Chip) -->
+<div class="flex items-center gap-md">
+<!-- Custom Focus Chip for Break State -->
+<div class="flex items-center gap-sm bg-surface-container-highest border border-outline-variant px-sm py-[4px] rounded-full text-success-timer">
+<span class="material-symbols-outlined text-[14px]">local_cafe</span>
+<span class="font-mono-timer text-mono-timer">Break • 04:59</span>
+</div>
+<div class="h-4 w-[1px] bg-outline-variant mx-xs"></div>
+<button class="text-on-surface-variant hover:bg-surface-container-highest transition-colors p-[4px] rounded-lg cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-highest transition-colors p-[4px] rounded-lg cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</button>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="flex-1 overflow-y-auto p-lg flex flex-col gap-xl">
+<!-- Main Grid Layout -->
+<div class="flex flex-col lg:flex-row gap-xl flex-1 min-h-0">
+<!-- Left 60%: Timer Area -->
+<section class="flex-[3] flex flex-col items-center justify-center bg-surface-container-low border border-outline-variant rounded-xl p-xl relative overflow-hidden group">
+<!-- Subtle background pulse effect -->
+<div class="absolute inset-0 bg-success-timer/5 opacity-50 animate-pulse rounded-xl"></div>
+<div class="z-10 flex flex-col items-center text-center space-y-lg">
+<div class="space-y-xs">
+<h2 class="font-page-title text-page-title text-on-surface tracking-tight">Take a break</h2>
+<p class="font-body text-body text-on-surface-variant">Step away, stretch, hydrate.</p>
+</div>
+<!-- Huge Timer (Bending strict typography scale for utility size, but using font family) -->
+<div class="font-mono-timer text-[6rem] lg:text-[8rem] leading-none tracking-tight text-success-timer py-md">
+                            04:59
+                        </div>
+<!-- Actions -->
+<div class="flex items-center gap-md mt-sm">
+<button class="bg-primary-container text-[#F3F6F9] px-xl py-md rounded font-section-title text-section-title hover:opacity-90 transition-opacity flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">skip_next</span>
+                                Skip Break
+                            </button>
+<button class="bg-transparent border border-outline-variant text-on-surface px-xl py-md rounded font-section-title text-section-title hover:bg-surface-container-highest transition-colors flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">stop</span>
+                                Stop
+                            </button>
+</div>
+</div>
+</section>
+<!-- Right 40%: Today's Tasks (Bento-style list) -->
+<section class="flex-[2] flex flex-col bg-surface border border-outline-variant rounded-xl overflow-hidden max-h-full">
+<div class="px-md py-sm border-b border-outline-variant bg-surface-container-lowest flex items-center justify-between sticky top-0">
+<h3 class="font-section-title text-section-title text-on-surface">Up Next</h3>
+<span class="font-metadata text-metadata text-on-surface-variant bg-surface-container px-sm py-[2px] rounded">3 Remaining</span>
+</div>
+<div class="flex-1 overflow-y-auto p-xs space-y-xs">
+<!-- Task Item 1 -->
+<div class="group flex items-start gap-md p-md rounded-lg hover:bg-surface-container-high transition-colors cursor-pointer border border-transparent hover:border-outline-variant/50">
+<button class="mt-[2px] text-on-surface-variant group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">radio_button_unchecked</span>
+</button>
+<div class="flex-1">
+<p class="font-body text-body text-on-surface">Review PR #442 for Auth Module</p>
+<div class="flex items-center gap-sm mt-xs">
+<span class="font-metadata text-metadata text-primary">High Priority</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="font-metadata text-metadata text-on-surface-variant">Code Review</span>
+</div>
+</div>
+</div>
+<!-- Task Item 2 -->
+<div class="group flex items-start gap-md p-md rounded-lg hover:bg-surface-container-high transition-colors cursor-pointer border border-transparent hover:border-outline-variant/50">
+<button class="mt-[2px] text-on-surface-variant group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">radio_button_unchecked</span>
+</button>
+<div class="flex-1">
+<p class="font-body text-body text-on-surface">Update API Documentation</p>
+<div class="flex items-center gap-sm mt-xs">
+<span class="font-metadata text-metadata text-on-surface-variant flex items-center gap-[2px]">
+<span class="material-symbols-outlined text-[12px]">schedule</span>
+                                        25m est.
+                                    </span>
+</div>
+</div>
+</div>
+<!-- Task Item 3 -->
+<div class="group flex items-start gap-md p-md rounded-lg hover:bg-surface-container-high transition-colors cursor-pointer border border-transparent hover:border-outline-variant/50">
+<button class="mt-[2px] text-on-surface-variant group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">radio_button_unchecked</span>
+</button>
+<div class="flex-1">
+<p class="font-body text-body text-on-surface">Standup Prep Notes</p>
+<div class="flex items-center gap-sm mt-xs">
+<span class="font-metadata text-metadata text-tertiary">Internal</span>
+</div>
+</div>
+</div>
+</div>
+<div class="p-xs border-t border-outline-variant bg-surface-container-lowest">
+<button class="w-full py-sm flex items-center justify-center gap-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors rounded font-metadata text-metadata">
+<span class="material-symbols-outlined text-[14px]">add</span>
+                            Quick Add
+                        </button>
+</div>
+</section>
+</div>
+<!-- Bottom: Daily Summary Stats -->
+<section class="grid grid-cols-2 md:grid-cols-4 gap-md shrink-0">
+<!-- Stat Card 1 -->
+<div class="bg-surface-container-low border border-outline-variant rounded-lg p-md flex flex-col gap-xs">
+<span class="font-metadata text-metadata text-on-surface-variant uppercase tracking-wider">Focus Sessions</span>
+<div class="flex items-baseline gap-xs">
+<span class="font-page-title text-page-title text-on-surface">4</span>
+<span class="font-metadata text-metadata text-on-surface-variant">/ 8</span>
+</div>
+</div>
+<!-- Stat Card 2 -->
+<div class="bg-surface-container-low border border-outline-variant rounded-lg p-md flex flex-col gap-xs">
+<span class="font-metadata text-metadata text-on-surface-variant uppercase tracking-wider">Deep Work Time</span>
+<div class="flex items-baseline gap-xs">
+<span class="font-mono-timer text-mono-timer text-primary">02:45:00</span>
+</div>
+</div>
+<!-- Stat Card 3 -->
+<div class="bg-surface-container-low border border-outline-variant rounded-lg p-md flex flex-col gap-xs">
+<span class="font-metadata text-metadata text-on-surface-variant uppercase tracking-wider">Tasks Completed</span>
+<div class="flex items-baseline gap-xs">
+<span class="font-page-title text-page-title text-on-surface">12</span>
+</div>
+</div>
+<!-- Stat Card 4 -->
+<div class="bg-surface-container-low border border-outline-variant rounded-lg p-md flex flex-col gap-xs">
+<span class="font-metadata text-metadata text-on-surface-variant uppercase tracking-wider">Current Streak</span>
+<div class="flex items-center gap-xs text-tertiary">
+<span class="material-symbols-outlined icon-fill text-[16px]">local_fire_department</span>
+<span class="font-page-title text-page-title">5 Days</span>
+</div>
+</div>
+</section>
+</div>
+</main>
+</body></html>

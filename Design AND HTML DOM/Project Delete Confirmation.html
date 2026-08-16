@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DevDesk - Delete Project Modal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#111d26",
+                        "tertiary-container": "#d47b00",
+                        "on-secondary-fixed": "#171c23",
+                        "outline": "#8d909f",
+                        "tertiary-fixed": "#ffdcbf",
+                        "on-error": "#690005",
+                        "background": "#09151d",
+                        "inverse-primary": "#1857c8",
+                        "on-error-container": "#ffdad6",
+                        "error-container": "#93000a",
+                        "surface-container-high": "#202b35",
+                        "inverse-surface": "#d8e4f1",
+                        "on-primary-fixed": "#001847",
+                        "on-primary-fixed-variant": "#0040a0",
+                        "surface-container-highest": "#2b3640",
+                        "secondary-fixed-dim": "#c2c6d0",
+                        "error": "#ffb4ab",
+                        "outline-variant": "#434653",
+                        "secondary-fixed": "#dee2ed",
+                        "surface-container": "#15212a",
+                        "on-surface": "#d8e4f1",
+                        "surface-dim": "#09151d",
+                        "inverse-on-surface": "#26323b",
+                        "on-secondary": "#2c3138",
+                        "on-secondary-container": "#b7bcc6",
+                        "surface-container-lowest": "#040f18",
+                        "on-tertiary-fixed": "#2d1600",
+                        "on-tertiary": "#4b2800",
+                        "surface-tint": "#b2c5ff",
+                        "on-background": "#d8e4f1",
+                        "on-surface-variant": "#c3c6d6",
+                        "surface-bright": "#2f3a44",
+                        "surface": "#09151d",
+                        "secondary-container": "#474c54",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "tertiary": "#ffb874",
+                        "secondary": "#c2c6d0",
+                        "primary-container": "#5b8cff",
+                        "tertiary-fixed-dim": "#ffb874",
+                        "surface-variant": "#2b3640",
+                        "on-tertiary-container": "#412200",
+                        "on-secondary-fixed-variant": "#42474f",
+                        "on-tertiary-fixed-variant": "#6a3b00",
+                        "on-primary": "#002c72",
+                        "primary": "#b2c5ff",
+                        "on-primary-container": "#002665",
+                        "primary-fixed": "#dae2ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "md": "12px",
+                        "sm": "8px",
+                        "gutter": "16px",
+                        "xs": "4px",
+                        "xxl": "32px",
+                        "xl": "24px",
+                        "sidebar_width": "240px",
+                        "lg": "16px"
+                    },
+                    "fontFamily": {
+                        "metadata": ["Geist"],
+                        "mono-code": ["JetBrains Mono"],
+                        "page-title": ["Geist"],
+                        "body": ["Geist"],
+                        "mono-timer": ["JetBrains Mono"],
+                        "section-title": ["Geist"]
+                    },
+                    "fontSize": {
+                        "metadata": ["11px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "mono-code": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "page-title": ["19px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "mono-timer": ["14px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "section-title": ["14px", { "lineHeight": "20px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #0B0F14; color: #d8e4f1; }
+        .bg-level-1 { background-color: #0E131A; }
+        .bg-level-2 { background-color: #11161D; }
+        .bg-level-3 { background-color: #171D26; }
+        .border-base { border-color: #26303B; }
+        .text-accent { color: #5B8CFF; }
+        .bg-accent { background-color: #5B8CFF; }
+        
+        .input-focus:focus {
+            border-color: #5B8CFF;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(91, 140, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="font-body text-body overflow-hidden h-screen w-screen flex">
+<!-- SideNavBar (from JSON) -->
+<nav class="bg-level-1 text-primary w-sidebar_width h-full border-r border-base flex flex-col pt-[48px] z-10 shrink-0">
+<div class="px-gutter mb-xl flex items-center space-x-md">
+<div class="h-8 w-8 rounded bg-surface-container-highest flex items-center justify-center border border-base">
+<span class="material-symbols-outlined text-[18px]">terminal</span>
+</div>
+<div>
+<h1 class="font-page-title text-page-title text-on-surface">DevDesk</h1>
+<p class="font-metadata text-metadata text-on-surface-variant">Local-first</p>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto px-sm space-y-[2px]">
+<!-- Inactive -->
+<a class="flex items-center px-md py-sm rounded-DEFAULT text-on-surface-variant hover:bg-surface-container-highest transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md text-[18px]">home</span>
+<span class="font-section-title text-section-title">Primary</span>
+</a>
+<!-- Active -->
+<a class="flex items-center px-md py-sm rounded-DEFAULT bg-on-primary-fixed-variant/20 text-primary border-l-2 border-primary transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md text-[18px]">folder</span>
+<span class="font-section-title text-section-title">Projects</span>
+</a>
+<!-- Inactive -->
+<a class="flex items-center px-md py-sm rounded-DEFAULT text-on-surface-variant hover:bg-surface-container-highest transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md text-[18px]">inbox</span>
+<span class="font-section-title text-section-title">Inbox</span>
+</a>
+<a class="flex items-center px-md py-sm rounded-DEFAULT text-on-surface-variant hover:bg-surface-container-highest transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md text-[18px]">terminal</span>
+<span class="font-section-title text-section-title">Terminal</span>
+</a>
+<a class="flex items-center px-md py-sm rounded-DEFAULT text-on-surface-variant hover:bg-surface-container-highest transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md text-[18px]">bug_report</span>
+<span class="font-section-title text-section-title">Debugger</span>
+</a>
+<a class="flex items-center px-md py-sm rounded-DEFAULT text-on-surface-variant hover:bg-surface-container-highest transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md text-[18px]">list_alt</span>
+<span class="font-section-title text-section-title">Logs</span>
+</a>
+<a class="flex items-center px-md py-sm rounded-DEFAULT text-on-surface-variant hover:bg-surface-container-highest transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md text-[18px]">insights</span>
+<span class="font-section-title text-section-title">Analytics</span>
+</a>
+<a class="flex items-center px-md py-sm rounded-DEFAULT text-on-surface-variant hover:bg-surface-container-highest transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md text-[18px]">bar_chart</span>
+<span class="font-section-title text-section-title">Reports</span>
+</a>
+</div>
+<div class="p-sm mt-auto border-t border-base space-y-[2px]">
+<a class="flex items-center px-md py-sm rounded-DEFAULT text-on-surface-variant hover:bg-surface-container-highest transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md text-[18px]">help</span>
+<span class="font-section-title text-section-title">Help</span>
+</a>
+<a class="flex items-center px-md py-sm rounded-DEFAULT text-on-surface-variant hover:bg-surface-container-highest transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-md text-[18px]">settings</span>
+<span class="font-section-title text-section-title">Settings</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area (Background) -->
+<main class="flex-1 flex flex-col relative bg-background">
+<!-- TopNavBar (from JSON) -->
+<header class="bg-background text-primary font-body text-body h-[48px] w-full flex items-center border-b border-outline-variant flex justify-between items-center px-gutter sticky top-0 z-0">
+<div class="flex items-center space-x-md">
+<!-- Search Bar -->
+<div class="relative w-64 hidden md:block">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant text-[16px]">search</span>
+<input class="w-full bg-[#0B0F14] border border-base rounded-DEFAULT pl-[32px] pr-sm py-[4px] text-body font-body text-on-surface placeholder-on-surface-variant input-focus transition-all" placeholder="Search projects..." type="text"/>
+</div>
+</div>
+<nav class="flex items-center space-x-md">
+<a class="text-on-surface-variant hover:bg-surface-container-high transition-colors px-md py-xs rounded-DEFAULT cursor-default active:opacity-80" href="#">Focus</a>
+</nav>
+<div class="flex items-center space-x-sm">
+<button class="h-8 w-8 rounded-DEFAULT flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</button>
+<button class="h-8 w-8 rounded-DEFAULT flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</button>
+</div>
+</header>
+<!-- Dummy Projects Content -->
+<div class="flex-1 overflow-auto p-xl opacity-20 filter blur-[2px] pointer-events-none">
+<div class="flex justify-between items-center mb-xl">
+<h2 class="font-page-title text-page-title">Active Projects</h2>
+<button class="bg-accent text-[#F3F6F9] px-md py-xs rounded flex items-center space-x-xs">
+<span class="material-symbols-outlined text-[16px]">add</span>
+<span>New Project</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-lg">
+<!-- Card 1 -->
+<div class="bg-level-2 border border-base rounded-[6px] p-lg flex flex-col h-48">
+<div class="flex justify-between items-start mb-sm">
+<div class="flex items-center space-x-sm">
+<span class="material-symbols-outlined text-primary">rocket_launch</span>
+<h3 class="font-section-title text-section-title">Apollo Refactor</h3>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">more_vert</span>
+</div>
+<p class="text-on-surface-variant text-body mb-auto line-clamp-2">Migrating core rendering engine to WebGL 2.0 and optimizing state management.</p>
+<div class="flex justify-between items-center border-t border-base pt-sm mt-md">
+<div class="flex space-x-xs">
+<span class="bg-level-3 text-[#9AA6B2] px-[6px] py-[2px] rounded-DEFAULT text-metadata font-metadata">Frontend</span>
+<span class="bg-level-3 text-[#9AA6B2] px-[6px] py-[2px] rounded-DEFAULT text-metadata font-metadata">High Priority</span>
+</div>
+<span class="text-on-surface-variant text-metadata font-mono-code">Updated 2h ago</span>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-level-2 border border-base rounded-[6px] p-lg flex flex-col h-48">
+<div class="flex justify-between items-start mb-sm">
+<div class="flex items-center space-x-sm">
+<span class="material-symbols-outlined text-error">memory</span>
+<h3 class="font-section-title text-section-title">Neural Engine</h3>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">more_vert</span>
+</div>
+<p class="text-on-surface-variant text-body mb-auto line-clamp-2">Experimental ML pipeline for predictive caching. Currently blocked on data processing nodes.</p>
+<div class="flex justify-between items-center border-t border-base pt-sm mt-md">
+<div class="flex space-x-xs">
+<span class="bg-level-3 text-[#9AA6B2] px-[6px] py-[2px] rounded-DEFAULT text-metadata font-metadata">Backend</span>
+<span class="bg-level-3 text-error px-[6px] py-[2px] rounded-DEFAULT text-metadata font-metadata">Blocked</span>
+</div>
+<span class="text-on-surface-variant text-metadata font-mono-code">Updated 1d ago</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Overlay & Modal -->
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-background/60 backdrop-blur-[1px]">
+<!-- Modal Container -->
+<div class="bg-level-3 border border-base rounded-xl shadow-[0_12px_24px_-4px_rgba(0,0,0,0.5)] w-[480px] max-w-[90vw] flex flex-col overflow-hidden animate-[fadeIn_0.15s_ease-out]">
+<!-- Modal Header -->
+<div class="px-xl pt-xl pb-md flex items-start space-x-md">
+<div class="h-10 w-10 rounded-full bg-error/10 border border-error/20 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-error">warning</span>
+</div>
+<div>
+<h2 class="font-page-title text-page-title text-on-surface mb-xs">Delete Project?</h2>
+<p class="font-body text-body text-on-surface-variant leading-relaxed">
+                        Are you sure you want to delete <span class="text-on-surface font-section-title">"Neural Engine"</span>? This action cannot be undone and will remove all associated tasks and metadata.
+                    </p>
+</div>
+</div>
+<!-- Modal Content (Input) -->
+<div class="px-xl py-md">
+<label class="block font-metadata text-metadata text-on-surface-variant mb-sm uppercase tracking-wider" for="confirm-delete">Type project name to confirm</label>
+<div class="relative">
+<input autocomplete="off" class="w-full bg-[#0B0F14] border border-base rounded-DEFAULT px-md py-sm text-body font-body text-on-surface placeholder-on-surface-variant/40 input-focus transition-all font-mono-code" id="confirm-delete" placeholder="Neural Engine" type="text"/>
+</div>
+</div>
+<!-- Modal Footer -->
+<div class="px-xl py-lg bg-level-2 border-t border-base flex justify-end items-center space-x-md mt-sm">
+<button class="font-body text-body text-on-surface-variant hover:text-on-surface px-md py-sm rounded transition-colors flex items-center group">
+<span class="mr-sm">Cancel</span>
+<kbd class="font-mono-code text-[11px] bg-level-1 border border-base px-[4px] py-[2px] rounded text-on-surface-variant group-hover:text-on-surface transition-colors">Esc</kbd>
+</button>
+<button class="font-section-title text-section-title bg-error hover:bg-error/90 text-[#690005] px-lg py-sm rounded-[4px] transition-colors shadow-sm flex items-center group" disabled="">
+<span class="mr-sm">Delete Project</span>
+<kbd class="font-mono-code text-[11px] bg-black/10 border border-black/20 px-[4px] py-[2px] rounded text-[#690005]/80 transition-colors">Enter</kbd>
+</button>
+</div>
+</div>
+</div>
+<style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98) translateY(4px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+    </style>
+<script>
+        // Simple mock interaction for the modal
+        const input = document.getElementById('confirm-delete');
+        const deleteBtn = document.querySelector('button.bg-error');
+        
+        input.addEventListener('input', (e) => {
+            if(e.target.value === 'Neural Engine') {
+                deleteBtn.removeAttribute('disabled');
+                deleteBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            } else {
+                deleteBtn.setAttribute('disabled', 'true');
+                deleteBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        });
+        
+        // Initial state
+        deleteBtn.classList.add('opacity-50', 'cursor-not-allowed');
+    </script>
+</body></html>

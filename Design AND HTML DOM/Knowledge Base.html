@@ -1,0 +1,441 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>DevDesk - Knowledge Base</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary": "#c2c6d0",
+                        "surface": "#09151d",
+                        "secondary-container": "#474c54",
+                        "on-tertiary-container": "#412200",
+                        "on-primary-fixed": "#001847",
+                        "on-secondary": "#2c3138",
+                        "surface-bright": "#2f3a44",
+                        "outline": "#8d909f",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "on-tertiary-fixed": "#2d1600",
+                        "surface-container": "#15212a",
+                        "on-primary-container": "#002665",
+                        "tertiary-fixed": "#ffdcbf",
+                        "on-tertiary-fixed-variant": "#6a3b00",
+                        "error": "#ffb4ab",
+                        "on-surface-variant": "#c3c6d6",
+                        "on-primary": "#002c72",
+                        "surface-container-high": "#202b35",
+                        "surface-tint": "#b2c5ff",
+                        "tertiary-container": "#d47b00",
+                        "inverse-surface": "#d8e4f1",
+                        "secondary-fixed-dim": "#c2c6d0",
+                        "secondary-fixed": "#dee2ed",
+                        "on-secondary-container": "#b7bcc6",
+                        "primary-fixed": "#dae2ff",
+                        "surface-dim": "#09151d",
+                        "on-secondary-fixed-variant": "#42474f",
+                        "inverse-primary": "#1857c8",
+                        "primary": "#b2c5ff",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-highest": "#2b3640",
+                        "on-surface": "#d8e4f1",
+                        "inverse-on-surface": "#26323b",
+                        "on-primary-fixed-variant": "#0040a0",
+                        "surface-variant": "#2b3640",
+                        "error-container": "#93000a",
+                        "on-background": "#d8e4f1",
+                        "background": "#09151d",
+                        "on-secondary-fixed": "#171c23",
+                        "tertiary": "#ffb874",
+                        "surface-container-lowest": "#040f18",
+                        "surface-container-low": "#111d26",
+                        "on-tertiary": "#4b2800",
+                        "primary-container": "#5b8cff",
+                        "outline-variant": "#434653",
+                        "on-error": "#690005",
+                        "tertiary-fixed-dim": "#ffb874"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xl": "24px",
+                        "lg": "16px",
+                        "sidebar_width": "240px",
+                        "xxl": "32px",
+                        "md": "12px",
+                        "gutter": "16px",
+                        "sm": "8px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "body": ["Geist", "sans-serif"],
+                        "mono-timer": ["JetBrains Mono", "monospace"],
+                        "mono-code": ["JetBrains Mono", "monospace"],
+                        "metadata": ["Geist", "sans-serif"],
+                        "page-title": ["Geist", "sans-serif"],
+                        "section-title": ["Geist", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "body": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "mono-timer": ["14px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "mono-code": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "metadata": ["11px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "page-title": ["19px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "section-title": ["14px", { "lineHeight": "20px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Custom Scrollbar for Minimalist Design */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #26303B;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #434653;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body h-screen w-screen overflow-hidden flex selection:bg-primary-container selection:text-on-primary">
+<!-- SideNavBar (Shared Component) -->
+<nav class="w-sidebar_width h-screen fixed left-0 top-0 bg-surface-container dark:bg-surface-container border-r border-outline-variant flex flex-col h-full py-lg z-20 transition-all duration-150 ease-in-out">
+<!-- Header -->
+<div class="px-lg pb-xl flex items-center gap-md cursor-pointer group">
+<div class="w-8 h-8 rounded-lg bg-surface-variant flex items-center justify-center overflow-hidden border border-outline-variant">
+<img alt="User Profile" class="object-cover w-full h-full" data-alt="A striking minimalist avatar icon featuring abstract geometric shapes in high-contrast greyscale with a subtle electric blue accent. The design is stark, clean, and utilitarian, fitting a dark mode modern corporate interface perfectly. No complex details, just sharp intersecting lines and bold contrasts." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOC2kVkfBTRJNn8t8_h57SoVFCeZgTwrsxn9ks5CnEK75ph2jSfdGD6tr4SsjECevCAY0UC77MutdRJjDGMRL20kq6L6LRtCV0qpR5ZX9D1GmGLHCmUkCIBdpmDQCsftzYPROFz2n6ngsC95cwlHl4AXydA4erIdfkE1QZGOxn7C8Qmzoi2a1C6B3SlD77iAS110HGcu8TEAPOzv6pNEAcca6R7Ix7CNVOcwoBRnjJYNwHgssuOiXdrg">
+</div>
+<div>
+<h1 class="font-page-title text-page-title font-bold text-on-surface">DevDesk</h1>
+<span class="font-metadata text-metadata text-on-surface-variant">v2.4.0</span>
+</div>
+</div>
+<!-- Primary Tabs -->
+<ul class="flex flex-col flex-1 px-sm gap-[2px]">
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-md text-secondary hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">home</span>
+<span>Primary</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-md text-secondary hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">inbox</span>
+<span>Inbox</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-md text-secondary hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">domain</span>
+<span>Work</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-md text-secondary hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">account_tree</span>
+<span>Projects</span>
+</a>
+</li>
+<!-- Developer section mapped to Knowledge Base intent -->
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-md bg-on-primary-fixed-variant/10 text-primary border-l-2 border-primary font-bold" href="#">
+<span class="material-symbols-outlined text-[18px]">menu_book</span>
+<span>Knowledge Base</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-md text-secondary hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">terminal</span>
+<span>Terminal</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-md text-secondary hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">insights</span>
+<span>Insights</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-md text-secondary hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">monitoring</span>
+<span>Analytics</span>
+</a>
+</li>
+</ul>
+<!-- Footer -->
+<div class="px-sm mt-auto pt-lg">
+<button class="w-full flex items-center justify-center gap-sm bg-primary-container text-[#F3F6F9] py-sm px-md rounded mb-md hover:bg-primary-container/90 transition-colors">
+<span class="material-symbols-outlined text-[18px]">add</span>
+<span class="font-medium">New Project</span>
+</button>
+<ul class="flex flex-col gap-[2px]">
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-md text-secondary hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+<span>Settings</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-md text-secondary hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">menu_book</span>
+<span>Documentation</span>
+</a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="ml-sidebar_width flex flex-col flex-1 h-screen overflow-hidden bg-background">
+<!-- TopAppBar (Shared Component) -->
+<header class="h-[48px] flex-shrink-0 bg-background dark:bg-background border-b border-outline-variant flex justify-between items-center px-lg w-full z-10 transition-colors duration-100">
+<!-- Breadcrumb / Search Area (Left Side) -->
+<div class="flex items-center gap-sm flex-1">
+<div class="flex items-center gap-sm text-on-surface-variant font-metadata text-metadata">
+<span class="hover:text-primary cursor-pointer transition-colors">Developer</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-on-surface font-medium">Knowledge Base</span>
+</div>
+</div>
+<!-- Actions (Right Side) -->
+<div class="flex items-center gap-lg">
+<!-- Secondary Action -->
+<button class="px-md py-[4px] rounded border border-outline-variant text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest transition-colors font-metadata flex items-center gap-xs group">
+<span class="material-symbols-outlined text-[14px] group-hover:text-primary transition-colors">cloud_upload</span>
+                    Deploy
+                </button>
+<!-- Primary Action -->
+<button class="px-md py-[4px] rounded bg-primary-container text-[#F3F6F9] hover:bg-primary-container/90 transition-colors font-metadata flex items-center gap-xs shadow-sm">
+<span class="material-symbols-outlined text-[14px]">center_focus_strong</span>
+                    Focus On
+                </button>
+<div class="h-4 w-px bg-outline-variant mx-xs"></div>
+<!-- Icon Actions -->
+<div class="flex items-center gap-xs text-on-surface-variant">
+<button class="p-[4px] rounded hover:bg-surface-container-highest hover:text-primary transition-colors" title="History">
+<span class="material-symbols-outlined text-[18px]">history</span>
+</button>
+<button class="p-[4px] rounded hover:bg-surface-container-highest hover:text-primary transition-colors relative" title="Notifications">
+<span class="material-symbols-outlined text-[18px]">notifications</span>
+<span class="absolute top-[6px] right-[6px] w-[6px] h-[6px] bg-error rounded-full border-[1.5px] border-background"></span>
+</button>
+<button class="p-[4px] rounded hover:bg-surface-container-highest hover:text-primary transition-colors" title="Help">
+<span class="material-symbols-outlined text-[18px]">help_outline</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-1 overflow-hidden flex flex-col pt-lg">
+<!-- Page Header & Filters -->
+<div class="px-xl pb-md border-b border-outline-variant flex-shrink-0">
+<div class="flex justify-between items-end mb-md">
+<div>
+<h2 class="font-page-title text-page-title font-bold text-on-surface tracking-tight">Knowledge Base</h2>
+<p class="font-metadata text-metadata text-on-surface-variant mt-xs">A dedicated reference library for a developer.</p>
+</div>
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant text-[16px]">search</span>
+<input class="w-full bg-surface border border-outline-variant rounded-md py-sm pl-[32px] pr-sm text-body font-body text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-primary focus:ring-0 transition-colors h-[32px]" placeholder="Search KB (Ctrl+K)" type="text">
+<div class="absolute right-sm top-1/2 -translate-y-1/2 flex items-center justify-center h-[20px] px-[6px] rounded bg-surface-container border border-outline-variant font-mono-code text-[10px] text-on-surface-variant">
+                            Ctrl+K
+                        </div>
+</div>
+</div>
+<!-- Chip/Tab Filter Scroll Area -->
+<div class="relative w-full overflow-hidden">
+<div class="flex items-center gap-xs overflow-x-auto hide-scrollbar pb-xs pt-xs">
+<!-- Active Chip -->
+<button class="flex-shrink-0 px-md py-[4px] rounded-full bg-[#1A2A4A] border border-primary text-primary font-metadata transition-colors cursor-pointer">
+                            All
+                        </button>
+<!-- Inactive Chips -->
+<button class="flex-shrink-0 px-md py-[4px] rounded-full bg-surface-container text-secondary hover:bg-surface-container-highest transition-colors cursor-pointer font-metadata border border-transparent hover:border-outline-variant">
+                            .NET
+                        </button>
+<button class="flex-shrink-0 px-md py-[4px] rounded-full bg-surface-container text-secondary hover:bg-surface-container-highest transition-colors cursor-pointer font-metadata border border-transparent hover:border-outline-variant">
+                            C#
+                        </button>
+<button class="flex-shrink-0 px-md py-[4px] rounded-full bg-surface-container text-secondary hover:bg-surface-container-highest transition-colors cursor-pointer font-metadata border border-transparent hover:border-outline-variant">
+                            ASP.NET Core
+                        </button>
+<button class="flex-shrink-0 px-md py-[4px] rounded-full bg-surface-container text-secondary hover:bg-surface-container-highest transition-colors cursor-pointer font-metadata border border-transparent hover:border-outline-variant">
+                            EF Core
+                        </button>
+<button class="flex-shrink-0 px-md py-[4px] rounded-full bg-surface-container text-secondary hover:bg-surface-container-highest transition-colors cursor-pointer font-metadata border border-transparent hover:border-outline-variant">
+                            SQL Server
+                        </button>
+<button class="flex-shrink-0 px-md py-[4px] rounded-full bg-surface-container text-secondary hover:bg-surface-container-highest transition-colors cursor-pointer font-metadata border border-transparent hover:border-outline-variant">
+                            Docker
+                        </button>
+<button class="flex-shrink-0 px-md py-[4px] rounded-full bg-surface-container text-secondary hover:bg-surface-container-highest transition-colors cursor-pointer font-metadata border border-transparent hover:border-outline-variant">
+                            Kubernetes
+                        </button>
+<button class="flex-shrink-0 px-md py-[4px] rounded-full bg-surface-container text-secondary hover:bg-surface-container-highest transition-colors cursor-pointer font-metadata border border-transparent hover:border-outline-variant">
+                            Redis
+                        </button>
+<button class="flex-shrink-0 px-md py-[4px] rounded-full bg-surface-container text-secondary hover:bg-surface-container-highest transition-colors cursor-pointer font-metadata border border-transparent hover:border-outline-variant">
+                            RabbitMQ
+                        </button>
+<button class="flex-shrink-0 px-md py-[4px] rounded-full bg-surface-container text-secondary hover:bg-surface-container-highest transition-colors cursor-pointer font-metadata border border-transparent hover:border-outline-variant">
+                            Git
+                        </button>
+<button class="flex-shrink-0 px-md py-[4px] rounded-full bg-surface-container text-secondary hover:bg-surface-container-highest transition-colors cursor-pointer font-metadata border border-transparent hover:border-outline-variant">
+                            Linux
+                        </button>
+<button class="flex-shrink-0 px-md py-[4px] rounded-full bg-surface-container text-secondary hover:bg-surface-container-highest transition-colors cursor-pointer font-metadata border border-transparent hover:border-outline-variant">
+                            DevOps
+                        </button>
+<button class="flex-shrink-0 px-md py-[4px] rounded-full bg-surface-container text-secondary hover:bg-surface-container-highest transition-colors cursor-pointer font-metadata border border-transparent hover:border-outline-variant">
+                            Architecture
+                        </button>
+<button class="flex-shrink-0 px-md py-[4px] rounded-full bg-surface-container text-secondary hover:bg-surface-container-highest transition-colors cursor-pointer font-metadata border border-transparent hover:border-outline-variant">
+                            Security
+                        </button>
+<button class="flex-shrink-0 px-md py-[4px] rounded-full bg-surface-container text-secondary hover:bg-surface-container-highest transition-colors cursor-pointer font-metadata border border-transparent hover:border-outline-variant">
+                            Testing
+                        </button>
+</div>
+</div>
+</div>
+<!-- List Area -->
+<div class="flex-1 overflow-y-auto p-xl">
+<div class="max-w-5xl mx-auto flex flex-col gap-[4px]">
+<!-- Row 1 -->
+<div class="group flex items-center justify-between p-sm pl-md pr-lg rounded-md border border-transparent hover:border-outline-variant hover:bg-surface-container transition-all cursor-pointer bg-surface-container-lowest">
+<div class="flex items-center gap-lg">
+<span class="material-symbols-outlined text-[20px] text-primary">description</span>
+<div class="flex flex-col">
+<span class="font-section-title text-section-title text-on-surface group-hover:text-primary transition-colors">Optimizing Entity Framework Core Queries</span>
+<span class="font-metadata text-metadata text-on-surface-variant flex items-center gap-xs mt-[2px]">
+<span class="inline-flex items-center px-[6px] py-[2px] rounded bg-[#171D26] text-[#9AA6B2] font-mono-code text-[10px]">EF Core</span>
+<span>•</span>
+<span>Updated 2 days ago</span>
+</span>
+</div>
+</div>
+<div class="flex items-center gap-md opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="font-mono-code text-[11px] text-on-surface-variant">v7.0</span>
+<button class="p-xs rounded hover:bg-surface-container-highest text-secondary hover:text-on-surface">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="group flex items-center justify-between p-sm pl-md pr-lg rounded-md border border-transparent hover:border-outline-variant hover:bg-surface-container transition-all cursor-pointer bg-surface-container-lowest">
+<div class="flex items-center gap-lg">
+<span class="material-symbols-outlined text-[20px] text-tertiary">code</span>
+<div class="flex flex-col">
+<span class="font-section-title text-section-title text-on-surface group-hover:text-primary transition-colors">Dependency Injection Lifetimes in ASP.NET Core</span>
+<span class="font-metadata text-metadata text-on-surface-variant flex items-center gap-xs mt-[2px]">
+<span class="inline-flex items-center px-[6px] py-[2px] rounded bg-[#171D26] text-[#9AA6B2] font-mono-code text-[10px]">ASP.NET Core</span>
+<span>•</span>
+<span>Updated 1 week ago</span>
+</span>
+</div>
+</div>
+<div class="flex items-center gap-md opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="font-mono-code text-[11px] text-on-surface-variant">v8.0</span>
+<button class="p-xs rounded hover:bg-surface-container-highest text-secondary hover:text-on-surface">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+</div>
+</div>
+<!-- Row 3 -->
+<div class="group flex items-center justify-between p-sm pl-md pr-lg rounded-md border border-transparent hover:border-outline-variant hover:bg-surface-container transition-all cursor-pointer bg-surface-container-lowest">
+<div class="flex items-center gap-lg">
+<span class="material-symbols-outlined text-[20px] text-secondary">memory</span>
+<div class="flex flex-col">
+<span class="font-section-title text-section-title text-on-surface group-hover:text-primary transition-colors">Docker Multi-Stage Builds for .NET Applications</span>
+<span class="font-metadata text-metadata text-on-surface-variant flex items-center gap-xs mt-[2px]">
+<span class="inline-flex items-center px-[6px] py-[2px] rounded bg-[#171D26] text-[#9AA6B2] font-mono-code text-[10px]">Docker</span>
+<span>•</span>
+<span>Updated 3 weeks ago</span>
+</span>
+</div>
+</div>
+<div class="flex items-center gap-md opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="font-mono-code text-[11px] text-on-surface-variant">v1.2</span>
+<button class="p-xs rounded hover:bg-surface-container-highest text-secondary hover:text-on-surface">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+</div>
+</div>
+<!-- Row 4 -->
+<div class="group flex items-center justify-between p-sm pl-md pr-lg rounded-md border border-transparent hover:border-outline-variant hover:bg-surface-container transition-all cursor-pointer bg-surface-container-lowest">
+<div class="flex items-center gap-lg">
+<span class="material-symbols-outlined text-[20px] text-secondary">architecture</span>
+<div class="flex flex-col">
+<span class="font-section-title text-section-title text-on-surface group-hover:text-primary transition-colors">Clean Architecture Boundaries &amp; Interfaces</span>
+<span class="font-metadata text-metadata text-on-surface-variant flex items-center gap-xs mt-[2px]">
+<span class="inline-flex items-center px-[6px] py-[2px] rounded bg-[#171D26] text-[#9AA6B2] font-mono-code text-[10px]">Architecture</span>
+<span>•</span>
+<span>Updated 1 month ago</span>
+</span>
+</div>
+</div>
+<div class="flex items-center gap-md opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="font-mono-code text-[11px] text-on-surface-variant">v2.1</span>
+<button class="p-xs rounded hover:bg-surface-container-highest text-secondary hover:text-on-surface">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+</div>
+</div>
+<!-- Row 5 -->
+<div class="group flex items-center justify-between p-sm pl-md pr-lg rounded-md border border-transparent hover:border-outline-variant hover:bg-surface-container transition-all cursor-pointer bg-surface-container-lowest">
+<div class="flex items-center gap-lg">
+<span class="material-symbols-outlined text-[20px] text-error">security</span>
+<div class="flex flex-col">
+<span class="font-section-title text-section-title text-on-surface group-hover:text-primary transition-colors">Implementing JWT Authentication with Refresh Tokens</span>
+<span class="font-metadata text-metadata text-on-surface-variant flex items-center gap-xs mt-[2px]">
+<span class="inline-flex items-center px-[6px] py-[2px] rounded bg-[#171D26] text-[#9AA6B2] font-mono-code text-[10px]">Security</span>
+<span>•</span>
+<span>Updated 2 months ago</span>
+</span>
+</div>
+</div>
+<div class="flex items-center gap-md opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="font-mono-code text-[11px] text-on-surface-variant">v3.0</span>
+<button class="p-xs rounded hover:bg-surface-container-highest text-secondary hover:text-on-surface">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+</div>
+</div>
+<!-- Hidden empty state (demonstrating capability) -->
+<div class="hidden flex-col items-center justify-center py-xxl mt-xl border border-dashed border-outline-variant rounded-lg bg-surface-container-lowest/50">
+<span class="material-symbols-outlined text-[32px] text-outline mb-md">inventory_2</span>
+<p class="font-section-title text-section-title text-on-surface-variant">No knowledge entries in this category.</p>
+<p class="font-metadata text-metadata text-outline mt-xs">Create a new entry to start building your library.</p>
+<button class="mt-lg px-md py-sm rounded bg-surface-container-highest hover:bg-surface-variant border border-outline-variant text-on-surface font-metadata flex items-center gap-xs transition-colors">
+<span class="material-symbols-outlined text-[16px]">add</span>
+                            New Entry
+                        </button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

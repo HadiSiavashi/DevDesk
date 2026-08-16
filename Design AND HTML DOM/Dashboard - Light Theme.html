@@ -1,0 +1,250 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>DevDesk - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#1A222E",
+                        "secondary-fixed": "#42474f",
+                        "inverse-surface": "#09151d",
+                        "outline-variant": "#C4CDD8",
+                        "surface-tint": "#3B6FE0",
+                        "surface-container": "#DCE2EA",
+                        "on-background": "#1A222E",
+                        "on-secondary-fixed": "#ffffff",
+                        "primary": "#3B6FE0",
+                        "inverse-on-surface": "#f1f4f9",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error-container": "#410002",
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "on-surface-variant": "#44474f",
+                        "surface": "#F4F6F9",
+                        "on-tertiary-fixed-variant": "#4d2700",
+                        "primary-fixed": "#d8e2ff",
+                        "background": "#E8ECF1",
+                        "tertiary-container": "#ffdcbf",
+                        "tertiary-fixed-dim": "#ffb874",
+                        "on-primary-fixed-variant": "#001a41",
+                        "inverse-primary": "#b2c5ff",
+                        "on-primary-fixed": "#001a41",
+                        "tertiary": "#8c4e00",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed": "#ffdcbf",
+                        "surface-container-highest": "#C4CDD8",
+                        "on-secondary-fixed-variant": "#44474f",
+                        "outline": "#74777f",
+                        "primary-container": "#d8e2ff",
+                        "secondary-fixed-dim": "#c2c6d0",
+                        "on-secondary-container": "#111c2b",
+                        "on-tertiary-container": "#2d1600",
+                        "surface-bright": "#F4F6F9",
+                        "primary-fixed-dim": "#5b8cff",
+                        "on-primary-container": "#001a41",
+                        "on-secondary": "#ffffff",
+                        "surface-container-high": "#e0e2ec",
+                        "surface-container-low": "#F4F6F9",
+                        "error-container": "#ffdad6",
+                        "secondary": "#535f70",
+                        "surface-variant": "#e0e2ec",
+                        "on-tertiary-fixed": "#2d1600",
+                        "secondary-container": "#d7e3f8",
+                        "surface-dim": "#d8dae4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sidebar_width": "240px",
+                        "xs": "4px",
+                        "gutter": "16px",
+                        "xxl": "32px",
+                        "md": "12px",
+                        "xl": "24px",
+                        "lg": "16px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "body": ["Geist"],
+                        "mono-code": ["JetBrains Mono"],
+                        "section-title": ["Geist"],
+                        "metadata": ["Geist"],
+                        "page-title": ["Geist"],
+                        "mono-timer": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "body": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "mono-code": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "section-title": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "metadata": ["11px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "page-title": ["19px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "mono-timer": ["14px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Geist', sans-serif; }
+    </style>
+</head>
+<body class="bg-background text-on-surface h-screen overflow-hidden flex">
+<!-- SideNavBar -->
+<nav class="w-sidebar_width h-full fixed left-0 top-0 border-r border-outline-variant bg-surface-container-low flex flex-col py-lg space-y-xs">
+<div class="px-lg pb-lg mb-sm border-b border-outline-variant">
+<h1 class="font-page-title text-page-title font-bold text-on-surface">DevDesk</h1>
+<p class="font-metadata text-metadata text-on-surface-variant mt-xs">Productivity Engine</p>
+</div>
+<div class="flex-1 overflow-y-auto px-sm space-y-xs">
+<a class="flex items-center px-md py-sm rounded-lg bg-primary-container/20 text-primary border-l-2 border-primary" href="#">
+<span class="material-symbols-outlined mr-md text-primary" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-section-title text-section-title">Dashboard</span>
+</a>
+<a class="flex items-center px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">today</span>
+<span class="font-section-title text-section-title">My Day</span>
+</a>
+<a class="flex items-center px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">check_circle</span>
+<span class="font-section-title text-section-title">Tasks</span>
+</a>
+<a class="flex items-center px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">timer</span>
+<span class="font-section-title text-section-title">Focus</span>
+</a>
+<a class="flex items-center px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">folder</span>
+<span class="font-section-title text-section-title">Projects</span>
+</a>
+</div>
+<div class="px-sm pt-sm border-t border-outline-variant mt-auto">
+<a class="flex items-center px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined mr-md">settings</span>
+<span class="font-section-title text-section-title">Settings</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="ml-sidebar_width flex-1 flex flex-col h-full bg-background relative">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-sidebar_width right-0 z-50 px-lg h-[48px] flex items-center justify-between border-b border-outline-variant bg-background">
+<div class="flex items-center space-x-sm">
+<!-- Search could go here -->
+</div>
+<div class="flex items-center space-x-md">
+<button class="text-on-surface-variant hover:bg-surface-container-highest p-sm rounded-full transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="bg-primary text-on-primary px-lg py-sm rounded flex items-center font-section-title text-section-title cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined mr-xs text-[18px]">timer</span> Focus
+                </button>
+</div>
+</header>
+<!-- Scrollable Dashboard Content -->
+<div class="flex-1 overflow-y-auto mt-[48px] p-gutter md:p-xl lg:p-xxl">
+<div class="mb-xl">
+<h2 class="font-page-title text-page-title text-on-surface">Good morning, Developer.</h2>
+<p class="font-body text-body text-on-surface-variant mt-xs">Here's a summary of your workspace today.</p>
+</div>
+<!-- Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<!-- Focus Timer Widget -->
+<div class="col-span-1 bg-surface border border-outline-variant rounded-xl p-lg flex flex-col items-center justify-center">
+<h3 class="font-section-title text-section-title text-on-surface-variant mb-md w-full text-left">Current Focus</h3>
+<div class="font-mono-timer text-[48px] text-primary tracking-widest my-xl font-medium">25:00</div>
+<p class="font-body text-body text-on-surface mb-lg">Task: Implement API Gateway</p>
+<div class="flex space-x-sm w-full">
+<button class="flex-1 bg-primary text-on-primary font-section-title text-section-title py-sm rounded flex justify-center items-center">
+<span class="material-symbols-outlined mr-xs">play_arrow</span> Start
+                        </button>
+<button class="border border-outline-variant text-on-surface px-md rounded flex justify-center items-center hover:bg-surface-container-highest">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+</div>
+<!-- Task Summary Widget -->
+<div class="col-span-1 md:col-span-2 bg-surface border border-outline-variant rounded-xl p-lg flex flex-col">
+<div class="flex justify-between items-center mb-lg">
+<h3 class="font-section-title text-section-title text-on-surface-variant">Task Summary</h3>
+<a class="font-metadata text-metadata text-primary hover:underline" href="#">View All</a>
+</div>
+<div class="flex space-x-md mb-lg">
+<div class="flex-1 bg-background border border-outline-variant rounded-lg p-md text-center">
+<div class="font-page-title text-page-title text-on-surface">12</div>
+<div class="font-metadata text-metadata text-on-surface-variant">Open</div>
+</div>
+<div class="flex-1 bg-background border border-outline-variant rounded-lg p-md text-center">
+<div class="font-page-title text-page-title text-primary">3</div>
+<div class="font-metadata text-metadata text-on-surface-variant">In Progress</div>
+</div>
+<div class="flex-1 bg-background border border-outline-variant rounded-lg p-md text-center opacity-70">
+<div class="font-page-title text-page-title text-on-surface">8</div>
+<div class="font-metadata text-metadata text-on-surface-variant">Done</div>
+</div>
+</div>
+<div class="space-y-xs flex-1">
+<!-- Task Item -->
+<div class="flex items-start bg-background border border-outline-variant rounded p-sm">
+<span class="material-symbols-outlined text-outline mr-sm cursor-pointer mt-[2px]">radio_button_unchecked</span>
+<div class="flex-1">
+<p class="font-body text-body text-on-surface line-clamp-1">Refactor authentication middleware</p>
+<div class="flex space-x-sm mt-xs">
+<span class="bg-surface-container-highest px-xs rounded font-metadata text-metadata text-on-surface-variant">Backend</span>
+<span class="text-error font-metadata text-metadata flex items-center"><span class="material-symbols-outlined text-[12px] mr-[2px]">flag</span> High</span>
+</div>
+</div>
+</div>
+<!-- Task Item -->
+<div class="flex items-start bg-background border border-outline-variant rounded p-sm">
+<span class="material-symbols-outlined text-outline mr-sm cursor-pointer mt-[2px]">radio_button_unchecked</span>
+<div class="flex-1">
+<p class="font-body text-body text-on-surface line-clamp-1">Update dependencies</p>
+<div class="flex space-x-sm mt-xs">
+<span class="bg-surface-container-highest px-xs rounded font-metadata text-metadata text-on-surface-variant">Maintenance</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Recent Activity -->
+<div class="col-span-1 md:col-span-3 bg-surface border border-outline-variant rounded-xl p-lg">
+<h3 class="font-section-title text-section-title text-on-surface-variant mb-lg">Recent Activity</h3>
+<div class="space-y-md">
+<!-- Activity Item -->
+<div class="flex items-center space-x-md">
+<div class="w-8 h-8 rounded bg-primary-container text-on-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]">commit</span>
+</div>
+<div class="flex-1">
+<p class="font-body text-body text-on-surface"><span class="font-section-title">Pushed to</span> main: <span class="font-mono-code text-mono-code text-on-surface-variant bg-background px-xs rounded">fix/auth-bug</span></p>
+<p class="font-metadata text-metadata text-on-surface-variant mt-[2px]">2 hours ago</p>
+</div>
+</div>
+<!-- Activity Item -->
+<div class="flex items-center space-x-md">
+<div class="w-8 h-8 rounded bg-surface-container-highest text-on-surface flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+</div>
+<div class="flex-1">
+<p class="font-body text-body text-on-surface"><span class="font-section-title">Completed task:</span> Design system review</p>
+<p class="font-metadata text-metadata text-on-surface-variant mt-[2px]">4 hours ago</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

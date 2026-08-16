@@ -1,0 +1,328 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>DevDesk - Habits</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface": "#09151d",
+                      "inverse-primary": "#1857c8",
+                      "secondary-fixed": "#dee2ed",
+                      "error": "#ffb4ab",
+                      "surface-tint": "#b2c5ff",
+                      "on-background": "#d8e4f1",
+                      "on-surface": "#d8e4f1",
+                      "on-secondary": "#2c3138",
+                      "outline-variant": "#434653",
+                      "on-primary-fixed": "#001847",
+                      "on-surface-variant": "#c3c6d6",
+                      "tertiary-fixed-dim": "#ffb874",
+                      "surface-container-high": "#202b35",
+                      "on-secondary-fixed": "#171c23",
+                      "surface-variant": "#2b3640",
+                      "on-tertiary": "#4b2800",
+                      "surface-container-lowest": "#040f18",
+                      "surface-dim": "#09151d",
+                      "on-tertiary-container": "#412200",
+                      "secondary-fixed-dim": "#c2c6d0",
+                      "secondary-container": "#474c54",
+                      "background": "#09151d",
+                      "secondary": "#c2c6d0",
+                      "on-error-container": "#ffdad6",
+                      "on-error": "#690005",
+                      "inverse-surface": "#d8e4f1",
+                      "tertiary-fixed": "#ffdcbf",
+                      "tertiary": "#ffb874",
+                      "on-tertiary-fixed-variant": "#6a3b00",
+                      "on-primary": "#002c72",
+                      "on-primary-container": "#002665",
+                      "primary": "#b2c5ff",
+                      "surface-bright": "#2f3a44",
+                      "outline": "#8d909f",
+                      "on-primary-fixed-variant": "#0040a0",
+                      "inverse-on-surface": "#26323b",
+                      "on-secondary-container": "#b7bcc6",
+                      "surface-container-highest": "#2b3640",
+                      "on-secondary-fixed-variant": "#42474f",
+                      "tertiary-container": "#d47b00",
+                      "primary-container": "#5b8cff",
+                      "on-tertiary-fixed": "#2d1600",
+                      "primary-fixed-dim": "#b2c5ff",
+                      "primary-fixed": "#dae2ff",
+                      "error-container": "#93000a",
+                      "surface-container-low": "#111d26",
+                      "surface-container": "#15212a"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "sm": "8px",
+                      "sidebar_width": "240px",
+                      "lg": "16px",
+                      "xxl": "32px",
+                      "gutter": "16px",
+                      "xl": "24px",
+                      "xs": "4px",
+                      "md": "12px"
+              },
+              "fontFamily": {
+                      "mono-code": [
+                              "JetBrains Mono"
+                      ],
+                      "metadata": [
+                              "Geist"
+                      ],
+                      "mono-timer": [
+                              "JetBrains Mono"
+                      ],
+                      "page-title": [
+                              "Geist"
+                      ],
+                      "section-title": [
+                              "Geist"
+                      ],
+                      "body": [
+                              "Geist"
+                      ]
+              },
+              "fontSize": {
+                      "mono-code": [
+                              "12px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "metadata": [
+                              "11px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "mono-timer": [
+                              "14px",
+                              {
+                                      "lineHeight": "14px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "page-title": [
+                              "19px",
+                              {
+                                      "lineHeight": "24px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "section-title": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body": [
+                              "13px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        body {
+            background-color: #0B0F14; /* Using the specified level 0 background */
+            color: #d8e4f1;
+        }
+      </style>
+</head>
+<body class="font-body text-body antialiased flex">
+<!-- SideNavBar -->
+<nav class="bg-surface-container-low dark:bg-surface-container-low text-primary dark:text-primary font-body text-body fixed left-0 top-0 h-full w-sidebar_width border-r border-outline-variant dark:border-outline-variant flex flex-col z-20">
+<div class="p-lg border-b border-outline-variant flex items-center gap-sm">
+<div class="w-8 h-8 rounded bg-primary-container flex items-center justify-center text-on-primary-container font-page-title text-page-title font-bold">D</div>
+<div>
+<div class="text-page-title font-page-title text-on-surface dark:text-on-surface">DevDesk</div>
+<div class="text-metadata font-metadata text-on-surface-variant">Developer Workspace</div>
+</div>
+</div>
+<div class="p-lg">
+<button class="w-full bg-[#5B8CFF] text-[#F3F6F9] py-sm px-md rounded flex items-center justify-center gap-sm hover:bg-opacity-90 transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+                New Entry
+                <span class="ml-auto text-[#09151D] bg-white bg-opacity-20 px-1 rounded font-mono-code text-metadata">Ctrl+N</span>
+</button>
+</div>
+<div class="flex-1 py-sm">
+<ul class="space-y-xs px-sm">
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant dark:hover:bg-surface-variant transition-colors duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined">assignment</span>
+                        Tasks
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant dark:hover:bg-surface-variant transition-colors duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined">description</span>
+                        Notes
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant dark:hover:bg-surface-variant transition-colors duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined">ads_click</span>
+                        Goals
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm bg-[#1A2A4A] text-primary dark:text-primary border-l-2 border-primary transition-colors duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">repeat</span>
+                        Habits
+                    </a>
+</li>
+</ul>
+</div>
+<div class="p-sm mt-auto border-t border-outline-variant">
+<ul class="space-y-xs">
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant dark:hover:bg-surface-variant transition-colors duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined">settings</span>
+                        Settings
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant dark:hover:bg-surface-variant transition-colors duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+                        Support
+                    </a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-surface text-primary dark:text-primary font-section-title text-section-title fixed top-0 right-0 h-14 w-[calc(100%-240px)] border-b border-outline-variant dark:border-outline-variant flex items-center justify-between px-xl z-10">
+<div class="flex items-center gap-xl">
+<!-- Navigation Links (Contextual to Habits/General) -->
+<nav class="flex gap-lg">
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary cursor-pointer transition-opacity duration-200" href="#">Dashboard</a>
+<a class="text-primary dark:text-primary font-bold border-b-2 border-primary h-14 flex items-center cursor-pointer transition-opacity duration-200" href="#">Analytics</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary cursor-pointer transition-opacity duration-200" href="#">Archive</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant hover:text-primary p-xs rounded transition-colors duration-200 flex items-center gap-xs">
+<span class="material-symbols-outlined">sync</span>
+<span class="font-metadata text-metadata">Sync</span>
+</button>
+<div class="h-4 w-px bg-outline-variant mx-xs"></div>
+<button class="text-on-surface-variant hover:text-primary p-xs rounded transition-colors duration-200">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary p-xs rounded transition-colors duration-200">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary p-xs rounded transition-colors duration-200 ml-sm">
+<img class="w-6 h-6 rounded-full object-cover border border-outline-variant" data-alt="A small, professional avatar placeholder image, suitable for a dark-mode developer dashboard profile picture. Minimalist, geometric style, subtle blue tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuClvwheeRF3Ss1ObohXRnb42icxpTMl8kESMPLzPaf0UleY_Kbmhf6cbZlz9uwreyJgv42jnBb_pPQkK6Gl2aG06ZHVni8o477P9nNgxmVIgdMcS4zpe2yfS8w9ce1Elmowc4ehtHfMkcdeQJ-lkDqF7ROUZxjJmg-B9E0H3T6t05OARxRCSYT5y8EZc4m1mEZ82Evy1xAKwI-patGZcKt_l-v8nv9t9d02F8Q3vPK1u3uBqUpzkNOdRA">
+</button>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="ml-sidebar_width mt-[56px] p-xxl w-full min-h-screen">
+<div class="max-w-4xl mx-auto">
+<div class="mb-xl flex items-center justify-between">
+<div>
+<h1 class="font-page-title text-page-title text-on-surface mb-xs">Daily Habits</h1>
+<p class="font-body text-body text-on-surface-variant">Track your daily routines.</p>
+</div>
+<div class="font-mono-timer text-mono-timer text-on-surface bg-surface-variant px-md py-sm rounded border border-outline-variant flex items-center gap-sm">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+                    OCT 24
+                </div>
+</div>
+<!-- Habits List container -->
+<div class="bg-[#11161D] border border-outline-variant rounded-lg overflow-hidden">
+<!-- Headers -->
+<div class="grid grid-cols-[1fr_100px_100px_60px_40px] gap-lg px-xl py-sm border-b border-outline-variant bg-[#171D26] text-metadata font-metadata text-on-surface-variant uppercase tracking-wider">
+<div>Habit</div>
+<div class="text-right">Streak</div>
+<div class="text-right">Monthly</div>
+<div class="text-center">Today</div>
+<div></div>
+</div>
+<!-- Habit Row: Normal -->
+<div class="grid grid-cols-[1fr_100px_100px_60px_40px] gap-lg items-center px-xl py-md border-b border-outline-variant hover:bg-[#171D26] group transition-colors">
+<div class="font-body text-body text-on-surface truncate">Read Documentation</div>
+<div class="font-mono-code text-mono-code text-on-surface-variant text-right">4 days</div>
+<div class="font-mono-code text-mono-code text-on-surface-variant text-right">18/30</div>
+<div class="flex justify-center">
+<input class="w-4 h-4 rounded border-[#26303B] bg-[#0B0F14] text-primary focus:ring-primary focus:ring-offset-0 focus:ring-offset-transparent cursor-pointer" type="checkbox">
+</div>
+<div class="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-outline hover:text-error transition-colors">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</div>
+<!-- Habit Row: Normal -->
+<div class="grid grid-cols-[1fr_100px_100px_60px_40px] gap-lg items-center px-xl py-md border-b border-outline-variant hover:bg-[#171D26] group transition-colors">
+<div class="font-body text-body text-on-surface truncate">Code Review (3 PRs)</div>
+<div class="font-mono-code text-mono-code text-on-surface-variant text-right">0 days</div>
+<div class="font-mono-code text-mono-code text-on-surface-variant text-right">12/30</div>
+<div class="flex justify-center">
+<input class="w-4 h-4 rounded border-[#26303B] bg-[#0B0F14] text-primary focus:ring-primary focus:ring-offset-0 focus:ring-offset-transparent cursor-pointer" type="checkbox">
+</div>
+<div class="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-outline hover:text-error transition-colors">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</div>
+<!-- Habit Row: Completed Today -->
+<div class="grid grid-cols-[1fr_100px_100px_60px_40px] gap-lg items-center px-xl py-md border-b border-outline-variant bg-[#1A2A4A] bg-opacity-20 group transition-colors">
+<div class="font-body text-body text-on-surface-variant line-through truncate opacity-70">Morning Standup Prep</div>
+<div class="font-mono-code text-mono-code text-on-surface-variant text-right opacity-70">12 days</div>
+<div class="font-mono-code text-mono-code text-on-surface-variant text-right opacity-70">22/30</div>
+<div class="flex justify-center">
+<input checked="" class="w-4 h-4 rounded border-primary bg-primary text-primary focus:ring-primary focus:ring-offset-0 focus:ring-offset-transparent cursor-pointer opacity-70" type="checkbox">
+</div>
+<div class="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-outline hover:text-error transition-colors">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</div>
+<!-- Empty State Example (Commented out logically, showing structure if list were empty) -->
+<!-- 
+                <div class="py-xxl px-xl text-center flex flex-col items-center justify-center border-b border-outline-variant">
+                    <span class="material-symbols-outlined text-outline-variant text-[48px] mb-sm">fact_check</span>
+                    <div class="font-section-title text-section-title text-on-surface-variant">No habits yet</div>
+                    <div class="font-body text-body text-outline mt-xs mb-lg">Start tracking your daily routines.</div>
+                    <button class="border border-outline-variant text-on-surface hover:bg-surface-variant px-lg py-sm rounded font-body text-body transition-colors">Add Habit</button>
+                </div>
+                -->
+</div>
+<div class="mt-md text-right">
+<button class="text-primary hover:text-inverse-primary text-metadata font-metadata transition-colors inline-flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">add</span>
+                    Add new habit
+                 </button>
+</div>
+</div>
+</main>
+</body></html>

@@ -1,0 +1,363 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>DevDesk - Note Editor</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary": "#c2c6d0",
+                      "surface": "#09151d",
+                      "secondary-container": "#474c54",
+                      "on-tertiary-container": "#412200",
+                      "on-primary-fixed": "#001847",
+                      "on-secondary": "#2c3138",
+                      "surface-bright": "#2f3a44",
+                      "outline": "#8d909f",
+                      "primary-fixed-dim": "#b2c5ff",
+                      "on-tertiary-fixed": "#2d1600",
+                      "surface-container": "#15212a",
+                      "on-primary-container": "#002665",
+                      "tertiary-fixed": "#ffdcbf",
+                      "on-tertiary-fixed-variant": "#6a3b00",
+                      "error": "#ffb4ab",
+                      "on-surface-variant": "#c3c6d6",
+                      "on-primary": "#002c72",
+                      "surface-container-high": "#202b35",
+                      "surface-tint": "#b2c5ff",
+                      "tertiary-container": "#d47b00",
+                      "inverse-surface": "#d8e4f1",
+                      "secondary-fixed-dim": "#c2c6d0",
+                      "secondary-fixed": "#dee2ed",
+                      "on-secondary-container": "#b7bcc6",
+                      "primary-fixed": "#dae2ff",
+                      "surface-dim": "#09151d",
+                      "on-secondary-fixed-variant": "#42474f",
+                      "inverse-primary": "#1857c8",
+                      "primary": "#b2c5ff",
+                      "on-error-container": "#ffdad6",
+                      "surface-container-highest": "#2b3640",
+                      "on-surface": "#d8e4f1",
+                      "inverse-on-surface": "#26323b",
+                      "on-primary-fixed-variant": "#0040a0",
+                      "surface-variant": "#2b3640",
+                      "error-container": "#93000a",
+                      "on-background": "#d8e4f1",
+                      "background": "#09151d",
+                      "on-secondary-fixed": "#171c23",
+                      "tertiary": "#ffb874",
+                      "surface-container-lowest": "#040f18",
+                      "surface-container-low": "#111d26",
+                      "on-tertiary": "#4b2800",
+                      "primary-container": "#5b8cff",
+                      "outline-variant": "#434653",
+                      "on-error": "#690005",
+                      "tertiary-fixed-dim": "#ffb874"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "xl": "24px",
+                      "lg": "16px",
+                      "sidebar_width": "240px",
+                      "xxl": "32px",
+                      "md": "12px",
+                      "gutter": "16px",
+                      "sm": "8px",
+                      "xs": "4px"
+              },
+              "fontFamily": {
+                      "body": [
+                              "Geist"
+                      ],
+                      "mono-timer": [
+                              "JetBrains Mono"
+                      ],
+                      "mono-code": [
+                              "JetBrains Mono"
+                      ],
+                      "metadata": [
+                              "Geist"
+                      ],
+                      "page-title": [
+                              "Geist"
+                      ],
+                      "section-title": [
+                              "Geist"
+                      ]
+              },
+              "fontSize": {
+                      "body": [
+                              "13px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "mono-timer": [
+                              "14px",
+                              {
+                                      "lineHeight": "14px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "mono-code": [
+                              "12px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "metadata": [
+                              "11px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "page-title": [
+                              "19px",
+                              {
+                                      "lineHeight": "24px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "section-title": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined[data-weight="fill"] {
+          font-variation-settings: 'FILL' 1;
+        }
+        
+        /* Custom scrollbar matching style guide */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #26303B;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #434653;
+        }
+
+        /* Editor specific styles to match "Surface Alt" concept (#171D26) */
+        .editor-surface {
+            background-color: #171D26; 
+        }
+        
+        /* Input focus outline override */
+        textarea:focus, input:focus {
+            outline: none;
+            box-shadow: none;
+        }
+        
+        /* Markdown minimal styling */
+        .prose-custom h1 { font-size: 24px; font-weight: 600; margin-bottom: 16px; color: #d8e4f1; }
+        .prose-custom h2 { font-size: 18px; font-weight: 600; margin-top: 24px; margin-bottom: 12px; color: #d8e4f1; border-bottom: 1px solid #26303B; padding-bottom: 4px; }
+        .prose-custom p { margin-bottom: 12px; line-height: 1.6; }
+        .prose-custom ul { list-style-type: disc; padding-left: 20px; margin-bottom: 12px; }
+        .prose-custom code { background-color: #09151d; border: 1px solid #26303B; padding: 2px 4px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #b2c5ff; }
+        .prose-custom pre { background-color: #09151d; border: 1px solid #26303B; padding: 12px; border-radius: 4px; overflow-x: auto; margin-bottom: 16px; }
+        .prose-custom pre code { background: transparent; border: none; padding: 0; color: #c3c6d6; }
+      </style>
+</head>
+<body class="bg-background text-on-surface font-body h-screen flex overflow-hidden">
+<!-- Suppressed SideNavBar and TopAppBar as this is a focused, linear/transactional task (editing a note). 
+         The prompt implies a full workspace taking over the view, with a specific "Back to Notes" action. -->
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col h-full bg-background relative z-0">
+<!-- Editor Header -->
+<header class="h-[56px] flex-shrink-0 flex items-center justify-between px-lg border-b border-outline-variant bg-surface-container-low z-10">
+<div class="flex items-center gap-md">
+<button class="flex items-center gap-xs text-secondary hover:text-on-surface transition-colors py-xs px-sm rounded hover:bg-surface-container-high border border-transparent">
+<span class="material-symbols-outlined text-[18px]" data-icon="arrow_back">arrow_back</span>
+<span class="font-body text-body font-medium">Notes</span>
+<span class="font-mono-code text-mono-code text-outline ml-xs">Esc</span>
+</button>
+<div class="h-4 w-px bg-outline-variant mx-xs"></div>
+<!-- Title Edit -->
+<input class="bg-transparent border-none text-on-surface font-page-title text-page-title focus:ring-0 w-[400px] placeholder-on-surface-variant/50" placeholder="Note title..." type="text" value="Architecture Proposal: Event-Driven Microservices">
+<!-- KB Badge -->
+<div class="flex items-center gap-xs bg-primary-container/10 border border-primary-container/30 px-sm py-[2px] rounded text-primary">
+<span class="material-symbols-outlined text-[14px]" data-icon="auto_stories" data-weight="fill">auto_stories</span>
+<span class="font-metadata text-metadata font-medium tracking-wide">KNOWLEDGE BASE</span>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<!-- Pinned Toggle -->
+<button class="flex items-center gap-xs text-secondary hover:text-on-surface py-xs px-sm rounded transition-colors group">
+<span class="material-symbols-outlined text-[18px] group-hover:text-primary transition-colors" data-icon="push_pin">push_pin</span>
+<span class="font-body text-body">Pin</span>
+</button>
+<button class="flex items-center gap-xs text-secondary hover:text-on-surface py-xs px-sm rounded transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="more_horiz">more_horiz</span>
+</button>
+<button class="bg-primary-container text-on-primary-container hover:bg-primary-fixed transition-colors font-body text-body font-medium px-md py-xs rounded flex items-center gap-xs ml-sm">
+<span class="material-symbols-outlined text-[16px]" data-icon="save" data-weight="fill">save</span>
+                    Save
+                    <span class="font-mono-code text-[10px] opacity-70 ml-xs">⌘S</span>
+</button>
+</div>
+</header>
+<!-- Workspace Area -->
+<div class="flex-1 flex overflow-hidden">
+<!-- Editor Canvas -->
+<div class="flex-1 overflow-y-auto editor-surface relative">
+<!-- Editor content -->
+<div class="max-w-[800px] mx-auto px-xxl py-xl min-h-full">
+<div class="prose-custom font-body text-body text-on-surface-variant w-full outline-none">
+<h1>Executive Summary</h1>
+<p>This document outlines the transition plan from our current monolithic backend architecture to an event-driven microservices model. The primary driver for this change is the need for independent scaling of the <code>PaymentProcessing</code> and <code>UserManagement</code> domains.</p>
+<h2>Current Limitations</h2>
+<ul>
+<li>Tight coupling between deployment cycles.</li>
+<li>Shared database bottlenecks during peak load (Black Friday, End of Month).</li>
+<li>Difficult to onboard new engineers to a 2M+ LOC codebase.</li>
+</ul>
+<h2>Proposed Architecture</h2>
+<p>We will introduce Apache Kafka as the central event bus. Services will communicate asynchronously by publishing and subscribing to domain-specific topics.</p>
+<pre><code>// Example Event Schema (UserCreated)
+{
+  "eventId": "evt_01H1X9...",
+  "eventType": "UserCreated",
+  "timestamp": "2023-10-27T10:00:00Z",
+  "payload": {
+    "userId": "usr_9982",
+    "email": "newuser@example.com",
+    "region": "US-EAST-1"
+  }
+}</code></pre>
+<p>The <code>NotificationService</code> will subscribe to the <code>UserCreated</code> topic to trigger welcome emails, completely decoupled from the main user registration flow.</p>
+<h2>Migration Phases</h2>
+<ul>
+<li><strong>Phase 1:</strong> Deploy Kafka cluster and implement event publishing in the monolith (Shadow Mode).</li>
+<li><strong>Phase 2:</strong> Extract <code>NotificationService</code> as the first pilot consumer.</li>
+<li><strong>Phase 3:</strong> Break out <code>PaymentProcessing</code>.</li>
+</ul>
+</div>
+<!-- Space at bottom for comfortable scrolling -->
+<div class="h-32"></div>
+</div>
+</div>
+<!-- Sidebar Properties Panel -->
+<aside class="w-[280px] flex-shrink-0 bg-surface-container border-l border-outline-variant flex flex-col overflow-y-auto">
+<div class="p-lg border-b border-outline-variant">
+<h3 class="font-section-title text-section-title text-on-surface mb-md">Properties</h3>
+<div class="flex flex-col gap-sm">
+<!-- Property Item -->
+<div class="flex items-start justify-between group cursor-pointer hover:bg-surface-container-high p-xs -mx-xs rounded transition-colors">
+<div class="flex items-center gap-xs text-on-surface-variant w-[100px]">
+<span class="material-symbols-outlined text-[16px]" data-icon="folder">folder</span>
+<span class="font-metadata text-metadata">Project</span>
+</div>
+<div class="flex-1 text-right">
+<span class="font-body text-body text-primary hover:underline">Platform v3</span>
+</div>
+</div>
+<!-- Property Item -->
+<div class="flex items-start justify-between group cursor-pointer hover:bg-surface-container-high p-xs -mx-xs rounded transition-colors">
+<div class="flex items-center gap-xs text-on-surface-variant w-[100px]">
+<span class="material-symbols-outlined text-[16px]" data-icon="sell">sell</span>
+<span class="font-metadata text-metadata">Tags</span>
+</div>
+<div class="flex-1 flex flex-wrap justify-end gap-xs">
+<span class="bg-surface-container-highest text-secondary px-sm py-[2px] rounded font-metadata text-metadata border border-outline-variant">architecture</span>
+<span class="bg-surface-container-highest text-secondary px-sm py-[2px] rounded font-metadata text-metadata border border-outline-variant">q4-planning</span>
+</div>
+</div>
+<!-- Property Item -->
+<div class="flex items-start justify-between group p-xs -mx-xs rounded">
+<div class="flex items-center gap-xs text-on-surface-variant w-[100px]">
+<span class="material-symbols-outlined text-[16px]" data-icon="person">person</span>
+<span class="font-metadata text-metadata">Author</span>
+</div>
+<div class="flex-1 flex items-center justify-end gap-xs">
+<div class="w-5 h-5 rounded-full bg-surface-variant border border-outline-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A small, professional headshot of a software architect in a minimalist tech office setting, crisp lighting, confident expression, matching modern corporate dark mode aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4npUkvDU8Eqxc4GSxEPlIX4_LzX3f-jfg6qtgX8XBIqIwyi6O6bjGq_2Yjvm6fitfmkh8lPhIMFW--jqC0UHz5_PPwltp9yWmtAj3ND-xT8CXmH6qrMxKpSBgntzwFzVF3vx8z2XkZxwiNe83o8XjKMYqJFHT-Rk09Ho_YvjT5bB7f1DtiVKWNzvjrWCiurGXDB-lvF71l7htMKCRiO29LbSU09HVopQpOUg7c30Nvyd2a5FZJsjdRA">
+</div>
+<span class="font-body text-body text-on-surface">E. Thompson</span>
+</div>
+</div>
+</div>
+</div>
+<div class="p-lg">
+<h3 class="font-section-title text-section-title text-on-surface mb-md">Metadata</h3>
+<div class="flex flex-col gap-sm">
+<div class="flex justify-between items-center text-on-surface-variant">
+<span class="font-metadata text-metadata">Created</span>
+<span class="font-mono-code text-mono-code">Oct 24, 2023</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant">
+<span class="font-metadata text-metadata">Last Edited</span>
+<span class="font-mono-code text-mono-code">2 mins ago</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant">
+<span class="font-metadata text-metadata">Words</span>
+<span class="font-mono-code text-mono-code">142</span>
+</div>
+</div>
+</div>
+<!-- Filler space -->
+<div class="flex-1"></div>
+<!-- Outline/Minimap snippet area -->
+<div class="p-lg border-t border-outline-variant bg-surface-container-low">
+<h3 class="font-metadata text-metadata text-on-surface-variant uppercase tracking-wider mb-sm">Outline</h3>
+<ul class="font-body text-body text-secondary space-y-1">
+<li class="hover:text-primary cursor-pointer truncate">Executive Summary</li>
+<li class="hover:text-primary cursor-pointer truncate pl-md">Current Limitations</li>
+<li class="hover:text-primary cursor-pointer truncate pl-md">Proposed Architecture</li>
+<li class="hover:text-primary cursor-pointer truncate pl-md">Migration Phases</li>
+</ul>
+</div>
+</aside>
+</div>
+<!-- Status Bar -->
+<footer class="h-[32px] flex-shrink-0 bg-surface-container-lowest border-t border-outline-variant flex items-center justify-between px-md">
+<div class="flex items-center gap-sm">
+<span class="flex items-center gap-xs text-primary font-metadata text-metadata">
+<span class="material-symbols-outlined text-[14px]" data-icon="cloud_done">cloud_done</span>
+                    Saved to Cloud
+                </span>
+</div>
+<div class="flex items-center gap-lg">
+<span class="font-mono-code text-[11px] text-on-surface-variant">UTF-8</span>
+<span class="font-mono-code text-[11px] text-on-surface-variant">Markdown</span>
+<div class="flex items-center gap-xs text-on-surface-variant hover:text-on-surface cursor-pointer">
+<span class="font-metadata text-metadata">Ln 14, Col 23</span>
+</div>
+</div>
+</footer>
+</main>
+</body></html>
