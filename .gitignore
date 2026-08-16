@@ -1,6 +1,7 @@
 ## Build
 bin/
 obj/
+publish/
 [Bb]uild/
 [Ll]og/
 [Ll]ogs/

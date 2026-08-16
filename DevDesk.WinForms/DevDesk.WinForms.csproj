@@ -29,6 +29,10 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <NoWarn>$(NoWarn);WFO1000</NoWarn>
+    <AssemblyName>DevDesk</AssemblyName>
+    <Product>DevDesk</Product>
+    <Version>1.0.0</Version>
+    <ApplicationTitle>DevDesk</ApplicationTitle>
   </PropertyGroup>
 
 </Project>
