@@ -9,7 +9,9 @@ public sealed class AppSidebar : Panel
     public event EventHandler<string>? NavigateRequested;
 
     private readonly ToolTip _tip = new();
-    private readonly List<NavItem> _items = [];
+    private readonly Panel _header = new() { Dock = DockStyle.Top, Height = 64, Tag = "no-theme" };
+    private readonly Panel _nav = new() { Dock = DockStyle.Fill, Tag = "no-theme", AutoScroll = true };
+    private readonly Panel _settings = new() { Dock = DockStyle.Bottom, Height = 48, Tag = "no-theme" };
     private string? _active = "dashboard";
     private bool _collapsed;
     private int _hover = -1;
@@ -40,17 +42,38 @@ public sealed class AppSidebar : Panel
         Dock = DockStyle.Left;
         Width = UiMetrics.SidebarExpandedWidth;
         DrawingUtil.EnableDoubleBuffer(this);
-        AutoScroll = true;
+        DrawingUtil.EnableDoubleBuffer(_nav);
+        DrawingUtil.EnableDoubleBuffer(_header);
+        DrawingUtil.EnableDoubleBuffer(_settings);
         Cursor = Cursors.Hand;
-        ThemeManager.Instance.ThemeChanged += (_, _) => Invalidate();
+
+        _header.Paint += PaintHeader;
+        _nav.Paint += PaintNav;
+        _settings.Paint += PaintSettings;
+        _nav.MouseMove += OnNavMove;
+        _nav.MouseLeave += (_, _) => { if (_hover >= 0 && _hover < Destinations.Length) { _hover = -1; _nav.Invalidate(); } };
+        _nav.MouseClick += OnNavClick;
+        _settings.MouseMove += (_, _) =>
+        {
+            if (_hover != Destinations.Length) { _hover = Destinations.Length; _settings.Invalidate(); }
+        };
+        _settings.MouseLeave += (_, _) => { if (_hover == Destinations.Length) { _hover = -1; _settings.Invalidate(); } };
+        _settings.MouseClick += (_, _) => NavigateRequested?.Invoke(this, "settings");
+        _nav.Scroll += (_, _) => _nav.Invalidate();
+        _nav.MouseWheel += (_, _) => _nav.Invalidate();
+        _nav.Resize += (_, _) => UpdateNavScroll();
+
+        Controls.Add(_nav);
+        Controls.Add(_settings);
+        Controls.Add(_header);
+
+        ThemeManager.Instance.ThemeChanged += (_, _) => ApplyTheme();
         LocalizationService.Instance.LanguageChanged += (_, _) =>
         {
             Dock = LocalizationService.Instance.IsRtl ? DockStyle.Right : DockStyle.Left;
-            Invalidate();
+            ApplyTheme();
         };
-        MouseMove += OnMove;
-        MouseLeave += (_, _) => { _hover = -1; Invalidate(); };
-        MouseClick += OnClick;
+        HandleCreated += (_, _) => DrawingUtil.ApplyWindowChrome(_nav);
         ApplyTheme();
     }
 
@@ -61,7 +84,8 @@ public sealed class AppSidebar : Panel
         {
             _collapsed = value;
             Width = value ? UiMetrics.SidebarCollapsedWidth : UiMetrics.SidebarExpandedWidth;
-            Invalidate();
+            _header.Height = value ? 48 : 64;
+            ApplyTheme();
         }
     }
 
@@ -76,52 +100,52 @@ public sealed class AppSidebar : Panel
             "productivity" or "reports" => "analytics",
             _ => viewKey.Split('-')[0]
         };
-        Invalidate();
+        _nav.Invalidate();
+        _settings.Invalidate();
     }
 
     public void ApplyTheme()
     {
-        BackColor = ThemeManager.Instance.Current.SidebarBg;
+        var c = ThemeManager.Instance.Current;
+        BackColor = c.SidebarBg;
+        _header.BackColor = c.SidebarBg;
+        _nav.BackColor = c.SidebarBg;
+        _settings.BackColor = c.SidebarBg;
         Dock = LocalizationService.Instance.IsRtl ? DockStyle.Right : DockStyle.Left;
-        Invalidate();
+        UpdateNavScroll();
+        _header.Invalidate();
+        _nav.Invalidate();
+        _settings.Invalidate();
+        if (IsHandleCreated) DrawingUtil.ApplyWindowChrome(_nav);
     }
 
-    private int HeaderHeight => _collapsed ? 48 : 64;
+    private void UpdateNavScroll()
+    {
+        var contentH = 8 + Destinations.Length * (UiMetrics.SidebarRowHeight + 2) + 8;
+        _nav.AutoScrollMinSize = new Size(0, contentH);
+    }
 
     private Rectangle ItemRect(int index)
     {
-        var y = HeaderHeight + 8 + index * (UiMetrics.SidebarRowHeight + 2);
-        var x = 8;
-        var w = Width - 16;
-        return new Rectangle(x, y - VerticalScroll.Value, w, UiMetrics.SidebarRowHeight);
+        var y = 8 + index * (UiMetrics.SidebarRowHeight + 2) - _nav.VerticalScroll.Value;
+        return new Rectangle(8, y, Math.Max(8, _nav.ClientSize.Width - 16), UiMetrics.SidebarRowHeight);
     }
 
-    private Rectangle SettingsRect()
-    {
-        var y = Height - UiMetrics.SidebarRowHeight - 12;
-        return new Rectangle(8, y, Width - 16, UiMetrics.SidebarRowHeight);
-    }
-
-    private void OnMove(object? sender, MouseEventArgs e)
+    private void OnNavMove(object? sender, MouseEventArgs e)
     {
         var h = -1;
         for (var i = 0; i < Destinations.Length; i++)
             if (ItemRect(i).Contains(e.Location)) h = i;
-        if (SettingsRect().Contains(e.Location)) h = Destinations.Length;
-        if (h != _hover)
-        {
-            _hover = h;
-            if (_collapsed && h >= 0)
-            {
-                var key = h == Destinations.Length ? "nav.settings" : Destinations[h].LabelKey;
-                _tip.SetToolTip(this, LocalizationService.Instance.Get(key));
-            }
-            else _tip.SetToolTip(this, "");
-            Invalidate();
-        }
+        if (h == _hover) return;
+        _hover = h;
+        if (_collapsed && h >= 0)
+            _tip.SetToolTip(_nav, LocalizationService.Instance.Get(Destinations[h].LabelKey));
+        else
+            _tip.SetToolTip(_nav, "");
+        _nav.Invalidate();
     }
 
-    private void OnClick(object? sender, MouseEventArgs e)
+    private void OnNavClick(object? sender, MouseEventArgs e)
     {
         for (var i = 0; i < Destinations.Length; i++)
             if (ItemRect(i).Contains(e.Location))
@@ -129,48 +153,53 @@ public sealed class AppSidebar : Panel
                 NavigateRequested?.Invoke(this, Destinations[i].Key);
                 return;
             }
-        if (SettingsRect().Contains(e.Location))
-            NavigateRequested?.Invoke(this, "settings");
     }
 
-    protected override void OnPaint(PaintEventArgs e)
+    private void PaintHeader(object? sender, PaintEventArgs e)
     {
         var c = ThemeManager.Instance.Current;
         var g = e.Graphics;
-        g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
         g.Clear(c.SidebarBg);
-
-        using (var pen = new Pen(c.Border))
-        {
-            if (LocalizationService.Instance.IsRtl)
-                g.DrawLine(pen, 0, 0, 0, Height);
-            else
-                g.DrawLine(pen, Width - 1, 0, Width - 1, Height);
-        }
-
+        g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
         if (!_collapsed)
         {
-            TextRenderer.DrawText(g, "DevDesk", UiMetrics.PageTitle, new Rectangle(16, 12, Width - 24, 28), c.TextPrimary);
-            TextRenderer.DrawText(g, "Productivity Engine", UiMetrics.Meta, new Rectangle(16, 36, Width - 24, 18), c.TextMuted);
+            TextRenderer.DrawText(g, "DevDesk", UiMetrics.PageTitle, new Rectangle(16, 10, _header.Width - 24, 26), c.TextPrimary);
+            TextRenderer.DrawText(g, "Productivity Engine", UiMetrics.Meta, new Rectangle(16, 34, _header.Width - 24, 18), c.TextMuted);
         }
         else
-        {
-            UiIcons.Draw(g, "terminal", new Rectangle(16, 16, 20, 20), c.Accent);
-        }
+            UiIcons.Draw(g, "terminal", new Rectangle(16, 14, 20, 20), c.Accent);
+        using var pen = new Pen(c.Border);
+        g.DrawLine(pen, 12, _header.Height - 1, _header.Width - 12, _header.Height - 1);
+    }
 
+    private void PaintNav(object? sender, PaintEventArgs e)
+    {
+        var c = ThemeManager.Instance.Current;
+        var g = e.Graphics;
+        g.Clear(c.SidebarBg);
+        g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
         var rtl = LocalizationService.Instance.IsRtl;
         for (var i = 0; i < Destinations.Length; i++)
             PaintItem(g, c, ItemRect(i), Destinations[i].Icon, LocalizationService.Instance.Get(Destinations[i].LabelKey),
                 Destinations[i].Key == _active, i == _hover, rtl);
+    }
 
-        using (var pen = new Pen(DrawingUtil.WithAlpha(c.Border, 160)))
-            g.DrawLine(pen, 12, SettingsRect().Top - 8, Width - 12, SettingsRect().Top - 8);
-        PaintItem(g, c, SettingsRect(), "settings", LocalizationService.Instance.Get("nav.settings"),
-            _active == "settings", _hover == Destinations.Length, rtl);
+    private void PaintSettings(object? sender, PaintEventArgs e)
+    {
+        var c = ThemeManager.Instance.Current;
+        var g = e.Graphics;
+        g.Clear(c.SidebarBg);
+        g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+        using (var pen = new Pen(c.Border))
+            g.DrawLine(pen, 12, 0, _settings.Width - 12, 0);
+        var r = new Rectangle(8, 8, Math.Max(8, _settings.Width - 16), UiMetrics.SidebarRowHeight);
+        PaintItem(g, c, r, "settings", LocalizationService.Instance.Get("nav.settings"),
+            _active == "settings", _hover == Destinations.Length, LocalizationService.Instance.IsRtl);
     }
 
     private void PaintItem(Graphics g, AppColors c, Rectangle r, string icon, string label, bool active, bool hover, bool rtl)
     {
+        if (r.Width <= 0 || r.Height <= 0) return;
         if (active)
         {
             using var bg = new SolidBrush(c.SelectedBg);
@@ -186,15 +215,25 @@ public sealed class AppSidebar : Panel
         }
 
         var iconRect = new Rectangle(r.X + 10, r.Y + (r.Height - 18) / 2, 18, 18);
-        UiIcons.Draw(g, icon, iconRect, active ? c.TextPrimary : c.TextSecondary);
+        UiIcons.Draw(g, icon, iconRect, active || hover ? c.TextPrimary : c.TextSecondary);
         if (!_collapsed)
         {
-            TextRenderer.DrawText(g, label, UiMetrics.SectionTitle, new Rectangle(r.X + 36, r.Y, r.Width - 44, r.Height),
-                active ? c.TextPrimary : c.TextSecondary, TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
+            TextRenderer.DrawText(g, label, UiMetrics.Body, new Rectangle(r.X + 36, r.Y, r.Width - 44, r.Height),
+                active || hover ? c.TextPrimary : c.TextSecondary,
+                TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPadding);
         }
     }
 
-    private readonly record struct NavItem(string Key, string Label, string Icon);
+    protected override void OnPaint(PaintEventArgs e)
+    {
+        var c = ThemeManager.Instance.Current;
+        e.Graphics.Clear(c.SidebarBg);
+        using var pen = new Pen(c.Border);
+        if (LocalizationService.Instance.IsRtl)
+            e.Graphics.DrawLine(pen, 0, 0, 0, Height);
+        else
+            e.Graphics.DrawLine(pen, Width - 1, 0, Width - 1, Height);
+    }
 
     protected override void Dispose(bool disposing)
     {

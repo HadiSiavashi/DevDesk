@@ -10,7 +10,7 @@ namespace DevDesk.WinForms.Views;
 public sealed class EnvironmentsView : ViewBase
 {
     private readonly FlowLayoutPanel _list = new() { Dock = DockStyle.Fill, AutoScroll = true, FlowDirection = FlowDirection.TopDown, WrapContents = false };
-    private readonly ComboBox _projects = new() { Dock = DockStyle.Top, DropDownStyle = ComboBoxStyle.DropDownList };
+    private readonly ThemedComboBox _projects = new() { Dock = DockStyle.Top };
     private readonly ModernButton _add = new() { Height = 36, Text = "Add Environment", Width = 160 };
 
     public EnvironmentsView(IServiceScopeFactory scopeFactory, NavigationService navigation) : base(scopeFactory, navigation)

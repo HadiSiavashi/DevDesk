@@ -11,8 +11,8 @@ public sealed class OnboardingForm : Form
 {
     private readonly IServiceProvider _services;
     private readonly TextField _name = new() { Dock = DockStyle.Top };
-    private readonly ComboBox _language = new() { Dock = DockStyle.Top, Height = 28, DropDownStyle = ComboBoxStyle.DropDownList };
-    private readonly ComboBox _theme = new() { Dock = DockStyle.Top, Height = 28, DropDownStyle = ComboBoxStyle.DropDownList };
+    private readonly ThemedComboBox _language = new() { Dock = DockStyle.Top };
+    private readonly ThemedComboBox _theme = new() { Dock = DockStyle.Top };
     private readonly NumericUpDown _workHours = new() { Minimum = 4, Maximum = 12, Value = 8, Dock = DockStyle.Top, Height = 28 };
     private readonly NumericUpDown _pomodoro = new() { Minimum = 15, Maximum = 60, Value = 25, Dock = DockStyle.Top, Height = 28 };
     private readonly Panel _header = new() { Dock = DockStyle.Top, Height = 72, Tag = "no-theme" };

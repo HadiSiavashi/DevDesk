@@ -11,9 +11,13 @@ public class IconButton : Button
     {
         FlatStyle = FlatStyle.Flat;
         FlatAppearance.BorderSize = 0;
+        FlatAppearance.MouseOverBackColor = Color.Transparent;
+        FlatAppearance.MouseDownBackColor = Color.Transparent;
+        UseVisualStyleBackColor = false;
         Size = new Size(UiMetrics.IconButtonSize, UiMetrics.IconButtonSize);
         Cursor = Cursors.Hand;
-        SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
+        SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw | ControlStyles.Opaque, true);
+        UpdateStyles();
         ThemeManager.Instance.ThemeChanged += (_, _) => Invalidate();
     }
 
@@ -26,27 +30,44 @@ public class IconButton : Button
     protected override void OnMouseDown(MouseEventArgs e) { _pressed = true; Invalidate(); base.OnMouseDown(e); }
     protected override void OnMouseUp(MouseEventArgs e) { _pressed = false; Invalidate(); base.OnMouseUp(e); }
 
+    protected override void OnPaintBackground(PaintEventArgs pevent)
+    {
+        pevent.Graphics.Clear(Parent?.BackColor ?? ThemeManager.Instance.Current.TopBarBg);
+    }
+
     protected override void OnPaint(PaintEventArgs pevent)
     {
         var c = ThemeManager.Instance.Current;
         var g = pevent.Graphics;
         g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-        var rect = new Rectangle(0, 0, Width - 1, Height - 1);
+        var fill = Parent?.BackColor ?? c.TopBarBg;
+        g.Clear(fill);
+        var rect = new Rectangle(0, 0, Math.Max(1, Width - 1), Math.Max(1, Height - 1));
 
-        Color bg, fg;
+        Color bg, fg, border;
         if (IsAccent)
         {
-            bg = _hover ? c.AccentHover : c.Accent;
+            bg = _hover || _pressed ? c.AccentHover : c.Accent;
             fg = c.OnPrimary;
+            border = Color.Transparent;
         }
         else
         {
-            bg = _hover || _pressed ? c.HoverBg : Color.Transparent;
-            fg = c.TextSecondary;
+            bg = _pressed ? c.SelectedBg : (_hover ? c.HoverBg : Color.Transparent);
+            fg = _hover ? c.TextPrimary : c.TextSecondary;
+            border = _hover ? c.Border : Color.Transparent;
         }
 
-        using (var brush = new SolidBrush(bg))
+        if (bg.A > 0)
+        {
+            using var brush = new SolidBrush(bg);
             DrawingUtil.FillRounded(g, brush, rect, UiMetrics.RadiusSm);
+        }
+        if (border.A > 0)
+        {
+            using var pen = new Pen(border);
+            DrawingUtil.DrawRounded(g, pen, rect, UiMetrics.RadiusSm);
+        }
 
         UiIcons.Draw(g, Icon, new Rectangle(6, 6, Width - 12, Height - 12), fg);
 

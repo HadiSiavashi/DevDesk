@@ -82,6 +82,8 @@ public abstract class ViewBase : UserControl
         ErrorPanel.Visible = false;
         ContentPanel.Visible = true;
         ContentPanel.BringToFront();
+        ThemeManager.Instance.ApplyTo(this);
+        DrawingUtil.ApplyWindowChrome(ContentPanel);
     }
 
     protected void ShowEmpty(string? message = null)

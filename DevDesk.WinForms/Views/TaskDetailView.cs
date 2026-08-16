@@ -21,8 +21,8 @@ public sealed class TaskDetailView : ViewBase, ISaveableView
 
     private readonly TextBox _title = new() { BorderStyle = BorderStyle.None, Dock = DockStyle.Top, Height = 32 };
     private readonly TextBox _desc = new() { Dock = DockStyle.Fill, Multiline = true, BorderStyle = BorderStyle.None, ScrollBars = ScrollBars.Vertical };
-    private readonly ComboBox _status = new() { Dock = DockStyle.Top, DropDownStyle = ComboBoxStyle.DropDownList };
-    private readonly ComboBox _priority = new() { Dock = DockStyle.Top, DropDownStyle = ComboBoxStyle.DropDownList };
+    private readonly ThemedComboBox _status = new() { Dock = DockStyle.Top };
+    private readonly ThemedComboBox _priority = new() { Dock = DockStyle.Top };
     private readonly CheckBox _hasDueDate = new() { Dock = DockStyle.Top, Text = "Has due date", Height = 24 };
     private readonly DateTimePicker _due = new() { Dock = DockStyle.Top, Format = DateTimePickerFormat.Short, Enabled = false };
     private readonly Label _timeLabel = new() { Dock = DockStyle.Top, Height = 36 };

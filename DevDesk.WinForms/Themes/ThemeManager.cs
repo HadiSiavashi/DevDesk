@@ -78,9 +78,7 @@ public sealed class ThemeManager
         }
         else if (control is ComboBox cb)
         {
-            cb.BackColor = colors.InputBg;
-            cb.ForeColor = colors.TextPrimary;
-            cb.FlatStyle = FlatStyle.Flat;
+            StyleComboBox(cb, colors);
         }
         else if (control is ListBox lb)
         {
@@ -88,6 +86,7 @@ public sealed class ThemeManager
             lb.ForeColor = colors.TextPrimary;
             lb.BorderStyle = BorderStyle.None;
             lb.IntegralHeight = false;
+            DrawingUtil.ApplyWindowChrome(lb);
         }
         else if (control is Button btn && btn is not Controls.ModernButton and not Controls.IconButton)
         {
@@ -150,5 +149,45 @@ public sealed class ThemeManager
 
         foreach (Control child in control.Controls)
             ApplyRecursive(child, colors);
+
+        if (control is ListBox or ComboBox or DataGridView || control is ScrollableControl sc && sc.AutoScroll)
+            DrawingUtil.ApplyWindowChrome(control);
+    }
+
+    private static void StyleComboBox(ComboBox cb, AppColors colors)
+    {
+        cb.BackColor = colors.InputBg;
+        cb.ForeColor = colors.TextPrimary;
+        cb.FlatStyle = FlatStyle.Flat;
+        cb.IntegralHeight = false;
+        if (cb is Controls.ThemedComboBox)
+        {
+            DrawingUtil.ApplyWindowChrome(cb);
+            return;
+        }
+
+        if (cb.DrawMode != DrawMode.OwnerDrawFixed)
+        {
+            cb.DrawMode = DrawMode.OwnerDrawFixed;
+            cb.ItemHeight = 26;
+            cb.DrawItem += (_, e) => DrawComboItem(cb, e);
+            cb.DropDown += (_, _) => DrawingUtil.ApplyComboDropDownTheme(cb);
+        }
+        DrawingUtil.ApplyWindowChrome(cb);
+        cb.Invalidate();
+    }
+
+    private static void DrawComboItem(ComboBox cb, DrawItemEventArgs e)
+    {
+        var colors = Instance.Current;
+        var selected = (e.State & DrawItemState.Selected) != 0;
+        using var bg = new SolidBrush(selected ? colors.SelectedBg : colors.InputBg);
+        e.Graphics.FillRectangle(bg, e.Bounds);
+        if (e.Index < 0) return;
+        var text = cb.GetItemText(cb.Items[e.Index]);
+        TextRenderer.DrawText(e.Graphics, text, UiMetrics.Body,
+            Rectangle.Inflate(e.Bounds, -8, 0),
+            selected ? colors.TextPrimary : colors.TextSecondary,
+            TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPadding);
     }
 }

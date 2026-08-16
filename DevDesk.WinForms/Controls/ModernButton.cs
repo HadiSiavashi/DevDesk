@@ -8,16 +8,21 @@ public class ModernButton : Button
 {
     private bool _hover;
     private bool _pressed;
+    private ButtonVariant _variant = ButtonVariant.Primary;
 
     public ModernButton()
     {
         FlatStyle = FlatStyle.Flat;
         FlatAppearance.BorderSize = 0;
+        FlatAppearance.MouseOverBackColor = Color.Transparent;
+        FlatAppearance.MouseDownBackColor = Color.Transparent;
+        UseVisualStyleBackColor = false;
         Cursor = Cursors.Hand;
         Height = UiMetrics.ButtonHeight;
         Padding = new Padding(12, 0, 12, 0);
         Font = UiMetrics.Body;
-        SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
+        SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw | ControlStyles.Opaque, true);
+        UpdateStyles();
         ThemeManager.Instance.ThemeChanged += (_, _) => Invalidate();
     }
 
@@ -27,7 +32,12 @@ public class ModernButton : Button
         set => Variant = value ? ButtonVariant.Primary : ButtonVariant.Outline;
     }
 
-    public ButtonVariant Variant { get; set; } = ButtonVariant.Primary;
+    public ButtonVariant Variant
+    {
+        get => _variant;
+        set { _variant = value; Invalidate(); }
+    }
+
     public string? Icon { get; set; }
     public string? Shortcut { get; set; }
 
@@ -36,28 +46,36 @@ public class ModernButton : Button
     protected override void OnMouseDown(MouseEventArgs e) { _pressed = true; Invalidate(); base.OnMouseDown(e); }
     protected override void OnMouseUp(MouseEventArgs e) { _pressed = false; Invalidate(); base.OnMouseUp(e); }
 
+    protected override void OnPaintBackground(PaintEventArgs pevent)
+    {
+        var fill = Parent?.BackColor ?? ThemeManager.Instance.Current.Background;
+        pevent.Graphics.Clear(fill);
+    }
+
     protected override void OnPaint(PaintEventArgs pevent)
     {
         var c = ThemeManager.Instance.Current;
         var g = pevent.Graphics;
         g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-        var rect = new Rectangle(0, 0, Width - 1, Height - 1);
+        var fill = Parent?.BackColor ?? c.Background;
+        g.Clear(fill);
+        var rect = new Rectangle(0, 0, Math.Max(1, Width - 1), Math.Max(1, Height - 1));
 
         Color bg, fg, border;
         switch (Variant)
         {
             case ButtonVariant.Ghost:
-                bg = _hover ? c.HoverBg : Color.Transparent;
-                fg = c.TextSecondary;
+                bg = _pressed ? c.SelectedBg : (_hover ? c.HoverBg : fill);
+                fg = _hover ? c.TextPrimary : c.TextSecondary;
                 border = Color.Transparent;
                 break;
             case ButtonVariant.Outline:
-                bg = _hover ? c.HoverBg : c.Surface;
+                bg = _pressed ? c.SelectedBg : (_hover ? c.HoverBg : c.Surface);
                 fg = c.TextPrimary;
-                border = c.Border;
+                border = _hover ? c.Accent : c.Border;
                 break;
             default:
-                bg = _pressed ? c.AccentHover : (_hover ? c.AccentHover : c.Accent);
+                bg = _pressed ? c.AccentHover : (_hover ? DrawingUtil.Blend(DrawingUtil.WithAlpha(Color.White, 28), c.Accent) : c.Accent);
                 fg = c.OnPrimary;
                 border = Color.Transparent;
                 break;
@@ -74,13 +92,13 @@ public class ModernButton : Button
         var text = Text ?? "";
         var iconPad = string.IsNullOrEmpty(Icon) ? 0 : 20;
         var kbdW = string.IsNullOrEmpty(Shortcut) ? 0 : 28;
-        var content = new Rectangle(4 + iconPad, 0, Width - 8 - iconPad - kbdW, Height);
+        var content = new Rectangle(4 + iconPad, 0, Math.Max(8, Width - 8 - iconPad - kbdW), Height);
 
         if (!string.IsNullOrEmpty(Icon))
             UiIcons.Draw(g, Icon, new Rectangle(8, (Height - 16) / 2, 16, 16), fg);
 
-        TextRenderer.DrawText(g, text, Font, content, fg,
-            TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
+        TextRenderer.DrawText(g, text, Font ?? UiMetrics.Body, content, fg,
+            TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
 
         if (!string.IsNullOrEmpty(Shortcut))
         {
@@ -88,7 +106,7 @@ public class ModernButton : Button
             using var kb = new SolidBrush(DrawingUtil.WithAlpha(Color.Black, 40));
             DrawingUtil.FillRounded(g, kb, kr, 3);
             TextRenderer.DrawText(g, Shortcut, UiMetrics.Kbd, kr, fg,
-                TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+                TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
         }
     }
 }

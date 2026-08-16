@@ -28,51 +28,36 @@ public sealed class SettingsView : ViewBase
     private void BuildTabs()
     {
         ContentPanel.Controls.Clear();
-        var nav = new Panel { Dock = DockStyle.Left, Width = 240, Tag = "no-theme", Padding = new Padding(8) };
-        var host = new Panel { Dock = DockStyle.Fill, AutoScroll = true, Padding = new Padding(24, 8, 24, 24), Tag = "no-theme" };
-        var sections = new (string Title, Func<Panel> Build)[]
+        var nav = new SettingsNavList { Dock = DockStyle.Left, Width = 220 };
+        var host = new Panel { Dock = DockStyle.Fill, AutoScroll = true, Padding = new Padding(16, 8, 8, 8), Tag = "no-theme" };
+        var builders = new Func<Panel>[]
         {
-            (T("settings.general"), () => Wrap(BuildGeneralTab())),
-            (T("settings.appearance"), () => Wrap(BuildAppearanceTab())),
-            (T("settings.language"), () => Wrap(BuildLanguageTab())),
-            (T("settings.notifications"), () => Wrap(BuildNotificationsTab())),
-            (T("settings.focus"), () => Wrap(BuildFocusTab())),
-            (T("settings.pomodoro"), () => Wrap(BuildPomodoroTab())),
-            (T("settings.shortcuts"), () => Wrap(BuildShortcutsTab())),
-            (T("settings.database"), () => Wrap(BuildDatabaseTab())),
-            (T("settings.data"), () => Wrap(BuildDataTab())),
-            (T("settings.about"), () => Wrap(BuildAboutTab()))
+            () => Wrap(BuildGeneralTab()),
+            () => Wrap(BuildAppearanceTab()),
+            () => Wrap(BuildLanguageTab()),
+            () => Wrap(BuildNotificationsTab()),
+            () => Wrap(BuildFocusTab()),
+            () => Wrap(BuildPomodoroTab()),
+            () => Wrap(BuildShortcutsTab()),
+            () => Wrap(BuildDatabaseTab()),
+            () => Wrap(BuildDataTab()),
+            () => Wrap(BuildAboutTab())
         };
-        var y = 8;
-        Panel? current = null;
-        for (var i = 0; i < sections.Length; i++)
+        nav.Items =
+        [
+            T("settings.general"), T("settings.appearance"), T("settings.language"), T("settings.notifications"),
+            T("settings.focus"), T("settings.pomodoro"), T("settings.shortcuts"), T("settings.database"),
+            T("settings.data"), T("settings.about")
+        ];
+        void Show(int i)
         {
-            var (title, build) = sections[i];
-            var btn = new ModernButton
-            {
-                Text = title,
-                Variant = i == 0 ? ButtonVariant.Primary : ButtonVariant.Ghost,
-                Width = 216,
-                Height = 32,
-                Left = 8,
-                Top = y
-            };
-            y += 36;
-            btn.Click += (_, _) =>
-            {
-                foreach (Control c in nav.Controls)
-                    if (c is ModernButton mb) mb.Variant = ButtonVariant.Ghost;
-                btn.Variant = ButtonVariant.Primary;
-                host.Controls.Clear();
-                current = build();
-                current.Dock = DockStyle.Fill;
-                host.Controls.Add(current);
-            };
-            nav.Controls.Add(btn);
+            host.Controls.Clear();
+            var page = builders[Math.Clamp(i, 0, builders.Length - 1)]();
+            page.Dock = DockStyle.Fill;
+            host.Controls.Add(page);
         }
-        current = Wrap(BuildGeneralTab());
-        current.Dock = DockStyle.Fill;
-        host.Controls.Add(current);
+        nav.SelectedIndexChanged += (_, i) => Show(i);
+        Show(0);
         var header = new PageHeader { TitleText = T("nav.settings"), SubtitleText = "System configuration" };
         ContentPanel.Controls.Add(host);
         ContentPanel.Controls.Add(nav);
@@ -112,7 +97,14 @@ public sealed class SettingsView : ViewBase
     private TabPage BuildGeneralTab()
     {
         var page = new TabPage(T("settings.general"));
-        var name = new TextBox { Text = _prefs.DisplayName, Dock = DockStyle.Top };
+        var name = new TextField { Text = _prefs.DisplayName, Dock = DockStyle.Top };
+        var save = new ModernButton { Text = T("common.save"), Width = 96, Height = 32, Dock = DockStyle.Top };
+        save.Click += async (_, _) =>
+        {
+            _prefs.DisplayName = name.Text;
+            using var scope = ScopeFactory.CreateScope();
+            await GetService<ISettingsService>(scope).SavePreferencesAsync(_prefs);
+        };
         var minimizeTray = new CheckBox
         {
             Text = T("settings.minimizeToTray"),
@@ -170,13 +162,6 @@ public sealed class SettingsView : ViewBase
             GetService<IStartupRegistration>(scope).SetEnabled(_startWithWindows);
         };
 
-        var save = new ModernButton { Text = T("common.save"), Dock = DockStyle.Bottom, Height = 36 };
-        save.Click += async (_, _) =>
-        {
-            _prefs.DisplayName = name.Text;
-            using var scope = ScopeFactory.CreateScope();
-            await GetService<ISettingsService>(scope).SavePreferencesAsync(_prefs);
-        };
         page.Controls.Add(save);
         page.Controls.Add(startWithWindows);
         page.Controls.Add(startMinimized);
@@ -190,7 +175,7 @@ public sealed class SettingsView : ViewBase
     private TabPage BuildAppearanceTab()
     {
         var page = new TabPage(T("settings.appearance"));
-        var theme = new ComboBox { Dock = DockStyle.Top, DropDownStyle = ComboBoxStyle.DropDownList };
+        var theme = new ThemedComboBox { Dock = DockStyle.Top };
         foreach (ThemeMode m in Enum.GetValues(typeof(ThemeMode))) theme.Items.Add(m);
         theme.SelectedItem = _prefs.Theme;
         theme.SelectedIndexChanged += async (_, _) =>
@@ -211,7 +196,7 @@ public sealed class SettingsView : ViewBase
     private TabPage BuildLanguageTab()
     {
         var page = new TabPage(T("settings.language"));
-        var lang = new ComboBox { Dock = DockStyle.Top, DropDownStyle = ComboBoxStyle.DropDownList };
+        var lang = new ThemedComboBox { Dock = DockStyle.Top };
         lang.Items.AddRange(["en-US", "fa-IR"]);
         lang.SelectedItem = _culture ?? "en-US";
         if (lang.SelectedIndex < 0) lang.SelectedIndex = 0;

@@ -9,7 +9,7 @@ namespace DevDesk.WinForms.Views;
 
 public sealed class KnowledgeBaseView : ViewBase
 {
-    private readonly ComboBox _category = new() { Dock = DockStyle.Top, DropDownStyle = ComboBoxStyle.DropDownList };
+    private readonly ThemedComboBox _category = new() { Dock = DockStyle.Top };
     private readonly FlowLayoutPanel _list = new() { Dock = DockStyle.Fill, AutoScroll = true, FlowDirection = FlowDirection.TopDown, WrapContents = false };
 
     public KnowledgeBaseView(IServiceScopeFactory scopeFactory, NavigationService navigation) : base(scopeFactory, navigation)

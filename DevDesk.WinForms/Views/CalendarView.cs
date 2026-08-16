@@ -18,7 +18,7 @@ public sealed class CalendarView : ViewBase
     private ViewMode _mode = ViewMode.Month;
     private IReadOnlyList<CalendarEventDto> _events = [];
     private readonly Panel _grid = new() { Dock = DockStyle.Fill, Tag = "no-theme" };
-    private readonly ListBox _dayList = new() { Dock = DockStyle.Right, Width = 260, IntegralHeight = false };
+    private readonly ListBox _dayList = new() { Dock = DockStyle.Fill, IntegralHeight = false, BorderStyle = BorderStyle.None };
     private readonly PageHeader _header = new();
     private readonly SegmentedTabs _modes = new() { Width = 180, Height = 28 };
 
@@ -49,20 +49,41 @@ public sealed class CalendarView : ViewBase
         _grid.MouseClick += OnGridClick;
         DrawingUtil.EnableDoubleBuffer(_grid);
         _dayList.DoubleClick += (_, _) => OpenSelectedEvent();
+        var c = ThemeManager.Instance.Current;
+        _dayList.BackColor = c.Surface;
+        _dayList.ForeColor = c.TextPrimary;
+        _dayList.Font = UiMetrics.Body;
 
-        var edit = new ModernButton { Text = T("common.edit"), Variant = ButtonVariant.Outline, Dock = DockStyle.Bottom, Height = 32 };
-        var del = new ModernButton { Text = T("common.delete"), Variant = ButtonVariant.Ghost, Dock = DockStyle.Bottom, Height = 32 };
+        var edit = new ModernButton { Text = T("common.edit"), Variant = ButtonVariant.Outline, Width = 88, Height = 32 };
+        var del = new ModernButton { Text = T("common.delete"), Variant = ButtonVariant.Ghost, Width = 88, Height = 32 };
         edit.Click += async (_, _) => await EditEventAsync();
         del.Click += async (_, _) => await DeleteEventAsync();
-        var side = new Panel { Dock = DockStyle.Right, Width = 260, Tag = "no-theme" };
+        var footer = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Bottom,
+            Height = 44,
+            FlowDirection = FlowDirection.LeftToRight,
+            WrapContents = false,
+            Padding = new Padding(8, 6, 8, 6),
+            Tag = "no-theme"
+        };
+        footer.Controls.Add(edit);
+        footer.Controls.Add(del);
+        var side = new Panel { Dock = DockStyle.Right, Width = 280, Tag = "no-theme", Padding = new Padding(8, 0, 0, 0) };
+        _dayList.Dock = DockStyle.Fill;
         side.Controls.Add(_dayList);
-        side.Controls.Add(edit);
-        side.Controls.Add(del);
+        side.Controls.Add(footer);
 
         ContentPanel.Controls.Add(_grid);
         ContentPanel.Controls.Add(side);
         ContentPanel.Controls.Add(_header);
-        ThemeManager.Instance.ThemeChanged += (_, _) => _grid.Invalidate();
+        ThemeManager.Instance.ThemeChanged += (_, _) =>
+        {
+            _grid.Invalidate();
+            var colors = ThemeManager.Instance.Current;
+            _dayList.BackColor = colors.Surface;
+            _dayList.ForeColor = colors.TextPrimary;
+        };
     }
 
     private void Shift(int dir)

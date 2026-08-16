@@ -16,8 +16,8 @@ public sealed class TaskEditorForm : ModalForm
     private int? _existingEstimate;
 
     private readonly TextField _title = new();
-    private readonly ComboBox _project = new() { DropDownStyle = ComboBoxStyle.DropDownList };
-    private readonly ComboBox _priority = new() { DropDownStyle = ComboBoxStyle.DropDownList };
+    private readonly ThemedComboBox _project = new();
+    private readonly ThemedComboBox _priority = new();
     private readonly CheckBox _hasDue = new() { Text = "Due date", AutoSize = true };
     private readonly DateTimePicker _due = new() { Format = DateTimePickerFormat.Short, Enabled = false };
     private readonly NumericUpDown _estimate = new() { Minimum = 0, Maximum = 24 * 60, Increment = 5 };

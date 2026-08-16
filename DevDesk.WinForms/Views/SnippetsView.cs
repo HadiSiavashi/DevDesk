@@ -69,7 +69,7 @@ public sealed class SnippetEditorView : ViewBase, ISaveableView
     private Guid _id;
     private bool _isFavorite;
     private readonly TextBox _title = new() { BorderStyle = BorderStyle.None, Dock = DockStyle.Fill };
-    private readonly ComboBox _language = new() { DropDownStyle = ComboBoxStyle.DropDownList, Width = 120, Height = 28 };
+    private readonly ThemedComboBox _language = new() { Width = 120, Height = 28 };
     private readonly TextBox _code = new() { Dock = DockStyle.Fill, Multiline = true, BorderStyle = BorderStyle.None, ScrollBars = ScrollBars.Both };
     private readonly Panel _gutter = new() { Dock = DockStyle.Left, Width = 44, Tag = "no-theme" };
     private readonly Label _status = new() { Dock = DockStyle.Bottom, Height = UiMetrics.StatusBarHeight, TextAlign = ContentAlignment.MiddleLeft };

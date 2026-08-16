@@ -6,6 +6,7 @@ public sealed class PageHeader : Panel
 {
     private readonly Label _title = new() { AutoSize = false, Dock = DockStyle.Top, Height = 28 };
     private readonly Label _subtitle = new() { AutoSize = false, Dock = DockStyle.Top, Height = 20 };
+    private readonly Panel _text = new() { Dock = DockStyle.Fill, Tag = "no-theme" };
     private readonly FlowLayoutPanel _actions = new()
     {
         Dock = DockStyle.Right,
@@ -13,7 +14,8 @@ public sealed class PageHeader : Panel
         WrapContents = false,
         AutoSize = true,
         AutoSizeMode = AutoSizeMode.GrowAndShrink,
-        Padding = new Padding(0)
+        Padding = new Padding(8, 4, 0, 0),
+        Tag = "no-theme"
     };
 
     public PageHeader()
@@ -22,9 +24,10 @@ public sealed class PageHeader : Panel
         Dock = DockStyle.Top;
         Tag = "no-theme";
         Padding = new Padding(0, 0, 0, 8);
+        _text.Controls.Add(_subtitle);
+        _text.Controls.Add(_title);
+        Controls.Add(_text);
         Controls.Add(_actions);
-        Controls.Add(_subtitle);
-        Controls.Add(_title);
         ThemeManager.Instance.ThemeChanged += (_, _) => ApplyTheme();
         ApplyTheme();
     }
@@ -47,6 +50,7 @@ public sealed class PageHeader : Panel
     {
         var c = ThemeManager.Instance.Current;
         BackColor = c.Background;
+        _text.BackColor = c.Background;
         _title.Font = UiMetrics.PageTitle;
         _title.ForeColor = c.TextPrimary;
         _title.BackColor = c.Background;
