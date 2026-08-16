@@ -100,8 +100,8 @@ public static class InputDialog
             Text = title,
             ClientSize = new Size(400, 160)
         };
-        var lbl = new Label { Text = prompt, Left = 16, Top = 16, Width = 360, Height = 20 };
-        var txt = new TextBox { Text = defaultValue, Left = 16, Top = 40, Width = 360, Height = UiMetrics.InputHeight };
+        var lbl = new Label { Text = prompt, Left = 16, Top = 16, Width = 360, Height = 20, Font = UiMetrics.Meta };
+        var txt = new TextField { Text = defaultValue, Left = 16, Top = 40, Width = 360, Height = UiMetrics.InputHeight };
         var ok = new ModernButton { Text = LocalizationService.Instance.Get("common.ok"), Left = 200, Top = 88, Width = 80, Height = UiMetrics.ButtonHeight };
         var cancel = new ModernButton { Text = LocalizationService.Instance.Get("common.cancel"), IsPrimary = false, Left = 288, Top = 88, Width = 80, Height = UiMetrics.ButtonHeight };
         ok.Click += (_, _) => form.DialogResult = DialogResult.OK;

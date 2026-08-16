@@ -1,5 +1,7 @@
+using DevDesk.Application.Dtos;
 using DevDesk.Application.Events;
 using DevDesk.Application.Interfaces;
+using DevDesk.Domain.Enums;
 using DevDesk.WinForms.Controls;
 using DevDesk.WinForms.Dialogs;
 using DevDesk.WinForms.Services;
@@ -13,9 +15,10 @@ public sealed class MyDayView : ViewBase
     private readonly IAppEventBus _events;
     private EventHandler<AppEvent>? _eventHandler;
     private Guid? _highlightId;
-    private readonly Label _planSummary = new() { Dock = DockStyle.Top, Height = 64, Font = UiMetrics.Body, Padding = new Padding(0, 0, 0, 8) };
-    private readonly Panel _tasks = new() { Dock = DockStyle.Fill, AutoScroll = true, Tag = "no-theme" };
-    private readonly ModernButton _addBtn = new() { Dock = DockStyle.Bottom, Height = UiMetrics.ButtonHeight, Text = "+ Add task", IsPrimary = false };
+    private readonly Label _goalsBody = new() { Dock = DockStyle.Fill, AutoSize = false };
+    private readonly Label _capacityBody = new() { Dock = DockStyle.Fill, AutoSize = false };
+    private readonly Panel _board = new() { Dock = DockStyle.Fill, AutoScroll = true, Tag = "no-theme" };
+    private readonly ModernButton _addBtn = new() { Text = "+ Add task", Variant = ButtonVariant.Outline, Width = 120, Height = UiMetrics.ButtonHeight };
 
     public MyDayView(IServiceScopeFactory scopeFactory, NavigationService navigation, IAppEventBus events)
         : base(scopeFactory, navigation)
@@ -26,10 +29,26 @@ public sealed class MyDayView : ViewBase
             using var form = TaskEditorForm.ForCreate(ScopeFactory, DateTime.Today);
             form.ShowDialog(FindForm());
         };
-        _tasks.Resize += (_, _) => LayoutTasks();
-        ContentPanel.Controls.Add(_tasks);
-        ContentPanel.Controls.Add(_addBtn);
-        ContentPanel.Controls.Add(_planSummary);
+        var header = new PageHeader { TitleText = T("nav.myday"), SubtitleText = DateTime.Today.ToString("dddd, MMMM d") };
+        header.Actions.Controls.Add(_addBtn);
+
+        var goalsCard = new CardPanel { Dock = DockStyle.Top, Height = 140 };
+        var goalsTitle = new Label { Text = "Top Goals for Today", Dock = DockStyle.Top, Height = 22, Font = UiMetrics.Meta };
+        goalsCard.Controls.Add(_goalsBody);
+        goalsCard.Controls.Add(goalsTitle);
+
+        var capCard = new CardPanel { Dock = DockStyle.Top, Height = 100 };
+        var capTitle = new Label { Text = "CAPACITY", Dock = DockStyle.Top, Height = 20, Font = UiMetrics.Meta };
+        capCard.Controls.Add(_capacityBody);
+        capCard.Controls.Add(capTitle);
+
+        var left = new Panel { Dock = DockStyle.Left, Width = 280, Tag = "no-theme", Padding = new Padding(0, 0, 12, 0) };
+        left.Controls.Add(capCard);
+        left.Controls.Add(goalsCard);
+
+        ContentPanel.Controls.Add(_board);
+        ContentPanel.Controls.Add(left);
+        ContentPanel.Controls.Add(header);
         _eventHandler = OnAppEvent;
         _events.Published += _eventHandler;
     }
@@ -44,46 +63,78 @@ public sealed class MyDayView : ViewBase
             var planSvc = GetService<IDailyPlanService>(scope);
             var tasks = await taskSvc.GetMyDayTasksAsync();
             var plan = await planSvc.GetOrCreateAsync(DateOnly.FromDateTime(DateTime.Today));
-            _planSummary.Text = $"{T("dailyplan.goals")}: {plan.TopGoal1 ?? "-"} | {plan.TopGoal2 ?? "-"} | {plan.TopGoal3 ?? "-"}\n" +
-                (plan.WorkloadExceedsAvailable ? T("dailyplan.warning") : $"{T("dailyplan.workload")}: {plan.EstimatedWorkloadMinutes}/{plan.AvailableWorkMinutes} min");
-            _planSummary.ForeColor = ThemeManager.Instance.Current.TextSecondary;
+            var c = ThemeManager.Instance.Current;
 
-            _tasks.Controls.Clear();
-            foreach (var task in tasks)
-            {
-                var item = new TaskListItemControl
-                {
-                    Width = Math.Max(200, _tasks.ClientSize.Width - 4),
-                    Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
-                };
-                item.Bind(task);
-                if (_highlightId == task.Id)
-                    item.FlashHighlight();
-                item.CompleteClicked += async (_, id) =>
-                {
-                    using var s = ScopeFactory.CreateScope();
-                    await GetService<ITaskService>(s).CompleteAsync(id);
-                };
-                item.ItemClicked += (_, id) => Navigation.Navigate("task-detail", id);
-                _tasks.Controls.Add(item);
-            }
+            var goals = new[] { plan.TopGoal1, plan.TopGoal2, plan.TopGoal3 }
+                .Where(g => !string.IsNullOrWhiteSpace(g))
+                .Select((g, i) => $"{i + 1}. {g}")
+                .DefaultIfEmpty("No goals set yet");
+            _goalsBody.Text = string.Join("\n", goals);
+            _goalsBody.ForeColor = c.TextSecondary;
+            _goalsBody.Font = UiMetrics.Body;
+
+            _capacityBody.Text = plan.WorkloadExceedsAvailable
+                ? T("dailyplan.warning")
+                : $"{plan.EstimatedWorkloadMinutes}/{plan.AvailableWorkMinutes} min planned";
+            _capacityBody.ForeColor = plan.WorkloadExceedsAvailable ? c.Error : c.TextSecondary;
+            _capacityBody.Font = UiMetrics.MonoTimer;
+
+            var today = DateTime.Today;
+            var overdue = tasks.Where(t => t.Status != WorkTaskStatus.Done && t.IsOverdue).ToList();
+            var dueToday = tasks.Where(t => t.Status != WorkTaskStatus.Done && !t.IsOverdue
+                && t.DueDate is DateTime d && d.Date <= today).ToList();
+            var remaining = tasks.Where(t => t.Status != WorkTaskStatus.Done && !overdue.Contains(t) && !dueToday.Contains(t)).ToList();
+            var done = tasks.Where(t => t.Status == WorkTaskStatus.Done).ToList();
+
+            _board.Controls.Clear();
+            var y = 0;
+            y = AddGroup(_board, "Overdue", overdue, c.Error, y);
+            y = AddGroup(_board, "Due Today", dueToday, c.TextPrimary, y);
+            y = AddGroup(_board, "Later", remaining, c.TextPrimary, y);
+            AddGroup(_board, "Completed Today", done, c.TextMuted, y);
             _highlightId = null;
-            LayoutTasks();
             ShowContent();
         }
         catch (Exception ex) { ShowError(ex); }
     }
 
-    private void LayoutTasks()
+    private int AddGroup(Panel host, string title, List<TaskListItemDto> items, Color titleColor, int y)
     {
-        for (var i = 0; i < _tasks.Controls.Count; i++)
+        if (items.Count == 0) return y;
+        var lbl = new Label
         {
-            if (_tasks.Controls[i] is TaskListItemControl item)
+            Text = $"{title}  ·  {items.Count}",
+            Left = 0,
+            Top = y,
+            Width = Math.Max(200, host.ClientSize.Width - 8),
+            Height = 24,
+            Font = UiMetrics.SectionTitle,
+            ForeColor = titleColor,
+            Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
+        };
+        host.Controls.Add(lbl);
+        y += 28;
+        foreach (var task in items)
+        {
+            var item = new TaskListItemControl
             {
-                item.Width = Math.Max(200, _tasks.ClientSize.Width - 4);
-                item.Location = new Point(0, i * (item.Height + 4));
-            }
+                Width = Math.Max(200, host.ClientSize.Width - 4),
+                Location = new Point(0, y),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
+            };
+            item.Bind(task);
+            if (_highlightId == task.Id)
+                item.FlashHighlight();
+            item.CompleteClicked += async (_, id) =>
+            {
+                using var s = ScopeFactory.CreateScope();
+                await GetService<ITaskService>(s).CompleteAsync(id);
+            };
+            item.ItemClicked += (_, id) => Navigation.Navigate("task-detail", id);
+            host.Controls.Add(item);
+            y += item.Height + 4;
         }
+        return y + 12;
     }
 
     private void OnAppEvent(object? sender, AppEvent e)

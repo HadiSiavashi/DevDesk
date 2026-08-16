@@ -1,0 +1,5 @@
+Geist: Copyright 2023 Vercel, in collaboration with basement.studio
+JetBrains Mono: Copyright 2020 The JetBrains Mono Project Authors
+
+These fonts are licensed under the SIL Open Font License, Version 1.1.
+http://scripts.sil.org/OFL

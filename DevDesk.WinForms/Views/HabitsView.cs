@@ -1,6 +1,7 @@
 using DevDesk.Application.Interfaces;
 using DevDesk.WinForms.Controls;
 using DevDesk.WinForms.Services;
+using DevDesk.WinForms.Themes;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DevDesk.WinForms.Views;
@@ -20,8 +21,12 @@ public sealed class HabitsView : ViewBase
             await GetService<IHabitService>(scope).CreateAsync(new Application.Dtos.CreateHabitRequest { Name = name });
             await LoadAsync();
         };
+        var header = new PageHeader { TitleText = T("nav.habits") };
+        header.Actions.Controls.Add(_add);
+        _add.Dock = DockStyle.None;
+        _add.Width = 120;
         ContentPanel.Controls.Add(_list);
-        ContentPanel.Controls.Add(_add);
+        ContentPanel.Controls.Add(header);
     }
 
     protected override async Task LoadAsync()
@@ -36,24 +41,26 @@ public sealed class HabitsView : ViewBase
             foreach (var h in habits)
             {
                 var monthlyCount = h.RecentRecords.Count(r => r.IsCompleted && r.Date >= monthStart);
-                var row = new Panel { Width = 480, Height = 48 };
+                var row = new CardPanel { Width = Math.Max(480, _list.ClientSize.Width - 8), Height = 64, Margin = new Padding(0, 0, 0, 8) };
                 var lbl = new Label
                 {
-                    Text = $"{h.Name}  •  Streak: {h.CurrentStreak}  •  This month: {monthlyCount}",
+                    Text = h.Name,
                     Left = 8,
-                    Top = 6,
+                    Top = 8,
                     AutoSize = true,
-                    Font = new Font("Segoe UI Semibold", 9.5F)
+                    Font = UiMetrics.SectionTitle
                 };
                 var streak = new Label
                 {
-                    Text = $"🔥 {h.CurrentStreak}",
+                    Text = $"Streak {h.CurrentStreak}  ·  This month {monthlyCount}",
                     Left = 8,
-                    Top = 26,
-                    AutoSize = true
+                    Top = 32,
+                    AutoSize = true,
+                    Font = UiMetrics.Meta,
+                    ForeColor = ThemeManager.Instance.Current.TextMuted
                 };
-                var chk = new CheckBox { Text = T("common.today"), Left = 360, Top = 12, Checked = h.CompletedToday };
-                var del = new IconButton { Text = "×", Left = 430, Top = 8, Width = 28, Height = 28 };
+                var chk = new CheckBox { Text = T("common.today"), Left = row.Width - 160, Top = 18, Checked = h.CompletedToday, Anchor = AnchorStyles.Top | AnchorStyles.Right };
+                var del = new IconButton { Icon = "close", Left = row.Width - 44, Top = 16, Width = 28, Height = 28, Anchor = AnchorStyles.Top | AnchorStyles.Right };
                 var id = h.Id;
                 chk.CheckedChanged += async (_, _) =>
                 {

@@ -10,20 +10,20 @@ namespace DevDesk.WinForms.Overlays;
 public sealed class OnboardingForm : Form
 {
     private readonly IServiceProvider _services;
-    private readonly TextBox _name = new() { Dock = DockStyle.Top, Height = 28 };
+    private readonly TextField _name = new() { Dock = DockStyle.Top };
     private readonly ComboBox _language = new() { Dock = DockStyle.Top, Height = 28, DropDownStyle = ComboBoxStyle.DropDownList };
     private readonly ComboBox _theme = new() { Dock = DockStyle.Top, Height = 28, DropDownStyle = ComboBoxStyle.DropDownList };
     private readonly NumericUpDown _workHours = new() { Minimum = 4, Maximum = 12, Value = 8, Dock = DockStyle.Top, Height = 28 };
     private readonly NumericUpDown _pomodoro = new() { Minimum = 15, Maximum = 60, Value = 25, Dock = DockStyle.Top, Height = 28 };
     private readonly Panel _header = new() { Dock = DockStyle.Top, Height = 72, Tag = "no-theme" };
-    private readonly Label _subtitle = new() { Dock = DockStyle.Fill, Font = new Font("Segoe UI", 10F), ForeColor = Color.Gray };
-    private readonly Label _title = new() { Dock = DockStyle.Top, Height = 32, Font = new Font("Segoe UI Semibold", 14F) };
+    private readonly Label _subtitle = new() { Dock = DockStyle.Fill, Font = UiMetrics.Body };
+    private readonly Label _title = new() { Dock = DockStyle.Top, Height = 32, Font = UiMetrics.PageTitle };
 
     public OnboardingForm(IServiceProvider services)
     {
         _services = services;
         Text = LocalizationService.Instance.Get("onboarding.welcome");
-        Size = new Size(480, 460);
+        Size = new Size(480, 480);
         StartPosition = FormStartPosition.CenterScreen;
         FormBorderStyle = FormBorderStyle.FixedDialog;
         MaximizeBox = false;
@@ -40,7 +40,7 @@ public sealed class OnboardingForm : Form
         _header.Controls.Add(_subtitle);
         _header.Controls.Add(_title);
 
-        var fields = new Panel { Dock = DockStyle.Fill, Padding = new Padding(0, 8, 0, 8) };
+        var fields = new Panel { Dock = DockStyle.Fill, Padding = new Padding(0, 8, 0, 8), Tag = "no-theme" };
         AddField(fields, LocalizationService.Instance.Get("settings.displayName"), _name);
         AddField(fields, LocalizationService.Instance.Get("settings.language"), _language);
         AddField(fields, LocalizationService.Instance.Get("settings.theme"), _theme);
@@ -80,7 +80,7 @@ public sealed class OnboardingForm : Form
 
     private static void AddField(Control parent, string label, Control input)
     {
-        var lbl = new Label { Text = label, Dock = DockStyle.Top, Height = 20, Font = new Font("Segoe UI", 8.5F) };
+        var lbl = new Label { Text = label, Dock = DockStyle.Top, Height = 20, Font = UiMetrics.Meta };
         input.Margin = new Padding(0, 0, 0, 12);
         parent.Controls.Add(input);
         parent.Controls.Add(lbl);
@@ -89,7 +89,8 @@ public sealed class OnboardingForm : Form
     private void StyleHeader()
     {
         var c = ThemeManager.Instance.Current;
-        _header.BackColor = c.Surface;
+        BackColor = c.Overlay;
+        _header.BackColor = c.Overlay;
         _title.ForeColor = c.TextPrimary;
         _subtitle.ForeColor = c.TextSecondary;
     }
@@ -99,7 +100,7 @@ public sealed class OnboardingForm : Form
         using var scope = _services.CreateScope();
         var settings = scope.ServiceProvider.GetRequiredService<ISettingsService>();
         var prefs = await settings.GetPreferencesAsync();
-        prefs.DisplayName = _name.Text;
+        prefs.DisplayName = _name.Text ?? "";
         if (_theme.SelectedItem is ThemeMode tm) prefs.Theme = tm;
         prefs.PomodoroWorkMinutes = (int)_pomodoro.Value;
         prefs.DefaultAvailableWorkMinutes = (int)_workHours.Value * 60;

@@ -15,13 +15,13 @@ public sealed class TaskEditorForm : ModalForm
     private bool _isStarred;
     private int? _existingEstimate;
 
-    private readonly TextBox _title = new();
+    private readonly TextField _title = new();
     private readonly ComboBox _project = new() { DropDownStyle = ComboBoxStyle.DropDownList };
     private readonly ComboBox _priority = new() { DropDownStyle = ComboBoxStyle.DropDownList };
     private readonly CheckBox _hasDue = new() { Text = "Due date", AutoSize = true };
     private readonly DateTimePicker _due = new() { Format = DateTimePickerFormat.Short, Enabled = false };
     private readonly NumericUpDown _estimate = new() { Minimum = 0, Maximum = 24 * 60, Increment = 5 };
-    private readonly TextBox _tags = new();
+    private readonly TextField _tags = new();
     private readonly Label _error = new() { AutoSize = false, Height = 36, Visible = false };
     private readonly ModernButton _save = new();
     private readonly ModernButton _cancel = new() { IsPrimary = false };
@@ -41,8 +41,9 @@ public sealed class TaskEditorForm : ModalForm
         _taskId = taskId;
 
         Text = taskId is null ? T("tasks.new") : T("tasks.edit");
-        ClientSize = new Size(420, 360);
+        ClientSize = new Size(480, 420);
         Padding = new Padding(UiMetrics.Space16);
+        BackColor = ThemeManager.Instance.Current.Overlay;
 
         foreach (TaskPriority p in Enum.GetValues(typeof(TaskPriority)))
             _priority.Items.Add(p);
@@ -85,8 +86,6 @@ public sealed class TaskEditorForm : ModalForm
         var y = UiMetrics.Space16;
         void Place(Control c, int height = UiMetrics.InputHeight)
         {
-            c.Left = UiMetrics.Space16;
-            c.Top = y;
             c.Width = ClientSize.Width - UiMetrics.Space32;
             c.Height = height;
             Controls.Add(c);
@@ -126,7 +125,7 @@ public sealed class TaskEditorForm : ModalForm
         Controls.Add(_save);
         Controls.Add(_cancel);
 
-        ClientSize = new Size(420, _save.Bottom + UiMetrics.Space16);
+        ClientSize = new Size(480, _save.Bottom + UiMetrics.Space16);
     }
 
     private static Label MakeCaption(string text) => new()
@@ -185,11 +184,11 @@ public sealed class TaskEditorForm : ModalForm
     private async Task SaveAsync()
     {
         if (IsBusy) return;
-        var title = _title.Text.Trim();
+        var title = (_title.Text ?? "").Trim();
         if (string.IsNullOrWhiteSpace(title))
         {
             ShowError(T("tasks.titleRequired"));
-            _title.Focus();
+            _title.Inner.Focus();
             return;
         }
 
@@ -205,7 +204,7 @@ public sealed class TaskEditorForm : ModalForm
             var svc = scope.ServiceProvider.GetRequiredService<ITaskService>();
             var projectId = (_project.SelectedItem as ProjectItem)?.Id;
             var estimate = _estimate.Value > 0 ? (int?)_estimate.Value : null;
-            var tags = _tags.Text.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            var tags = (_tags.Text ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
             if (_taskId is Guid id)
             {

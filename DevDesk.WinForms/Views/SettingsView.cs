@@ -13,7 +13,6 @@ namespace DevDesk.WinForms.Views;
 
 public sealed class SettingsView : ViewBase
 {
-    private readonly TabControl _tabs = new() { Dock = DockStyle.Fill };
     private AppPreferencesDto _prefs = new();
     private string? _culture;
     private bool _minimizeToTray;
@@ -28,19 +27,66 @@ public sealed class SettingsView : ViewBase
 
     private void BuildTabs()
     {
-        _tabs.TabPages.Clear();
-        _tabs.TabPages.Add(BuildGeneralTab());
-        _tabs.TabPages.Add(BuildAppearanceTab());
-        _tabs.TabPages.Add(BuildLanguageTab());
-        _tabs.TabPages.Add(BuildNotificationsTab());
-        _tabs.TabPages.Add(BuildFocusTab());
-        _tabs.TabPages.Add(BuildPomodoroTab());
-        _tabs.TabPages.Add(BuildShortcutsTab());
-        _tabs.TabPages.Add(BuildDatabaseTab());
-        _tabs.TabPages.Add(BuildDataTab());
-        _tabs.TabPages.Add(BuildAboutTab());
         ContentPanel.Controls.Clear();
-        ContentPanel.Controls.Add(_tabs);
+        var nav = new Panel { Dock = DockStyle.Left, Width = 240, Tag = "no-theme", Padding = new Padding(8) };
+        var host = new Panel { Dock = DockStyle.Fill, AutoScroll = true, Padding = new Padding(24, 8, 24, 24), Tag = "no-theme" };
+        var sections = new (string Title, Func<Panel> Build)[]
+        {
+            (T("settings.general"), () => Wrap(BuildGeneralTab())),
+            (T("settings.appearance"), () => Wrap(BuildAppearanceTab())),
+            (T("settings.language"), () => Wrap(BuildLanguageTab())),
+            (T("settings.notifications"), () => Wrap(BuildNotificationsTab())),
+            (T("settings.focus"), () => Wrap(BuildFocusTab())),
+            (T("settings.pomodoro"), () => Wrap(BuildPomodoroTab())),
+            (T("settings.shortcuts"), () => Wrap(BuildShortcutsTab())),
+            (T("settings.database"), () => Wrap(BuildDatabaseTab())),
+            (T("settings.data"), () => Wrap(BuildDataTab())),
+            (T("settings.about"), () => Wrap(BuildAboutTab()))
+        };
+        var y = 8;
+        Panel? current = null;
+        for (var i = 0; i < sections.Length; i++)
+        {
+            var (title, build) = sections[i];
+            var btn = new ModernButton
+            {
+                Text = title,
+                Variant = i == 0 ? ButtonVariant.Primary : ButtonVariant.Ghost,
+                Width = 216,
+                Height = 32,
+                Left = 8,
+                Top = y
+            };
+            y += 36;
+            btn.Click += (_, _) =>
+            {
+                foreach (Control c in nav.Controls)
+                    if (c is ModernButton mb) mb.Variant = ButtonVariant.Ghost;
+                btn.Variant = ButtonVariant.Primary;
+                host.Controls.Clear();
+                current = build();
+                current.Dock = DockStyle.Fill;
+                host.Controls.Add(current);
+            };
+            nav.Controls.Add(btn);
+        }
+        current = Wrap(BuildGeneralTab());
+        current.Dock = DockStyle.Fill;
+        host.Controls.Add(current);
+        var header = new PageHeader { TitleText = T("nav.settings"), SubtitleText = "System configuration" };
+        ContentPanel.Controls.Add(host);
+        ContentPanel.Controls.Add(nav);
+        ContentPanel.Controls.Add(header);
+    }
+
+    private static Panel Wrap(TabPage page)
+    {
+        var panel = new CardPanel { Dock = DockStyle.Fill, AutoScroll = true };
+        var children = page.Controls.Cast<Control>().Reverse().ToArray();
+        page.Controls.Clear();
+        foreach (var c in children)
+            panel.Controls.Add(c);
+        return panel;
     }
 
     protected override async Task LoadAsync()

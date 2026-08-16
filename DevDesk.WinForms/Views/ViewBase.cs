@@ -25,7 +25,7 @@ public abstract class ViewBase : UserControl
         Navigation = navigation;
         Dock = DockStyle.Fill;
 
-        ContentPanel = new Panel { Dock = DockStyle.Fill, Tag = "no-theme" };
+        ContentPanel = new Panel { Dock = DockStyle.Fill, Tag = "no-theme", Padding = new Padding(UiMetrics.Space16), AutoScroll = true };
         LoadingPanel = new LoadingPanel { Visible = false };
         ErrorPanel = new ErrorPanel { Visible = false };
         EmptyPanel = new EmptyStatePanel { Visible = false };

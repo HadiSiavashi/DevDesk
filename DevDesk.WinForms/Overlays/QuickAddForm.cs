@@ -1,6 +1,6 @@
 using DevDesk.Application.Interfaces;
 using DevDesk.Application.Parsing;
-using DevDesk.Domain.Enums;
+using DevDesk.WinForms.Controls;
 using DevDesk.WinForms.Localization;
 using DevDesk.WinForms.Themes;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +10,7 @@ namespace DevDesk.WinForms.Overlays;
 public sealed class QuickAddForm : Form
 {
     private readonly IServiceScopeFactory _scopeFactory;
-    private readonly TextBox _input = new() { Dock = DockStyle.Top, Height = 32 };
+    private readonly TextField _input = new() { Dock = DockStyle.Top };
     private readonly FlowLayoutPanel _chips = new()
     {
         Dock = DockStyle.Top,
@@ -23,7 +23,7 @@ public sealed class QuickAddForm : Form
     {
         Dock = DockStyle.Fill,
         Text = LocalizationService.Instance.Get("quickadd.preview"),
-        Font = new Font("Segoe UI Semibold", 11F),
+        Font = UiMetrics.SectionTitle,
         TextAlign = ContentAlignment.TopLeft,
         Padding = new Padding(4)
     };
@@ -32,23 +32,29 @@ public sealed class QuickAddForm : Form
     {
         _scopeFactory = scopeFactory;
         Text = LocalizationService.Instance.Get("quickadd.placeholder");
-        Size = new Size(480, 220);
+        Size = new Size(480, 240);
         StartPosition = FormStartPosition.CenterParent;
         FormBorderStyle = FormBorderStyle.FixedDialog;
+        MaximizeBox = false;
+        MinimizeBox = false;
+        Padding = new Padding(16);
+        KeyPreview = true;
         _input.PlaceholderText = LocalizationService.Instance.Get("quickadd.placeholder");
         _input.TextChanged += (_, _) => UpdatePreview();
-        _input.KeyDown += async (_, e) =>
+        _input.Inner.KeyDown += async (_, e) =>
         {
             if (e.KeyCode == Keys.Enter) { await CreateAsync(); e.Handled = true; }
             else if (e.KeyCode == Keys.Escape) { Close(); e.Handled = true; }
         };
-        var create = new Button { Text = LocalizationService.Instance.Get("common.create"), Dock = DockStyle.Bottom, Height = 36 };
+        var create = new ModernButton { Text = LocalizationService.Instance.Get("common.create"), Dock = DockStyle.Bottom, Height = UiMetrics.ButtonHeight };
         create.Click += async (_, _) => await CreateAsync();
         Controls.Add(_preview);
         Controls.Add(_chips);
         Controls.Add(create);
         Controls.Add(_input);
         ThemeManager.Instance.ApplyTo(this);
+        BackColor = ThemeManager.Instance.Current.Overlay;
+        _preview.ForeColor = ThemeManager.Instance.Current.TextPrimary;
     }
 
     private void UpdatePreview()
@@ -91,7 +97,7 @@ public sealed class QuickAddForm : Form
             Padding = new Padding(6, 2, 6, 2),
             BackColor = c.SurfaceAlt,
             ForeColor = c.TextSecondary,
-            Font = new Font("Segoe UI", 8F)
+            Font = UiMetrics.Meta
         });
     }
 

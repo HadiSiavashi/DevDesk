@@ -7,10 +7,10 @@ namespace DevDesk.WinForms.Views;
 
 public sealed class NotesView : ViewBase
 {
-    private readonly ListBox _list = new() { Dock = DockStyle.Fill };
-    private readonly FlowLayoutPanel _toolbar = new() { Dock = DockStyle.Top, Height = 40, FlowDirection = FlowDirection.LeftToRight };
+    private readonly FlowLayoutPanel _list = new() { Dock = DockStyle.Fill, AutoScroll = true, FlowDirection = FlowDirection.TopDown, WrapContents = false };
     private readonly ModernButton _add = new() { Height = 36, Text = "New Note" };
     private readonly ModernButton _delete = new() { Height = 36, IsPrimary = false };
+    private Application.Dtos.NoteDto? _selected;
 
     public NotesView(IServiceScopeFactory scopeFactory, NavigationService navigation) : base(scopeFactory, navigation)
     {
@@ -24,22 +24,19 @@ public sealed class NotesView : ViewBase
             Navigation.Navigate("note-editor", note.Id);
         };
         _delete.Click += async (_, _) => await DeleteSelectedAsync();
-        _toolbar.Controls.AddRange([_add, _delete]);
-        _list.DoubleClick += (_, _) =>
-        {
-            if (_list.SelectedItem is Application.Dtos.NoteDto n)
-                Navigation.Navigate("note-editor", n.Id);
-        };
+        var header = new PageHeader { TitleText = T("nav.notes") };
+        header.Actions.Controls.Add(_add);
+        header.Actions.Controls.Add(_delete);
         ContentPanel.Controls.Add(_list);
-        ContentPanel.Controls.Add(_toolbar);
+        ContentPanel.Controls.Add(header);
     }
 
     private async Task DeleteSelectedAsync()
     {
-        if (_list.SelectedItem is not Application.Dtos.NoteDto note) return;
+        if (_selected is null) return;
         if (!Dialogs.ConfirmDialog.Show(T("common.confirm"), T("common.delete"))) return;
         using var scope = ScopeFactory.CreateScope();
-        await GetService<INoteService>(scope).DeleteAsync(note.Id);
+        await GetService<INoteService>(scope).DeleteAsync(_selected.Id);
         await LoadAsync();
     }
 
@@ -50,8 +47,21 @@ public sealed class NotesView : ViewBase
         {
             using var scope = ScopeFactory.CreateScope();
             var notes = await GetService<INoteService>(scope).GetAllAsync();
-            _list.DataSource = notes.ToList();
-            _list.DisplayMember = "Title";
+            _list.Controls.Clear();
+            _selected = null;
+            foreach (var n in notes)
+            {
+                var row = new InventoryRow { Width = Math.Max(280, _list.ClientSize.Width - 8), Margin = new Padding(0, 0, 0, 8) };
+                row.Item = n;
+                row.Bind(n.Title, n.IsPinned ? "Pinned" : n.UpdatedAt.ToString("MMM d"));
+                row.Activated += (_, _) =>
+                {
+                    _selected = n;
+                    Navigation.Navigate("note-editor", n.Id);
+                };
+                row.Click += (_, _) => _selected = n;
+                _list.Controls.Add(row);
+            }
             ShowContent();
         }
         catch (Exception ex) { ShowError(ex); }

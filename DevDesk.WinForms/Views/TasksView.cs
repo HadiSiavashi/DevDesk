@@ -16,30 +16,29 @@ public sealed class TasksView : ViewBase
     private Guid? _highlightId;
     private readonly IAppEventBus _events;
     private EventHandler<AppEvent>? _eventHandler;
-    private readonly TabControl _tabs = new() { Dock = DockStyle.Top, Height = 30 };
+    private readonly PageHeader _header = new();
+    private readonly SegmentedTabs _tabs = new() { Dock = DockStyle.Top, Height = 32, UnderlineStyle = true };
     private readonly Panel _listHost = new() { Dock = DockStyle.Fill, AutoScroll = true, Tag = "no-theme" };
-    private readonly ModernButton _newBtn = new() { Dock = DockStyle.Top, Height = UiMetrics.ButtonHeight, Text = "New Task" };
+    private readonly string[] _keys = ["today", "upcoming", "overdue", "starred", "completed", "all"];
 
     public TasksView(IServiceScopeFactory scopeFactory, NavigationService navigation, IAppEventBus events)
         : base(scopeFactory, navigation)
     {
         _events = events;
-        _newBtn.Click += async (_, _) => await CreateTaskAsync();
-        foreach (var (key, label) in new[] { ("today", "tasks.filter.today"), ("upcoming", "tasks.filter.upcoming"), ("overdue", "tasks.filter.overdue"), ("starred", "tasks.filter.starred"), ("completed", "tasks.filter.completed"), ("all", "tasks.filter.all") })
+        _header.TitleText = T("nav.tasks");
+        var newBtn = new ModernButton { Text = T("tasks.new"), Icon = "add", Shortcut = "N", Width = 120, Height = 32 };
+        newBtn.Click += async (_, _) => await CreateTaskAsync();
+        _header.Actions.Controls.Add(newBtn);
+        _tabs.Items = _keys.Select(k => T($"tasks.filter.{k}")).ToArray();
+        _tabs.SelectedIndexChanged += async (_, i) =>
         {
-            var page = new TabPage(T(label)) { Tag = key };
-            _tabs.TabPages.Add(page);
-        }
-        _tabs.SelectedIndexChanged += async (_, _) =>
-        {
-            _filter = _tabs.SelectedTab?.Tag?.ToString() ?? "today";
+            _filter = _keys[Math.Clamp(i, 0, _keys.Length - 1)];
             await LoadAsync();
         };
         _listHost.Resize += (_, _) => LayoutListItems();
         ContentPanel.Controls.Add(_listHost);
         ContentPanel.Controls.Add(_tabs);
-        ContentPanel.Controls.Add(_newBtn);
-
+        ContentPanel.Controls.Add(_header);
         _eventHandler = OnAppEvent;
         _events.Published += _eventHandler;
     }
@@ -81,12 +80,16 @@ public sealed class TasksView : ViewBase
                     SelectItem(item);
                     Navigation.Navigate("task-detail", id);
                 };
+                item.EditClicked += (_, id) =>
+                {
+                    using var form = TaskEditorForm.ForEdit(ScopeFactory, id);
+                    form.ShowDialog(FindForm());
+                };
                 item.CompleteClicked += async (_, id) =>
                 {
                     using var s = ScopeFactory.CreateScope();
                     await GetService<ITaskService>(s).CompleteAsync(id);
                 };
-                item.Click += (_, _) => SelectItem(item);
                 _listHost.Controls.Add(item);
                 LayoutItem(item, _listHost.Controls.Count - 1);
             }
@@ -100,12 +103,7 @@ public sealed class TasksView : ViewBase
     private void OnAppEvent(object? sender, AppEvent e)
     {
         if (IsDisposed) return;
-        if (InvokeRequired)
-        {
-            BeginInvoke(() => OnAppEvent(sender, e));
-            return;
-        }
-
+        if (InvokeRequired) { BeginInvoke(() => OnAppEvent(sender, e)); return; }
         if (e.Kind is AppEventKind.TaskCreated or AppEventKind.TaskUpdated
             or AppEventKind.TaskDeleted or AppEventKind.TaskCompleted)
         {
@@ -116,8 +114,7 @@ public sealed class TasksView : ViewBase
 
     private void SelectItem(TaskListItemControl item)
     {
-        if (_selectedItem is not null)
-            _selectedItem.Selected = false;
+        if (_selectedItem is not null) _selectedItem.Selected = false;
         _selectedItem = item;
         _selectedItem.Selected = true;
     }
@@ -125,10 +122,8 @@ public sealed class TasksView : ViewBase
     private void LayoutListItems()
     {
         for (var i = 0; i < _listHost.Controls.Count; i++)
-        {
             if (_listHost.Controls[i] is TaskListItemControl item)
                 LayoutItem(item, i);
-        }
     }
 
     private void LayoutItem(TaskListItemControl item, int index)
@@ -140,10 +135,8 @@ public sealed class TasksView : ViewBase
     public async Task CreateTaskAsync()
     {
         using var form = TaskEditorForm.ForCreate(ScopeFactory, DateTime.Today);
-        if (form.ShowDialog(FindForm()) != DialogResult.OK)
-            return;
+        if (form.ShowDialog(FindForm()) != DialogResult.OK) return;
         _highlightId = form.ResultTask?.Id;
-        // Event bus triggers LoadAsync; ensure immediate refresh if already current
         await LoadAsync();
     }
 

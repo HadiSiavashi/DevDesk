@@ -1,30 +1,52 @@
 using DevDesk.Application.Interfaces;
 using DevDesk.WinForms.Controls;
 using DevDesk.WinForms.Services;
+using DevDesk.WinForms.Themes;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DevDesk.WinForms.Views;
 
 public sealed class DailyReviewView : ViewBase
 {
-    private readonly TextBox _well = new() { Dock = DockStyle.Top, Height = 60, Multiline = true };
-    private readonly TextBox _notWell = new() { Dock = DockStyle.Top, Height = 60, Multiline = true };
-    private readonly TextBox _lessons = new() { Dock = DockStyle.Top, Height = 60, Multiline = true };
-    private readonly TextBox _tomorrow = new() { Dock = DockStyle.Top, Height = 60, Multiline = true };
-    private readonly ModernButton _save = new() { Dock = DockStyle.Bottom, Height = 36, Text = "Save" };
+    private readonly TextBox _well = new() { Dock = DockStyle.Fill, Multiline = true, BorderStyle = BorderStyle.None };
+    private readonly TextBox _notWell = new() { Dock = DockStyle.Fill, Multiline = true, BorderStyle = BorderStyle.None };
+    private readonly TextBox _lessons = new() { Dock = DockStyle.Fill, Multiline = true, BorderStyle = BorderStyle.None };
+    private readonly TextBox _tomorrow = new() { Dock = DockStyle.Fill, Multiline = true, BorderStyle = BorderStyle.None };
+    private readonly ModernButton _save = new() { Height = UiMetrics.ButtonHeight, Text = "Save", Width = 88 };
 
     public DailyReviewView(IServiceScopeFactory scopeFactory, NavigationService navigation) : base(scopeFactory, navigation)
     {
         _save.Click += async (_, _) => await SaveAsync();
-        ContentPanel.Controls.Add(_save);
-        ContentPanel.Controls.Add(_tomorrow);
-        ContentPanel.Controls.Add(new Label { Text = T("dailyreview.tomorrow"), Dock = DockStyle.Top, Height = 20 });
-        ContentPanel.Controls.Add(_lessons);
-        ContentPanel.Controls.Add(new Label { Text = T("dailyreview.lessons"), Dock = DockStyle.Top, Height = 20 });
-        ContentPanel.Controls.Add(_notWell);
-        ContentPanel.Controls.Add(new Label { Text = T("dailyreview.notWell"), Dock = DockStyle.Top, Height = 20 });
-        ContentPanel.Controls.Add(_well);
-        ContentPanel.Controls.Add(new Label { Text = T("dailyreview.wentWell"), Dock = DockStyle.Top, Height = 20 });
+        var header = new PageHeader { TitleText = T("nav.dailyreview"), SubtitleText = DateTime.Today.ToString("dddd, MMMM d") };
+        header.Actions.Controls.Add(_save);
+
+        var grid = new TableLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            ColumnCount = 2,
+            RowCount = 2,
+            Tag = "no-theme"
+        };
+        grid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
+        grid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));
+        grid.RowStyles.Add(new RowStyle(SizeType.Percent, 50));
+        grid.RowStyles.Add(new RowStyle(SizeType.Percent, 50));
+        grid.Controls.Add(MakePromptCard(T("dailyreview.wentWell"), _well), 0, 0);
+        grid.Controls.Add(MakePromptCard(T("dailyreview.notWell"), _notWell), 1, 0);
+        grid.Controls.Add(MakePromptCard(T("dailyreview.lessons"), _lessons), 0, 1);
+        grid.Controls.Add(MakePromptCard(T("dailyreview.tomorrow"), _tomorrow), 1, 1);
+
+        ContentPanel.Controls.Add(grid);
+        ContentPanel.Controls.Add(header);
+    }
+
+    private static CardPanel MakePromptCard(string title, TextBox input)
+    {
+        var card = new CardPanel { Dock = DockStyle.Fill, Margin = new Padding(0, 0, 8, 8) };
+        input.Font = UiMetrics.Body;
+        card.Controls.Add(input);
+        card.Controls.Add(new Label { Text = title, Dock = DockStyle.Top, Height = 24, Font = UiMetrics.SectionTitle });
+        return card;
     }
 
     protected override async Task LoadAsync()
@@ -38,9 +60,27 @@ public sealed class DailyReviewView : ViewBase
             _notWell.Text = review.WhatDidNotGoWell ?? "";
             _lessons.Text = review.LessonsLearned ?? "";
             _tomorrow.Text = review.TomorrowPlan ?? "";
+            ApplyTheme();
             ShowContent();
         }
         catch (Exception ex) { ShowError(ex); }
+    }
+
+    private void ApplyTheme()
+    {
+        var c = ThemeManager.Instance.Current;
+        foreach (var box in new[] { _well, _notWell, _lessons, _tomorrow })
+        {
+            box.BackColor = c.Surface;
+            box.ForeColor = c.TextPrimary;
+            box.Font = UiMetrics.Body;
+        }
+    }
+
+    protected override void OnThemeChanged()
+    {
+        base.OnThemeChanged();
+        ApplyTheme();
     }
 
     private async Task SaveAsync()

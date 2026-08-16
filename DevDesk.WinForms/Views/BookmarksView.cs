@@ -1,3 +1,4 @@
+using DevDesk.Application.Dtos;
 using DevDesk.Application.Interfaces;
 using DevDesk.WinForms.Controls;
 using DevDesk.WinForms.Services;
@@ -7,8 +8,8 @@ namespace DevDesk.WinForms.Views;
 
 public sealed class BookmarksView : ViewBase
 {
-    private readonly ListBox _list = new() { Dock = DockStyle.Fill };
-    private readonly FlowLayoutPanel _actions = new() { Dock = DockStyle.Bottom, Height = 40 };
+    private readonly FlowLayoutPanel _list = new() { Dock = DockStyle.Fill, AutoScroll = true, FlowDirection = FlowDirection.TopDown, WrapContents = false };
+    private BookmarkDto? _selected;
 
     public BookmarksView(IServiceScopeFactory scopeFactory, NavigationService navigation) : base(scopeFactory, navigation)
     {
@@ -19,53 +20,54 @@ public sealed class BookmarksView : ViewBase
             var url = Dialogs.InputDialog.Show(T("common.create"), "URL:");
             if (string.IsNullOrWhiteSpace(title) || string.IsNullOrWhiteSpace(url)) return;
             using var scope = ScopeFactory.CreateScope();
-            await GetService<IBookmarkService>(scope).CreateAsync(new Application.Dtos.CreateBookmarkRequest { Title = title, Url = url });
+            await GetService<IBookmarkService>(scope).CreateAsync(new CreateBookmarkRequest { Title = title, Url = url });
             await LoadAsync();
         };
-        var open = new ModernButton { Text = T("common.open"), IsPrimary = false };
+        var open = new ModernButton { Text = T("common.open"), Variant = ButtonVariant.Outline };
         open.Click += (_, _) => OpenSelectedUrl();
-        var copy = new ModernButton { Text = T("common.copy"), IsPrimary = false };
+        var copy = new ModernButton { Text = T("common.copy"), Variant = ButtonVariant.Ghost };
         copy.Click += (_, _) =>
         {
-            if (_list.SelectedItem is Application.Dtos.BookmarkDto b)
-                ClipboardHelper.TrySetText(b.Url);
+            if (_selected is not null)
+                ClipboardHelper.TrySetText(_selected.Url);
         };
-        var fav = new ModernButton { Text = "★", IsPrimary = false };
+        var fav = new ModernButton { Text = "★", Variant = ButtonVariant.Ghost, Width = 36 };
         fav.Click += async (_, _) => await ToggleFavoriteAsync();
-        var del = new ModernButton { Text = T("common.delete"), IsPrimary = false };
+        var del = new ModernButton { Text = T("common.delete"), Variant = ButtonVariant.Ghost };
         del.Click += async (_, _) => await DeleteSelectedAsync();
-        _actions.Controls.AddRange([add, open, copy, fav, del]);
+        var header = new PageHeader { TitleText = T("nav.bookmarks") };
+        header.Actions.Controls.AddRange([add, open, copy, fav, del]);
         ContentPanel.Controls.Add(_list);
-        ContentPanel.Controls.Add(_actions);
+        ContentPanel.Controls.Add(header);
     }
 
     private void OpenSelectedUrl()
     {
-        if (_list.SelectedItem is not Application.Dtos.BookmarkDto b) return;
+        if (_selected is null) return;
         using var scope = ScopeFactory.CreateScope();
-        GetService<IBrowserService>(scope).OpenUrl(b.Url);
+        GetService<IBrowserService>(scope).OpenUrl(_selected.Url);
     }
 
     private async Task ToggleFavoriteAsync()
     {
-        if (_list.SelectedItem is not Application.Dtos.BookmarkDto b) return;
+        if (_selected is null) return;
         using var scope = ScopeFactory.CreateScope();
-        await GetService<IBookmarkService>(scope).UpdateAsync(b.Id, new Application.Dtos.UpdateBookmarkRequest
+        await GetService<IBookmarkService>(scope).UpdateAsync(_selected.Id, new UpdateBookmarkRequest
         {
-            Title = b.Title,
-            Url = b.Url,
-            Category = b.Category,
-            IsFavorite = !b.IsFavorite
+            Title = _selected.Title,
+            Url = _selected.Url,
+            Category = _selected.Category,
+            IsFavorite = !_selected.IsFavorite
         });
         await LoadAsync();
     }
 
     private async Task DeleteSelectedAsync()
     {
-        if (_list.SelectedItem is not Application.Dtos.BookmarkDto b) return;
+        if (_selected is null) return;
         if (!Dialogs.ConfirmDialog.Show(T("common.confirm"), T("common.delete"))) return;
         using var scope = ScopeFactory.CreateScope();
-        await GetService<IBookmarkService>(scope).DeleteAsync(b.Id);
+        await GetService<IBookmarkService>(scope).DeleteAsync(_selected.Id);
         await LoadAsync();
     }
 
@@ -76,8 +78,16 @@ public sealed class BookmarksView : ViewBase
         {
             using var scope = ScopeFactory.CreateScope();
             var items = await GetService<IBookmarkService>(scope).GetAllAsync();
-            _list.DataSource = items.OrderByDescending(x => x.IsFavorite).ToList();
-            _list.DisplayMember = "Title";
+            _list.Controls.Clear();
+            _selected = null;
+            foreach (var b in items.OrderByDescending(x => x.IsFavorite))
+            {
+                var row = new InventoryRow { Width = Math.Max(280, _list.ClientSize.Width - 8), Margin = new Padding(0, 0, 0, 8) };
+                row.Bind(b.Title, (b.IsFavorite ? "★ " : "") + b.Url);
+                row.Activated += (_, _) => { _selected = b; OpenSelectedUrl(); };
+                row.Click += (_, _) => _selected = b;
+                _list.Controls.Add(row);
+            }
             ShowContent();
         }
         catch (Exception ex) { ShowError(ex); }

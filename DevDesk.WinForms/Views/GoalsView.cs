@@ -7,11 +7,11 @@ namespace DevDesk.WinForms.Views;
 
 public sealed class GoalsView : ViewBase
 {
-    private readonly ListBox _list = new() { Dock = DockStyle.Fill };
+    private readonly FlowLayoutPanel _list = new() { Dock = DockStyle.Fill, AutoScroll = true, FlowDirection = FlowDirection.TopDown, WrapContents = false };
     private readonly TrackBar _progress = new() { Dock = DockStyle.Bottom, Height = 40, Minimum = 0, Maximum = 100 };
-    private readonly FlowLayoutPanel _toolbar = new() { Dock = DockStyle.Top, Height = 40, FlowDirection = FlowDirection.LeftToRight };
     private readonly ModernButton _add = new() { Height = 36, Text = "Add Goal" };
     private readonly ModernButton _delete = new() { Height = 36, IsPrimary = false };
+    private Application.Dtos.GoalDto? _selected;
 
     public GoalsView(IServiceScopeFactory scopeFactory, NavigationService navigation) : base(scopeFactory, navigation)
     {
@@ -25,28 +25,26 @@ public sealed class GoalsView : ViewBase
             await LoadAsync();
         };
         _delete.Click += async (_, _) => await DeleteSelectedAsync();
-        _toolbar.Controls.AddRange([_add, _delete]);
         _progress.ValueChanged += async (_, _) =>
         {
-            if (_list.SelectedItem is not Application.Dtos.GoalDto g) return;
+            if (_selected is null) return;
             using var scope = ScopeFactory.CreateScope();
-            await GetService<IGoalService>(scope).SetProgressAsync(g.Id, _progress.Value);
+            await GetService<IGoalService>(scope).SetProgressAsync(_selected.Id, _progress.Value);
         };
-        _list.SelectedIndexChanged += (_, _) =>
-        {
-            if (_list.SelectedItem is Application.Dtos.GoalDto g) _progress.Value = g.Progress;
-        };
+        var header = new PageHeader { TitleText = T("nav.goals") };
+        header.Actions.Controls.Add(_add);
+        header.Actions.Controls.Add(_delete);
         ContentPanel.Controls.Add(_list);
         ContentPanel.Controls.Add(_progress);
-        ContentPanel.Controls.Add(_toolbar);
+        ContentPanel.Controls.Add(header);
     }
 
     private async Task DeleteSelectedAsync()
     {
-        if (_list.SelectedItem is not Application.Dtos.GoalDto goal) return;
+        if (_selected is null) return;
         if (!Dialogs.ConfirmDialog.Show(T("common.confirm"), T("common.delete"))) return;
         using var scope = ScopeFactory.CreateScope();
-        await GetService<IGoalService>(scope).DeleteAsync(goal.Id);
+        await GetService<IGoalService>(scope).DeleteAsync(_selected.Id);
         await LoadAsync();
     }
 
@@ -57,8 +55,19 @@ public sealed class GoalsView : ViewBase
         {
             using var scope = ScopeFactory.CreateScope();
             var goals = await GetService<IGoalService>(scope).GetAllAsync();
-            _list.DataSource = goals.ToList();
-            _list.DisplayMember = "Title";
+            _list.Controls.Clear();
+            _selected = null;
+            foreach (var g in goals)
+            {
+                var row = new InventoryRow { Width = Math.Max(280, _list.ClientSize.Width - 8), Margin = new Padding(0, 0, 0, 8) };
+                row.Bind(g.Title, $"{g.Progress}%");
+                row.Click += (_, _) =>
+                {
+                    _selected = g;
+                    _progress.Value = g.Progress;
+                };
+                _list.Controls.Add(row);
+            }
             ShowContent();
         }
         catch (Exception ex) { ShowError(ex); }

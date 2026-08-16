@@ -1,5 +1,6 @@
 using DevDesk.Application.Dtos;
 using DevDesk.Application.Interfaces;
+using DevDesk.WinForms.Controls;
 using DevDesk.WinForms.Localization;
 using DevDesk.WinForms.Services;
 using DevDesk.WinForms.Themes;
@@ -11,8 +12,8 @@ public sealed class GlobalSearchForm : Form
 {
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly NavigationService _navigation;
-    private readonly TextBox _input = new() { Dock = DockStyle.Top, Height = 36, Font = new Font("Segoe UI", 11F) };
-    private readonly ListBox _results = new() { Dock = DockStyle.Fill, IntegralHeight = false };
+    private readonly SearchBox _input = new() { Dock = DockStyle.Top, Height = 36, Hint = "↵" };
+    private readonly ListBox _results = new() { Dock = DockStyle.Fill, IntegralHeight = false, BorderStyle = BorderStyle.None };
     private readonly System.Windows.Forms.Timer _debounce = new() { Interval = 250 };
     private string _pending = "";
     private List<SearchResultDto> _items = [];
@@ -28,11 +29,12 @@ public sealed class GlobalSearchForm : Form
         MaximizeBox = false;
         MinimizeBox = false;
         KeyPreview = true;
+        Padding = new Padding(12);
 
-        _input.PlaceholderText = LocalizationService.Instance.Get("search.placeholder");
+        _input.Placeholder = LocalizationService.Instance.Get("search.placeholder");
         _debounce.Tick += async (_, _) => { _debounce.Stop(); await SearchAsync(_pending); };
-        _input.TextChanged += (_, _) => { _pending = _input.Text; _debounce.Stop(); _debounce.Start(); };
-        _input.KeyDown += OnInputKeyDown;
+        _input.TextChangedDebounced += (_, q) => { _pending = q; _debounce.Stop(); _debounce.Start(); };
+        _input.Inner.KeyDown += OnInputKeyDown;
         _results.DoubleClick += (_, _) => NavigateSelected();
         _results.KeyDown += (_, e) =>
         {
@@ -44,7 +46,10 @@ public sealed class GlobalSearchForm : Form
         Controls.Add(_results);
         Controls.Add(_input);
         ThemeManager.Instance.ApplyTo(this);
-        BackColor = ThemeManager.Instance.Current.Background;
+        BackColor = ThemeManager.Instance.Current.Overlay;
+        _results.BackColor = ThemeManager.Instance.Current.Overlay;
+        _results.ForeColor = ThemeManager.Instance.Current.TextPrimary;
+        _results.Font = UiMetrics.Body;
     }
 
     private void OnInputKeyDown(object? sender, KeyEventArgs e)

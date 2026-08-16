@@ -22,27 +22,9 @@ public sealed class MainForm : Form, INavigationHost
     private readonly TrayIconService _tray;
     private readonly ToastHost _toast = new();
     private readonly UiNotifier _notifier;
-    private readonly ToolTip _sidebarTip = new();
-
-    private readonly Panel _topBar = new() { Dock = DockStyle.Top, Height = UiMetrics.TopBarHeight, Tag = "no-theme" };
-    private readonly Panel _sidebar = new() { Dock = DockStyle.Left, Width = UiMetrics.SidebarExpandedWidth, Tag = "no-theme", AutoScroll = true };
+    private readonly AppSidebar _sidebar = new();
+    private readonly AppTopBar _topBar = new();
     private readonly Panel _content = new() { Dock = DockStyle.Fill, Tag = "no-theme" };
-    private readonly Label _title = new() { AutoSize = true, Left = 48, Top = 10, Font = UiMetrics.SectionTitle };
-    private readonly IconButton _collapseBtn = new() { Text = "☰", Left = 8, Top = 4, Width = 28, Height = 28 };
-    private readonly Label _focusIndicator = new()
-    {
-        AutoSize = false,
-        Height = 28,
-        Top = 6,
-        Width = 260,
-        Cursor = Cursors.Hand,
-        Font = UiMetrics.Meta,
-        TextAlign = ContentAlignment.MiddleLeft,
-        Visible = false,
-        Padding = new Padding(8, 0, 8, 0)
-    };
-    private Label? _searchHint;
-    private IconButton? _quickBtn;
 
     private UserControl? _currentView;
     private bool _sidebarCollapsed;
@@ -70,14 +52,20 @@ public sealed class MainForm : Form, INavigationHost
         Text = LocalizationService.Instance.Get("app.title");
         MinimumSize = new Size(UiMetrics.MinWindowWidth, UiMetrics.MinWindowHeight);
         KeyPreview = true;
+        BackColor = ThemeManager.Instance.Current.Background;
 
         _savedState = _windowState.Load();
         _windowState.Apply(this, _savedState);
         _sidebarCollapsed = _savedState.SidebarCollapsed;
-        ApplySidebarWidth();
+        _sidebar.Collapsed = _sidebarCollapsed;
 
-        BuildTopBar();
-        BuildSidebar();
+        _sidebar.NavigateRequested += (_, key) => _navigation.Navigate(key);
+        _topBar.CollapseRequested += (_, _) => SetSidebarCollapsed(!_sidebarCollapsed);
+        _topBar.SearchRequested += (_, _) => ShowGlobalSearch();
+        _topBar.QuickAddRequested += (_, _) => ShowQuickAdd();
+        _topBar.FocusRequested += (_, _) => _navigation.Navigate("focus");
+        _topBar.StopFocusRequested += (_, _) => _ = StopFocusFromTrayAsync();
+
         Controls.Add(_content);
         Controls.Add(_sidebar);
         Controls.Add(_topBar);
@@ -85,7 +73,7 @@ public sealed class MainForm : Form, INavigationHost
 
         ApplyThemeAndLocale();
         ThemeManager.Instance.ThemeChanged += (_, _) => ApplyThemeAndLocale();
-        LocalizationService.Instance.LanguageChanged += (_, _) => { ApplyThemeAndLocale(); BuildSidebar(); };
+        LocalizationService.Instance.LanguageChanged += (_, _) => ApplyThemeAndLocale();
 
         FormClosing += OnFormClosing;
         Resize += (_, _) =>
@@ -95,7 +83,6 @@ public sealed class MainForm : Form, INavigationHost
                 SetSidebarCollapsed(true);
             else if (ClientSize.Width >= UiMetrics.SidebarAutoCollapseWidth + 80 && _sidebarCollapsed && !_savedState.SidebarCollapsed)
                 SetSidebarCollapsed(false);
-            LayoutTopBar();
         };
 
         RegisterShortcuts();
@@ -119,10 +106,8 @@ public sealed class MainForm : Form, INavigationHost
     protected override void OnLoad(EventArgs e)
     {
         base.OnLoad(e);
-
         TopMost = ApplyAlwaysOnTop;
         _tray.SetVisible(true);
-
         if (ApplyStartMinimized)
             WindowState = FormWindowState.Minimized;
 
@@ -131,7 +116,6 @@ public sealed class MainForm : Form, INavigationHost
         StartNotificationPolling();
         _ = RefreshActiveFocusAsync();
         _focusTick.Start();
-
         Navigate("dashboard");
     }
 
@@ -176,31 +160,8 @@ public sealed class MainForm : Form, INavigationHost
 
     private void UpdateFocusIndicator()
     {
-        if (_focusIndicator.IsDisposed) return;
-        if (_activeFocus is not { IsActive: true })
-        {
-            _focusIndicator.Visible = false;
-            LayoutTopBar();
-            return;
-        }
-
-        var now = DateTime.UtcNow;
-        var end = _activeFocus.EndedAt ?? now;
-        var secs = (int)(end - _activeFocus.StartedAt).TotalSeconds - _activeFocus.PausedAccumulatedSeconds;
-        if (_activeFocus.IsPaused && _activeFocus.PausedAt is DateTime p)
-            secs -= (int)(now - p).TotalSeconds;
-        secs = Math.Max(0, secs);
-        var ts = TimeSpan.FromSeconds(secs);
-        var time = ts.TotalHours >= 1 ? ts.ToString(@"h\:mm\:ss") : ts.ToString(@"mm\:ss");
-        var name = _activeFocus.TaskTitle ?? _activeFocus.ProjectName ?? "Focus";
-        if (name.Length > 28) name = name[..27] + "…";
-        var state = _activeFocus.IsPaused ? "PAUSED" : "FOCUS";
-        _focusIndicator.Text = $"● {state}  {time}  {name}";
-        _focusIndicator.Visible = true;
-        var c = ThemeManager.Instance.Current;
-        _focusIndicator.ForeColor = _activeFocus.IsPaused ? c.Warning : c.Accent;
-        _focusIndicator.BackColor = c.SurfaceAlt;
-        LayoutTopBar();
+        if (IsDisposed) return;
+        _topBar.SetFocusSession(_activeFocus is { IsActive: true } ? _activeFocus : null);
     }
 
     private void OnNotificationRequested(object? sender, DesktopNotificationEventArgs e)
@@ -215,6 +176,7 @@ public sealed class MainForm : Form, INavigationHost
         _tray.SetVisible(true);
         _tray.ShowBalloon(e.Title, e.Message,
             e.Severity == "Warning" ? ToolTipIcon.Warning : ToolTipIcon.Info);
+        _topBar.SetNotificationBadge(true);
     }
 
     private void StartNotificationPolling()
@@ -267,7 +229,6 @@ public sealed class MainForm : Form, INavigationHost
     }
 
     public void ApplyAlwaysOnTopSetting(bool enabled) => TopMost = enabled;
-
     public void ShowToast(string message, bool isError = false) => _toast.ShowToast(message, isError);
 
     public void Navigate(string viewKey, object? parameter = null)
@@ -278,158 +239,11 @@ public sealed class MainForm : Form, INavigationHost
         _currentView = _navigation.CreateView(viewKey, parameter);
         _currentView.Dock = DockStyle.Fill;
         _content.Controls.Add(_currentView);
-        _title.Text = LocalizationService.Instance.Get($"nav.{viewKey.Replace("-", "")}") is var t && !t.StartsWith("nav.")
-            ? t
-            : viewKey;
-        HighlightSidebar(viewKey);
+        _sidebar.SetActive(viewKey);
+        _toast.BringToFront();
     }
 
     public void NavigateBack() => _navigation.NavigateBack();
-
-    private void BuildTopBar()
-    {
-        _collapseBtn.Click += (_, _) => SetSidebarCollapsed(!_sidebarCollapsed);
-        _collapseBtn.AccessibleName = "Toggle sidebar";
-        _focusIndicator.Click += (_, _) => _navigation.Navigate("focus");
-        _topBar.Controls.Add(_collapseBtn);
-        _topBar.Controls.Add(_title);
-        _topBar.Controls.Add(_focusIndicator);
-
-        _searchHint = new Label
-        {
-            Text = "Ctrl+K  Search…",
-            Height = UiMetrics.ControlHeightCompact,
-            Top = 6,
-            Width = 220,
-            TextAlign = ContentAlignment.MiddleLeft,
-            Cursor = Cursors.Hand,
-            Font = UiMetrics.Meta,
-            Padding = new Padding(10, 0, 10, 0),
-            Anchor = AnchorStyles.Top | AnchorStyles.Right
-        };
-        _searchHint.Click += (_, _) => ShowGlobalSearch();
-        _searchHint.Paint += (_, e) =>
-        {
-            var c = ThemeManager.Instance.Current;
-            using var bg = new SolidBrush(c.InputBg);
-            using var border = new Pen(c.Border);
-            var r = new Rectangle(0, 0, _searchHint.Width - 1, _searchHint.Height - 1);
-            e.Graphics.FillRectangle(bg, r);
-            e.Graphics.DrawRectangle(border, r);
-            TextRenderer.DrawText(e.Graphics, _searchHint.Text, _searchHint.Font, _searchHint.ClientRectangle, c.TextMuted,
-                TextFormatFlags.VerticalCenter | TextFormatFlags.LeftAndRightPadding);
-        };
-
-        _quickBtn = new IconButton
-        {
-            Text = "+",
-            Width = 28,
-            Height = 28,
-            Top = 6,
-            Anchor = AnchorStyles.Top | AnchorStyles.Right,
-            AccessibleName = "Quick Add"
-        };
-        _sidebarTip.SetToolTip(_quickBtn, "Quick Add (Ctrl+Shift+Space)");
-        _quickBtn.Click += (_, _) => ShowQuickAdd();
-
-        _topBar.Controls.Add(_searchHint);
-        _topBar.Controls.Add(_quickBtn);
-        LayoutTopBar();
-        _topBar.Resize += (_, _) => LayoutTopBar();
-    }
-
-    private void LayoutTopBar()
-    {
-        if (_quickBtn is null || _searchHint is null) return;
-        _quickBtn.Left = Math.Max(160, _topBar.Width - 40);
-        _searchHint.Left = Math.Max(200, _topBar.Width - 280);
-        if (_focusIndicator.Visible)
-        {
-            _focusIndicator.Left = Math.Max(_title.Right + 16, _searchHint.Left - _focusIndicator.Width - 12);
-            _focusIndicator.Width = Math.Min(280, Math.Max(160, _searchHint.Left - _focusIndicator.Left - 8));
-        }
-    }
-
-    private void BuildSidebar()
-    {
-        _sidebarTip.RemoveAll();
-        _sidebar.Controls.Clear();
-        var loc = LocalizationService.Instance;
-        var sections = new (string? header, (string key, string labelKey, string icon)[] items)[]
-        {
-            (null, new[]
-            {
-                ("dashboard", "nav.dashboard", "⌂"), ("myday", "nav.myday", "☀"), ("tasks", "nav.tasks", "☑"),
-                ("projects", "nav.projects", "▦"), ("calendar", "nav.calendar", "▦"), ("focus", "nav.focus", "▶"),
-                ("notes", "nav.notes", "✎"), ("goals", "nav.goals", "★"), ("habits", "nav.habits", "↻")
-            }),
-            ("nav.devtools", new[]
-            {
-                ("snippets", "nav.snippets", "</>"), ("bookmarks", "nav.bookmarks", "¦"),
-                ("environments", "nav.environments", "⚙"), ("knowledge", "nav.knowledge", "≡")
-            }),
-            ("nav.analyticsSection", new[]
-            {
-                ("analytics", "nav.analytics", "▥"), ("productivity", "nav.productivity", "▦"),
-                ("reports", "nav.reports", "▧"), ("dailyplan", "nav.dailyplan", "☰"),
-                ("dailyreview", "nav.dailyreview", "✎")
-            }),
-            ("nav.system", new[]
-            {
-                ("settings", "nav.settings", "⚙")
-            })
-        };
-
-        var y = UiMetrics.Space8;
-        foreach (var (header, items) in sections)
-        {
-            if (header is not null && !_sidebarCollapsed)
-            {
-                var lbl = new Label
-                {
-                    Text = loc.Get(header),
-                    Left = 12,
-                    Top = y,
-                    Width = UiMetrics.SidebarExpandedWidth - 24,
-                    Height = 18,
-                    ForeColor = ThemeManager.Instance.Current.TextMuted,
-                    Font = UiMetrics.Caption
-                };
-                _sidebar.Controls.Add(lbl);
-                y += 22;
-            }
-
-            foreach (var (key, labelKey, icon) in items)
-            {
-                var label = loc.Get(labelKey);
-                var text = _sidebarCollapsed ? icon : $"  {icon}   {label}";
-                var btn = new Button
-                {
-                    Text = text,
-                    Tag = key,
-                    FlatStyle = FlatStyle.Flat,
-                    Width = _sidebarCollapsed ? 40 : UiMetrics.SidebarExpandedWidth - 16,
-                    Height = UiMetrics.SidebarRowHeight,
-                    Left = 8,
-                    Top = y,
-                    TextAlign = ContentAlignment.MiddleLeft,
-                    Font = UiMetrics.Body,
-                    AccessibleName = label,
-                    Cursor = Cursors.Hand
-                };
-                btn.FlatAppearance.BorderSize = 0;
-                btn.Click += (_, _) => _navigation.Navigate(key);
-                if (_sidebarCollapsed)
-                    _sidebarTip.SetToolTip(btn, label);
-                _sidebar.Controls.Add(btn);
-                y += UiMetrics.SidebarRowHeight + 2;
-            }
-
-            y += UiMetrics.Space8;
-        }
-        StyleSidebar();
-        if (CurrentViewKey is not null) HighlightSidebar(CurrentViewKey);
-    }
 
     private void SetSidebarCollapsed(bool collapsed)
     {
@@ -443,59 +257,17 @@ public sealed class MainForm : Form, INavigationHost
         }, () =>
         {
             if (!IsDisposed)
-            {
-                ApplySidebarWidth();
-                BuildSidebar();
-            }
+                _sidebar.Collapsed = collapsed;
         });
-    }
-
-    private void ApplySidebarWidth() =>
-        _sidebar.Width = _sidebarCollapsed ? UiMetrics.SidebarCollapsedWidth : UiMetrics.SidebarExpandedWidth;
-
-    private static string SidebarKeyFor(string viewKey) => viewKey switch
-    {
-        "task-detail" => "tasks",
-        "project-detail" => "projects",
-        "note-editor" => "notes",
-        "snippet-editor" => "snippets",
-        _ => viewKey.Split('-')[0]
-    };
-
-    private void HighlightSidebar(string viewKey)
-    {
-        var highlight = SidebarKeyFor(viewKey);
-        foreach (Control c in _sidebar.Controls)
-        {
-            if (c is Button b)
-            {
-                var tag = b.Tag?.ToString();
-                var selected = tag == highlight || tag == viewKey;
-                b.BackColor = selected ? ThemeManager.Instance.Current.SelectedBg : Color.Transparent;
-            }
-        }
-    }
-
-    private void StyleSidebar()
-    {
-        var c = ThemeManager.Instance.Current;
-        _sidebar.BackColor = c.SidebarBg;
-        _topBar.BackColor = c.TopBarBg;
-        _content.BackColor = c.Background;
-        foreach (Control ctrl in _sidebar.Controls)
-        {
-            if (ctrl is Button b)
-            {
-                b.ForeColor = c.TextPrimary;
-                b.BackColor = Color.Transparent;
-            }
-        }
-        _title.ForeColor = c.TextPrimary;
     }
 
     private void ApplyThemeAndLocale()
     {
-        StyleSidebar();
+        var c = ThemeManager.Instance.Current;
+        BackColor = c.Background;
+        _content.BackColor = c.Background;
+        _sidebar.ApplyTheme();
+        _topBar.ApplyTheme();
         LocalizationService.Instance.ApplyRtl(this);
         _tray.RebuildMenu();
         UpdateFocusIndicator();
@@ -532,7 +304,6 @@ public sealed class MainForm : Form, INavigationHost
     {
         using var form = new QuickAddForm(_scopeFactory);
         form.ShowDialog(this);
-        // Toast + list sync via AppEventBus
     }
 
     private void ShowShortcutHelp()
@@ -545,11 +316,6 @@ public sealed class MainForm : Form, INavigationHost
     {
         if (_currentView is TasksView tv)
             await tv.CreateTaskAsync();
-        else if (_currentView is FocusView)
-        {
-            using var form = TaskEditorForm.ForCreate(_scopeFactory, DateTime.Today);
-            form.ShowDialog(this);
-        }
         else
         {
             using var form = TaskEditorForm.ForCreate(_scopeFactory, DateTime.Today);
@@ -597,7 +363,6 @@ public sealed class MainForm : Form, INavigationHost
             _focusTick.Stop();
             _focusTick.Dispose();
             _currentView?.Dispose();
-            _sidebarTip.Dispose();
         }
         base.Dispose(disposing);
     }

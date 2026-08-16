@@ -1,30 +1,42 @@
 using DevDesk.Application.Interfaces;
 using DevDesk.WinForms.Controls;
 using DevDesk.WinForms.Services;
+using DevDesk.WinForms.Themes;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DevDesk.WinForms.Views;
 
 public sealed class DailyPlanningView : ViewBase, ISaveableView
 {
-    private readonly TextBox _goal1 = new() { Dock = DockStyle.Top };
-    private readonly TextBox _goal2 = new() { Dock = DockStyle.Top };
-    private readonly TextBox _goal3 = new() { Dock = DockStyle.Top };
-    private readonly NumericUpDown _available = new() { Minimum = 60, Maximum = 960, Value = 480, Dock = DockStyle.Top };
-    private readonly Label _warning = new() { Dock = DockStyle.Top, Height = 40, ForeColor = Color.OrangeRed };
-    private readonly ModernButton _save = new() { Dock = DockStyle.Bottom, Height = 36, Text = "Save" };
+    private readonly TextField _goal1 = new() { Dock = DockStyle.Top };
+    private readonly TextField _goal2 = new() { Dock = DockStyle.Top };
+    private readonly TextField _goal3 = new() { Dock = DockStyle.Top };
+    private readonly NumericUpDown _available = new() { Minimum = 60, Maximum = 960, Value = 480, Dock = DockStyle.Top, Height = UiMetrics.InputHeight };
+    private readonly Label _warning = new() { Dock = DockStyle.Top, Height = 28 };
+    private readonly ModernButton _save = new() { Height = UiMetrics.ButtonHeight, Text = "Save", Width = 88 };
 
     public DailyPlanningView(IServiceScopeFactory scopeFactory, NavigationService navigation) : base(scopeFactory, navigation)
     {
+        var header = new PageHeader { TitleText = T("nav.dailyplan"), SubtitleText = DateTime.Today.ToString("dddd, MMMM d") };
+        header.Actions.Controls.Add(_save);
         _save.Click += async (_, _) => await SaveAsync();
-        ContentPanel.Controls.Add(_save);
-        ContentPanel.Controls.Add(_warning);
-        ContentPanel.Controls.Add(_available);
-        ContentPanel.Controls.Add(new Label { Text = "Available minutes", Dock = DockStyle.Top, Height = 20 });
-        ContentPanel.Controls.Add(_goal3);
-        ContentPanel.Controls.Add(_goal2);
-        ContentPanel.Controls.Add(_goal1);
-        ContentPanel.Controls.Add(new Label { Text = T("dailyplan.goals"), Dock = DockStyle.Top, Height = 24, Font = new Font("Segoe UI Semibold", 11F) });
+
+        var goals = new CardPanel { Dock = DockStyle.Top, Height = 180 };
+        goals.Controls.Add(_goal3);
+        goals.Controls.Add(new Label { Text = "Goal 3", Dock = DockStyle.Top, Height = 18, Font = UiMetrics.Meta });
+        goals.Controls.Add(_goal2);
+        goals.Controls.Add(new Label { Text = "Goal 2", Dock = DockStyle.Top, Height = 18, Font = UiMetrics.Meta });
+        goals.Controls.Add(_goal1);
+        goals.Controls.Add(new Label { Text = T("dailyplan.goals"), Dock = DockStyle.Top, Height = 24, Font = UiMetrics.SectionTitle });
+
+        var cap = new CardPanel { Dock = DockStyle.Top, Height = 120 };
+        cap.Controls.Add(_warning);
+        cap.Controls.Add(_available);
+        cap.Controls.Add(new Label { Text = "Available minutes", Dock = DockStyle.Top, Height = 20, Font = UiMetrics.Meta });
+
+        ContentPanel.Controls.Add(cap);
+        ContentPanel.Controls.Add(goals);
+        ContentPanel.Controls.Add(header);
     }
 
     protected override async Task LoadAsync()
@@ -38,7 +50,10 @@ public sealed class DailyPlanningView : ViewBase, ISaveableView
             _goal2.Text = plan.TopGoal2 ?? "";
             _goal3.Text = plan.TopGoal3 ?? "";
             _available.Value = plan.AvailableWorkMinutes;
-            _warning.Text = plan.WorkloadExceedsAvailable ? T("dailyplan.warning") : "";
+            _warning.Text = plan.WorkloadExceedsAvailable ? T("dailyplan.warning") : $"{T("dailyplan.workload")}: {plan.EstimatedWorkloadMinutes}/{plan.AvailableWorkMinutes} min";
+            _warning.ForeColor = plan.WorkloadExceedsAvailable
+                ? ThemeManager.Instance.Current.Error
+                : ThemeManager.Instance.Current.TextSecondary;
             ShowContent();
         }
         catch (Exception ex) { ShowError(ex); }

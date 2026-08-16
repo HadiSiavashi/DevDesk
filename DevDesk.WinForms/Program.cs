@@ -23,6 +23,7 @@ static class Program
     static void Main()
     {
         ApplicationConfiguration.Initialize();
+        UiFonts.Initialize();
 
         var builder = Host.CreateApplicationBuilder();
 

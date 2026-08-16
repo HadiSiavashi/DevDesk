@@ -2,6 +2,7 @@ using DevDesk.Application.Dtos;
 using DevDesk.Application.Interfaces;
 using DevDesk.WinForms.Controls;
 using DevDesk.WinForms.Services;
+using DevDesk.WinForms.Themes;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DevDesk.WinForms.Views;
@@ -9,7 +10,6 @@ namespace DevDesk.WinForms.Views;
 public sealed class ProjectDetailView : ViewBase
 {
     private Guid _projectId;
-    private readonly TabControl _tabs = new() { Dock = DockStyle.Fill };
     private readonly Label _overview = new() { Dock = DockStyle.Fill, AutoSize = false, Padding = new Padding(12) };
     private readonly ListBox _taskList = new() { Dock = DockStyle.Fill };
     private readonly ListBox _milestoneList = new() { Dock = DockStyle.Fill };
@@ -18,20 +18,43 @@ public sealed class ProjectDetailView : ViewBase
     private readonly ListBox _snippetList = new() { Dock = DockStyle.Fill };
     private readonly ListBox _bookmarkList = new() { Dock = DockStyle.Fill };
     private readonly Label _analytics = new() { Dock = DockStyle.Fill, AutoSize = false, Padding = new Padding(12) };
-    private readonly Label _header = new() { Dock = DockStyle.Top, Height = 40, Font = new Font("Segoe UI Semibold", 14F) };
+    private readonly PageHeader _header = new();
+    private readonly SegmentedTabs _tabs = new() { Dock = DockStyle.Top, Height = 32, UnderlineStyle = true };
+    private readonly Panel[] _pages;
 
     public ProjectDetailView(IServiceScopeFactory scopeFactory, NavigationService navigation, object? parameter)
         : base(scopeFactory, navigation)
     {
         _projectId = parameter is Guid g ? g : Guid.Empty;
-        _tabs.TabPages.Add(new TabPage("Overview") { Controls = { _overview } });
-        _tabs.TabPages.Add(new TabPage("Tasks") { Controls = { _taskList } });
-        _tabs.TabPages.Add(new TabPage("Milestones") { Controls = { _milestoneList } });
-        _tabs.TabPages.Add(new TabPage("Notes") { Controls = { _noteList } });
-        _tabs.TabPages.Add(new TabPage("Environments") { Controls = { _envList } });
-        _tabs.TabPages.Add(new TabPage("Snippets") { Controls = { _snippetList } });
-        _tabs.TabPages.Add(new TabPage("Bookmarks") { Controls = { _bookmarkList } });
-        _tabs.TabPages.Add(new TabPage("Analytics") { Controls = { _analytics } });
+        _tabs.Items = ["Overview", "Tasks", "Milestones", "Notes", "Environments", "Snippets", "Bookmarks", "Analytics"];
+
+        Panel Wrap(Control inner)
+        {
+            var p = new CardPanel { Dock = DockStyle.Fill, Visible = false };
+            inner.Dock = DockStyle.Fill;
+            p.Controls.Add(inner);
+            return p;
+        }
+
+        _pages =
+        [
+            Wrap(_overview),
+            Wrap(_taskList),
+            Wrap(_milestoneList),
+            Wrap(_noteList),
+            Wrap(_envList),
+            Wrap(_snippetList),
+            Wrap(_bookmarkList),
+            Wrap(_analytics)
+        ];
+        _pages[0].Visible = true;
+        _tabs.SelectedIndexChanged += (_, i) =>
+        {
+            for (var n = 0; n < _pages.Length; n++)
+                _pages[n].Visible = n == i;
+            if (i >= 0 && i < _pages.Length)
+                _pages[i].BringToFront();
+        };
 
         _taskList.DoubleClick += (_, _) =>
         {
@@ -49,10 +72,16 @@ public sealed class ProjectDetailView : ViewBase
                 Navigation.Navigate("snippet-editor", s.Id);
         };
 
-        var back = new ModernButton { Text = T("common.back"), Dock = DockStyle.Bottom, Height = 36, IsPrimary = false };
+        var back = new ModernButton { Text = T("common.back"), Variant = ButtonVariant.Ghost, Width = 72 };
         back.Click += (_, _) => Navigation.NavigateBack();
+        _header.Actions.Controls.Add(back);
+
+        var host = new Panel { Dock = DockStyle.Fill, Tag = "no-theme" };
+        foreach (var page in _pages)
+            host.Controls.Add(page);
+
+        ContentPanel.Controls.Add(host);
         ContentPanel.Controls.Add(_tabs);
-        ContentPanel.Controls.Add(back);
         ContentPanel.Controls.Add(_header);
     }
 
@@ -66,13 +95,16 @@ public sealed class ProjectDetailView : ViewBase
             var project = await GetService<IProjectService>(scope).GetByIdAsync(_projectId);
             if (project is null) { ShowEmpty(); return; }
 
-            _header.Text = project.Name;
+            _header.TitleText = project.Name;
+            _header.SubtitleText = $"{project.CompletedTasks}/{project.TotalTasks} tasks · {project.ProgressPercent:F0}%";
             _overview.Text =
                 $"Description: {project.Description ?? "—"}\r\n" +
                 $"Repository: {project.RepositoryUrl ?? "—"}\r\n" +
                 $"Local path: {project.LocalPath ?? "—"}\r\n" +
                 $"Progress: {project.ProgressPercent:F0}%\r\n" +
                 $"Tasks: {project.CompletedTasks}/{project.TotalTasks} completed";
+            _overview.Font = UiMetrics.Body;
+            _overview.ForeColor = ThemeManager.Instance.Current.TextSecondary;
 
             var tasks = await GetService<ITaskService>(scope).GetByProjectAsync(_projectId);
             _taskList.DataSource = tasks.ToList();
@@ -105,6 +137,8 @@ public sealed class ProjectDetailView : ViewBase
                 $"Open tasks: {openTasks}\r\n" +
                 $"Completed tasks: {completedTasks}\r\n" +
                 $"Progress: {project.ProgressPercent:F0}%";
+            _analytics.Font = UiMetrics.Body;
+            _analytics.ForeColor = ThemeManager.Instance.Current.TextSecondary;
 
             ShowContent();
         }

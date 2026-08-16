@@ -7,8 +7,9 @@ public sealed class TimerDisplay : Label
     public TimerDisplay()
     {
         Font = UiMetrics.Timer;
-        TextAlign = ContentAlignment.MiddleLeft;
-        Height = 72;
+        TextAlign = ContentAlignment.MiddleCenter;
+        Height = 80;
+        Tag = "no-theme";
         ThemeManager.Instance.ThemeChanged += (_, _) => ApplyTheme();
         ApplyTheme();
     }
@@ -20,5 +21,10 @@ public sealed class TimerDisplay : Label
 
     public void SetMinutes(int minutes, int seconds = 0) => SetTime(new TimeSpan(0, minutes, seconds));
 
-    private void ApplyTheme() => ForeColor = ThemeManager.Instance.Current.Accent;
+    private void ApplyTheme()
+    {
+        Font = UiMetrics.Timer;
+        ForeColor = ThemeManager.Instance.Current.AccentSoft;
+        BackColor = Color.Transparent;
+    }
 }

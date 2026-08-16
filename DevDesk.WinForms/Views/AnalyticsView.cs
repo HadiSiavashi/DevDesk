@@ -13,8 +13,12 @@ public sealed class AnalyticsView : ViewBase
 
     public AnalyticsView(IServiceScopeFactory scopeFactory, NavigationService navigation) : base(scopeFactory, navigation)
     {
+        var header = new PageHeader { TitleText = T("nav.analytics"), SubtitleText = "Productivity insights" };
+        _summary.Font = UiMetrics.Body;
+        _summary.Height = 48;
         ContentPanel.Controls.Add(_charts);
         ContentPanel.Controls.Add(_summary);
+        ContentPanel.Controls.Add(header);
     }
 
     protected override async Task LoadAsync()
@@ -45,18 +49,17 @@ public sealed class AnalyticsView : ViewBase
 
     private Panel CreateBarPanel(string title, IReadOnlyList<Application.Dtos.ChartPointDto> points)
     {
-        var panel = new Panel { Width = 600, Height = 40 + points.Count * 24, Padding = new Padding(8) };
-        panel.BackColor = ThemeManager.Instance.Current.Surface;
-        var lbl = new Label { Text = title, Dock = DockStyle.Top, Height = 24, ForeColor = ThemeManager.Instance.Current.TextPrimary };
+        var panel = new CardPanel { Width = 640, Height = 48 + points.Count * 24, Margin = new Padding(0, 0, 0, 12) };
+        var lbl = new Label { Text = title, Dock = DockStyle.Top, Height = 24, Font = UiMetrics.SectionTitle, ForeColor = ThemeManager.Instance.Current.TextPrimary };
         panel.Controls.Add(lbl);
         var max = points.Count > 0 ? points.Max(p => p.Value) : 1;
         if (max <= 0) max = 1;
-        var y = 28;
+        var y = 36;
         foreach (var p in points)
         {
             var barW = (int)(400 * (p.Value / max));
-            var bar = new Panel { Left = 120, Top = y, Width = Math.Max(2, barW), Height = 18, BackColor = ThemeManager.Instance.Current.Accent };
-            var plbl = new Label { Text = $"{p.Label}: {p.Value:F0}", Left = 8, Top = y, Width = 110, ForeColor = ThemeManager.Instance.Current.TextSecondary };
+            var bar = new Panel { Left = 140, Top = y, Width = Math.Max(2, barW), Height = 10, BackColor = ThemeManager.Instance.Current.Accent };
+            var plbl = new Label { Text = $"{p.Label}: {p.Value:F0}", Left = 8, Top = y - 4, Width = 128, Font = UiMetrics.Meta, ForeColor = ThemeManager.Instance.Current.TextSecondary };
             panel.Controls.Add(bar);
             panel.Controls.Add(plbl);
             y += 22;

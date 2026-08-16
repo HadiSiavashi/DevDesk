@@ -86,7 +86,8 @@ public sealed class ThemeManager
         {
             lb.BackColor = colors.Surface;
             lb.ForeColor = colors.TextPrimary;
-            lb.BorderStyle = BorderStyle.FixedSingle;
+            lb.BorderStyle = BorderStyle.None;
+            lb.IntegralHeight = false;
         }
         else if (control is Button btn && btn is not Controls.ModernButton and not Controls.IconButton)
         {
@@ -111,8 +112,7 @@ public sealed class ThemeManager
             chk.ForeColor = colors.TextPrimary;
             chk.BackColor = Color.Transparent;
         }
-        else if (control is Label lbl && lbl is not Controls.TimerDisplay and not Controls.StatusBadge
-                 and not Controls.PriorityBadge and not Controls.TagBadge)
+        else if (control is Label lbl && lbl is not Controls.TimerDisplay)
         {
             if (lbl.Tag as string != "no-theme")
                 lbl.ForeColor = colors.TextPrimary;
