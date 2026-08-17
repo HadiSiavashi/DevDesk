@@ -34,7 +34,7 @@ public static class SeedData
         };
 
         var crm = CreateProject("CRM", "Customer relationship management system", "#2563EB", now);
-        var yadino = CreateProject("Yadino", "Yadino product workspace", "#059669", now);
+        var apiGateway = CreateProject("API Gateway", "Internal API gateway and developer portal", "#059669", now);
         var personal = CreateProject("Personal", "Personal projects and learning", "#7C3AED", now);
 
         var authBug = CreateTask(
@@ -55,8 +55,8 @@ public static class SeedData
 
         var updateDocs = CreateTask(
             "Update documentation",
-            "Refresh Yadino developer documentation.",
-            yadino.Id,
+            "Refresh API Gateway developer documentation.",
+            apiGateway.Id,
             TaskPriority.Medium,
             WorkTaskStatus.Todo,
             now);
@@ -133,7 +133,7 @@ public static class SeedData
 
         context.Users.Add(user);
         context.Tags.AddRange(tags.Values);
-        context.Projects.AddRange(crm, yadino, personal);
+        context.Projects.AddRange(crm, apiGateway, personal);
         context.Tasks.AddRange(authBug, reviewApi, updateDocs, deployProd);
         context.TaskTags.AddRange(taskTags);
         context.Bookmarks.AddRange(bookmarks);

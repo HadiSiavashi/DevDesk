@@ -13,7 +13,9 @@ $PublishDir = Join-Path $Root "publish\win-x64"
 $InstallDir = Join-Path $env:LOCALAPPDATA "Programs\DevDesk"
 $ExeName = "DevDesk.exe"
 
-Write-Host "DevDesk installer" -ForegroundColor Cyan
+Write-Host "DevDesk portable copy-install (current user, no Setup.exe)." -ForegroundColor Cyan
+Write-Host "For a Control Panel installer, run: scripts\Build-Installer.ps1" -ForegroundColor DarkGray
+Write-Host ""
 
 if (-not $SkipPublish) {
     Write-Host "Publishing self-contained win-x64 Release..."

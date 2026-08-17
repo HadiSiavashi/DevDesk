@@ -13,8 +13,8 @@ public sealed class FocusChip : Control
 
     public FocusChip()
     {
-        Height = 28;
-        Width = 220;
+        Height = UiMetrics.ControlHeightCompact;
+        Width = UiScale.Px(220);
         Cursor = Cursors.Hand;
         SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
         ThemeManager.Instance.ThemeChanged += (_, _) => Invalidate();

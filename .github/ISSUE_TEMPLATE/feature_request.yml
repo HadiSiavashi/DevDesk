@@ -1,0 +1,34 @@
+name: Feature request
+description: Suggest an improvement for DevDesk
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What is missing or painful today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: What should DevDesk do instead?
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Tasks / Projects
+        - Focus / Pomodoro
+        - Notes / Snippets
+        - Calendar / Planning
+        - Analytics
+        - Localization / RTL
+        - Installer / packaging
+        - Other
+    validations:
+      required: true

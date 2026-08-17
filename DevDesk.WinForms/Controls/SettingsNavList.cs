@@ -15,7 +15,8 @@ public sealed class SettingsNavList : Control
     {
         SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw | ControlStyles.Opaque, true);
         Cursor = Cursors.Hand;
-        ThemeManager.Instance.ThemeChanged += (_, _) => Invalidate();
+        ThemeManager.Instance.Attach(this, (_, _) => Invalidate());
+        UiScale.Attach(this, (_, _) => Invalidate());
     }
 
     public string[] Items
@@ -36,7 +37,7 @@ public sealed class SettingsNavList : Control
         }
     }
 
-    private const int RowHeight = 36;
+    private int RowHeight => UiMetrics.SidebarRowHeight;
 
     protected override void OnMouseMove(MouseEventArgs e)
     {

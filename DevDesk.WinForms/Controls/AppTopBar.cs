@@ -12,8 +12,8 @@ public sealed class AppTopBar : Panel
     public event EventHandler? CollapseRequested;
     public event EventHandler? StopFocusRequested;
 
-    private readonly IconButton _collapse = new() { Icon = "menu", Size = new Size(28, 28) };
-    private readonly SearchBox _search = new() { Width = 280, Height = 28 };
+    private readonly IconButton _collapse = new();
+    private readonly SearchBox _search = new();
     private readonly FocusChip _chip = new() { Visible = false };
     private readonly IconButton _timer = new() { Icon = "timer" };
     private readonly IconButton _bell = new() { Icon = "notifications" };
@@ -21,8 +21,7 @@ public sealed class AppTopBar : Panel
     {
         Text = "New Task",
         Icon = "add",
-        Width = 108,
-        Height = 28
+        AutoFit = true
     };
 
     public AppTopBar()
@@ -42,6 +41,7 @@ public sealed class AppTopBar : Panel
         _search.Placeholder = LocalizationService.Instance.Get("search.placeholder");
         _search.Hint = "Ctrl+K";
 
+        _collapse.Icon = "menu";
         Controls.Add(_collapse);
         Controls.Add(_search);
         Controls.Add(_chip);
@@ -49,7 +49,9 @@ public sealed class AppTopBar : Panel
         Controls.Add(_bell);
         Controls.Add(_newTask);
         Resize += (_, _) => LayoutBar();
-        ThemeManager.Instance.ThemeChanged += (_, _) => ApplyTheme();
+        ThemeManager.Instance.Attach(this, (_, _) => ApplyTheme());
+        UiScale.Attach(this, (_, _) => ApplyScale());
+        ApplyScale();
         ApplyTheme();
         LayoutBar();
     }
@@ -66,30 +68,50 @@ public sealed class AppTopBar : Panel
         _bell.Invalidate();
     }
 
+    public void ApplyScale()
+    {
+        Height = UiMetrics.TopBarHeight;
+        var ctrl = UiMetrics.ControlHeightCompact;
+        _collapse.Size = new Size(ctrl, ctrl);
+        _timer.Size = new Size(ctrl, ctrl);
+        _bell.Size = new Size(ctrl, ctrl);
+        _search.Height = ctrl;
+        _search.MinimumSize = new Size(UiScale.Px(220), ctrl);
+        _search.Width = Math.Clamp(Width / 3, UiScale.Px(220), UiScale.Px(520));
+        _chip.Height = ctrl;
+        _newTask.AutoFit = true;
+        _newTask.Font = UiMetrics.Body;
+        _newTask.FitToContents();
+        LayoutBar();
+        Invalidate();
+    }
+
     public void ApplyTheme()
     {
         var c = ThemeManager.Instance.Current;
         BackColor = c.TopBarBg;
         _newTask.Text = LocalizationService.Instance.Get("tasks.new") is var t && !t.StartsWith("tasks.") ? t : "New Task";
+        _newTask.FitToContents();
         Invalidate();
         LayoutBar();
     }
 
     private void LayoutBar()
     {
-        var y = (Height - 28) / 2;
-        _collapse.Location = new Point(8, y);
-        _search.Location = new Point(44, y);
-        _search.Width = Math.Clamp(Width / 3, 180, 320);
+        var ctrl = Math.Max(1, _collapse.Height);
+        var y = (Height - ctrl) / 2;
+        _collapse.Location = new Point(UiMetrics.Space8, y);
+        _search.Location = new Point(UiScale.Px(44), y);
+        _search.Width = Math.Clamp(Width / 3, UiScale.Px(220), UiScale.Px(520));
 
-        _newTask.Location = new Point(Width - _newTask.Width - 12, y);
-        _bell.Location = new Point(_newTask.Left - 40, y);
-        _timer.Location = new Point(_bell.Left - 36, y);
+        _newTask.Location = new Point(Width - _newTask.Width - UiMetrics.Space12, y);
+        _bell.Location = new Point(_newTask.Left - UiScale.Px(40), y);
+        _timer.Location = new Point(_bell.Left - UiScale.Px(36), y);
 
         if (_chip.Visible)
         {
-            _chip.Width = Math.Min(240, Math.Max(160, _timer.Left - _search.Right - 24));
-            _chip.Location = new Point(_search.Right + 12, y);
+            _chip.Width = Math.Min(UiScale.Px(240), Math.Max(UiScale.Px(160), _timer.Left - _search.Right - UiMetrics.Space24));
+            _chip.Location = new Point(_search.Right + UiMetrics.Space12, y);
         }
     }
 

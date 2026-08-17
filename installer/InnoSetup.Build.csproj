@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <EnableDefaultItems>false</EnableDefaultItems>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <NoWarn>$(NoWarn);CS2008</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Tools.InnoSetup" Version="6.7.1" />
+  </ItemGroup>
+</Project>

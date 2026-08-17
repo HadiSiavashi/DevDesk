@@ -3,39 +3,50 @@ namespace DevDesk.WinForms.Themes;
 /// <summary>Centralized spacing, control heights, typography, and motion tokens.</summary>
 public static class UiMetrics
 {
-    public const int Space4 = 4;
-    public const int Space8 = 8;
-    public const int Space12 = 12;
-    public const int Space16 = 16;
-    public const int Space20 = 20;
-    public const int Space24 = 24;
-    public const int Space32 = 32;
-    public const int Gutter = 16;
+    public static int Space4 => UiScale.Px(4);
+    public static int Space8 => UiScale.Px(8);
+    public static int Space12 => UiScale.Px(12);
+    public static int Space16 => UiScale.Px(16);
+    public static int Space20 => UiScale.Px(20);
+    public static int Space24 => UiScale.Px(24);
+    public static int Space32 => UiScale.Px(32);
+    public static int Gutter => UiScale.Px(16);
 
-    public const int ControlHeight = 32;
-    public const int ControlHeightCompact = 28;
-    public const int ButtonHeight = 32;
-    public const int InputHeight = 32;
-    public const int TaskRowHeight = 48;
-    public const int SidebarRowHeight = 36;
-    public const int TopBarHeight = 48;
-    public const int ToastWidth = 320;
-    public const int StatusBarHeight = 32;
+    public static int ControlHeight => UiScale.Px(32);
+    public static int ControlHeightCompact => UiScale.Px(28);
+    public static int ButtonHeight => UiScale.Px(32);
+    public static int InputHeight => UiScale.Px(32);
+    public static int TaskRowHeight => UiScale.Px(48);
+    public static int SidebarRowHeight => UiScale.Px(36);
+    public static int TopBarHeight => UiScale.Px(48);
+    public static int ToastWidth => UiScale.Px(320);
+    public static int StatusBarHeight => UiScale.Px(32);
 
-    public const int SidebarExpandedWidth = 200;
-    public const int SidebarCollapsedWidth = 52;
-    public const int SidebarAutoCollapseWidth = 1000;
-    public const int IconSize = 18;
-    public const int IconButtonSize = 32;
+    public static int LineMeta => UiScale.Px(22);
+    public static int LineBody => UiScale.Px(24);
+    public static int LineTitle => UiScale.Px(32);
+    public static int LinePage => UiScale.Px(40);
+    public static int StatCardHeight => UiScale.Px(104);
+    public static int ProgressHeight => UiScale.Px(8);
 
-    public const int DefaultWindowWidth = 1280;
-    public const int DefaultWindowHeight = 800;
-    public const int MinWindowWidth = 960;
-    public const int MinWindowHeight = 640;
+    public static int SidebarExpandedWidth => UiScale.Px(248);
+    public static int SidebarCollapsedWidth => UiScale.Px(52);
+    public static int SidebarAutoCollapseWidth => UiScale.Px(1000);
+    public static int IconSize => UiScale.Px(18);
+    public static int IconButtonSize => UiScale.Px(32);
+    public static int ComboItemHeight => UiScale.Px(26);
+    public static int SidebarHeaderHeight => UiScale.Px(64);
+    public static int SidebarHeaderCollapsedHeight => UiScale.Px(48);
+    public static int SettingsNavWidth => UiScale.Px(220);
 
-    public const int RadiusSm = 4;
-    public const int RadiusMd = 6;
-    public const int RadiusLg = 8;
+    public static int DefaultWindowWidth => UiScale.Px(1280);
+    public static int DefaultWindowHeight => UiScale.Px(800);
+    public static int MinWindowWidth => UiScale.Px(960);
+    public static int MinWindowHeight => UiScale.Px(640);
+
+    public static int RadiusSm => UiScale.Px(4);
+    public static int RadiusMd => UiScale.Px(6);
+    public static int RadiusLg => UiScale.Px(8);
 
     public const int MicroMs = 140;
     public const int ModalMs = 200;

@@ -19,7 +19,7 @@ public sealed class ProjectDetailView : ViewBase
     private readonly ListBox _bookmarkList = new() { Dock = DockStyle.Fill };
     private readonly Label _analytics = new() { Dock = DockStyle.Fill, AutoSize = false, Padding = new Padding(12) };
     private readonly PageHeader _header = new();
-    private readonly SegmentedTabs _tabs = new() { Dock = DockStyle.Top, Height = 32, UnderlineStyle = true };
+    private readonly SegmentedTabs _tabs = new() { Dock = DockStyle.Top, UnderlineStyle = true };
     private readonly Panel[] _pages;
 
     public ProjectDetailView(IServiceScopeFactory scopeFactory, NavigationService navigation, object? parameter)

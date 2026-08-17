@@ -18,9 +18,9 @@ public sealed class ProjectCard : CardPanel
 
     public ProjectCard()
     {
-        Size = new Size(240, 132);
+        Size = new Size(UiScale.Px(260), UiScale.Px(148));
         Margin = new Padding(0, 0, UiMetrics.Space16, UiMetrics.Space16);
-        Padding = new Padding(UiMetrics.Space12, 10, UiMetrics.Space12, UiMetrics.Space12);
+        Padding = new Padding(UiMetrics.Space12);
         Cursor = Cursors.Hand;
         _more.Click += (_, _) =>
         {
@@ -58,11 +58,18 @@ public sealed class ProjectCard : CardPanel
 
     private void LayoutLocal()
     {
-        _more.Location = new Point(Width - 36, 8);
-        _name.SetBounds(12, 14, Width - 48, 22);
-        _desc.SetBounds(12, 38, Width - 24, 32);
-        _progress.SetBounds(12, Height - 36, Width - 24, 16);
-        _bar.SetBounds(12, Height - 18, Width - 24, 6);
+        var pad = UiMetrics.Space12;
+        var more = UiMetrics.IconButtonSize;
+        _more.Size = new Size(more, more);
+        _more.Location = new Point(Width - more - pad, pad);
+        _name.Height = UiMetrics.LineTitle;
+        _desc.Height = UiMetrics.LineBody;
+        _progress.Height = UiMetrics.LineMeta;
+        _bar.Height = UiMetrics.ProgressHeight;
+        _name.SetBounds(pad, pad + UiMetrics.Space4, Width - more - pad * 2, _name.Height);
+        _desc.SetBounds(pad, _name.Bottom + UiMetrics.Space4, Width - pad * 2, _desc.Height);
+        _bar.SetBounds(pad, Height - pad - _bar.Height, Width - pad * 2, _bar.Height);
+        _progress.SetBounds(pad, _bar.Top - _progress.Height - UiMetrics.Space4, Width - pad * 2, _progress.Height);
     }
 
     private void ApplyLocal()

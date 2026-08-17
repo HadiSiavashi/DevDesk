@@ -70,7 +70,7 @@ public static class MappingExtensions
     public static TaskListItemDto ToListItemDto(this WorkTask task, DateTime utcNow, DateOnly? today = null)
     {
         var dueDateOnly = task.DueDate.HasValue ? DateOnly.FromDateTime(task.DueDate.Value) : (DateOnly?)null;
-        var day = today ?? DateOnly.FromDateTime(DateTime.Now);
+        var day = today ?? DateOnly.FromDateTime(utcNow);
         return new TaskListItemDto
         {
             Id = task.Id,

@@ -13,7 +13,8 @@ public sealed class BookmarksView : ViewBase
 
     public BookmarksView(IServiceScopeFactory scopeFactory, NavigationService navigation) : base(scopeFactory, navigation)
     {
-        var add = new ModernButton { Text = T("common.add") };
+        var add = new ModernButton { Text = T("common.add"), AutoFit = true };
+        add.FitToContents();
         add.Click += async (_, _) =>
         {
             var title = Dialogs.InputDialog.Show(T("common.create"), "Title:");

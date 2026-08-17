@@ -9,13 +9,15 @@ namespace DevDesk.WinForms.Views;
 public sealed class SnippetsView : ViewBase
 {
     private readonly FlowLayoutPanel _list = new() { Dock = DockStyle.Fill, AutoScroll = true, FlowDirection = FlowDirection.TopDown, WrapContents = false };
-    private readonly ModernButton _add = new() { Height = 36, Text = "Add Snippet" };
-    private readonly ModernButton _delete = new() { Height = 36, IsPrimary = false };
+    private readonly ModernButton _add = new() { Text = "Add Snippet", AutoFit = true };
+    private readonly ModernButton _delete = new() { IsPrimary = false, AutoFit = true };
     private Application.Dtos.CodeSnippetDto? _selected;
 
     public SnippetsView(IServiceScopeFactory scopeFactory, NavigationService navigation) : base(scopeFactory, navigation)
     {
         _delete.Text = T("common.delete");
+        _add.FitToContents();
+        _delete.FitToContents();
         _add.Click += async (_, _) =>
         {
             var title = Dialogs.InputDialog.Show(T("common.create"), "Title:");

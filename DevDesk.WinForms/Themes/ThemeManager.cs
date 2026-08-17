@@ -24,6 +24,18 @@ public sealed class ThemeManager
 
     public event EventHandler? ThemeChanged;
 
+    public void Attach(Control control, EventHandler handler)
+    {
+        void Wrapped(object? sender, EventArgs e)
+        {
+            if (control.IsDisposed || control.Disposing) return;
+            handler(sender, e);
+        }
+
+        ThemeChanged += Wrapped;
+        control.Disposed += (_, _) => ThemeChanged -= Wrapped;
+    }
+
     private ThemeManager()
     {
         Current = ResolveColors(ThemeMode.System);
@@ -169,7 +181,7 @@ public sealed class ThemeManager
         if (cb.DrawMode != DrawMode.OwnerDrawFixed)
         {
             cb.DrawMode = DrawMode.OwnerDrawFixed;
-            cb.ItemHeight = 26;
+            cb.ItemHeight = UiMetrics.ComboItemHeight;
             cb.DrawItem += (_, e) => DrawComboItem(cb, e);
             cb.DropDown += (_, _) => DrawingUtil.ApplyComboDropDownTheme(cb);
         }

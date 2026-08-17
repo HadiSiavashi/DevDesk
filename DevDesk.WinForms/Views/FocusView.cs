@@ -31,24 +31,24 @@ public sealed class FocusView : ViewBase
     private readonly Panel _summary = new() { Dock = DockStyle.Bottom, Height = UiMetrics.StatusBarHeight, Padding = new Padding(UiMetrics.Space16, 0, UiMetrics.Space16, 0), Tag = "no-theme" };
 
     private readonly Label _headerLeft = new() { Text = "Ready to focus?", Font = UiMetrics.PageTitle, AutoSize = true };
-    private readonly Label _taskTitle = new() { Font = UiMetrics.PageTitle, AutoSize = false, Height = 36 };
-    private readonly Label _taskMeta = new() { Font = UiMetrics.Meta, AutoSize = false, Height = 20 };
-    private readonly TimerDisplay _timer = new() { Height = 96, Font = UiMetrics.Timer };
+    private readonly Label _taskTitle = new() { Font = UiMetrics.PageTitle, AutoSize = false, Height = UiMetrics.LinePage };
+    private readonly Label _taskMeta = new() { Font = UiMetrics.Meta, AutoSize = false, Height = UiMetrics.LineMeta };
+    private readonly TimerDisplay _timer = new() { Height = UiScale.Px(120), Font = UiMetrics.Timer };
     private readonly Label _modeLabel = new() { Font = UiMetrics.Body, AutoSize = true, Text = "Ready" };
     private readonly FlowLayoutPanel _actions = new() { AutoSize = true, FlowDirection = FlowDirection.TopDown, WrapContents = false };
 
-    private readonly Label _headerRight = new() { Text = "Today's Task Board", Font = UiMetrics.SectionTitle, Dock = DockStyle.Top, Height = 36 };
+    private readonly Label _headerRight = new() { Text = "Today's Task Board", Font = UiMetrics.SectionTitle, Dock = DockStyle.Top, Height = UiMetrics.LineTitle };
     private readonly Panel _taskList = new() { Dock = DockStyle.Fill, AutoScroll = true, Tag = "no-theme" };
     private readonly ModernButton _addTask = new() { Text = "+ Add task", IsPrimary = false, Height = UiMetrics.ButtonHeight, Dock = DockStyle.Bottom };
 
     private readonly Label _summaryLabel = new() { Dock = DockStyle.Fill, Font = UiMetrics.Body, TextAlign = ContentAlignment.MiddleLeft };
     private readonly System.Windows.Forms.Timer _tick = new() { Interval = 1000 };
 
-    private readonly ModernButton _btnStart = new() { Text = "Start Focus", Icon = "play_arrow", Width = 240, Height = UiMetrics.ButtonHeight };
-    private readonly ModernButton _btnPomodoro = new() { Text = "Start Pomodoro", Icon = "timelapse", Shortcut = "25m", Variant = ButtonVariant.Outline, Width = 240, Height = UiMetrics.ButtonHeight };
-    private readonly ModernButton _btnPause = new() { Text = "Pause", Variant = ButtonVariant.Outline, Width = 240, Height = UiMetrics.ButtonHeight };
-    private readonly ModernButton _btnResume = new() { Text = "Resume", Variant = ButtonVariant.Outline, Width = 240, Height = UiMetrics.ButtonHeight };
-    private readonly ModernButton _btnStop = new() { Text = "Stop", Variant = ButtonVariant.Ghost, Width = 240, Height = UiMetrics.ButtonHeight };
+    private readonly ModernButton _btnStart = new() { Text = "Start Focus", Icon = "play_arrow", Width = UiScale.Px(240), Height = UiMetrics.ButtonHeight };
+    private readonly ModernButton _btnPomodoro = new() { Text = "Start Pomodoro", Icon = "timelapse", Shortcut = "25m", Variant = ButtonVariant.Outline, Width = UiScale.Px(240), Height = UiMetrics.ButtonHeight };
+    private readonly ModernButton _btnPause = new() { Text = "Pause", Variant = ButtonVariant.Outline, Width = UiScale.Px(240), Height = UiMetrics.ButtonHeight };
+    private readonly ModernButton _btnResume = new() { Text = "Resume", Variant = ButtonVariant.Outline, Width = UiScale.Px(240), Height = UiMetrics.ButtonHeight };
+    private readonly ModernButton _btnStop = new() { Text = "Stop", Variant = ButtonVariant.Ghost, Width = UiScale.Px(240), Height = UiMetrics.ButtonHeight };
 
     private Guid? _selectedTaskId;
 

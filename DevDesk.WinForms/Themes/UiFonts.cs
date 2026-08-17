@@ -33,36 +33,39 @@ public static class UiFonts
 
     public static void Initialize()
     {
-        if (_initialized) return;
-        _initialized = true;
+        if (!_initialized)
+        {
+            _initialized = true;
+            TryAdd("DevDesk.WinForms.Assets.Fonts.Geist-Regular.ttf", ref _sans);
+            TryAdd("DevDesk.WinForms.Assets.Fonts.Geist-SemiBold.ttf", ref _sansSemi);
+            TryAdd("DevDesk.WinForms.Assets.Fonts.JetBrainsMono-Regular.ttf", ref _mono);
+            TryAdd("DevDesk.WinForms.Assets.Fonts.JetBrainsMono-Medium.ttf", ref _monoMed);
+        }
 
-        TryAdd("DevDesk.WinForms.Assets.Fonts.Geist-Regular.ttf", ref _sans);
-        TryAdd("DevDesk.WinForms.Assets.Fonts.Geist-SemiBold.ttf", ref _sansSemi);
-        TryAdd("DevDesk.WinForms.Assets.Fonts.JetBrainsMono-Regular.ttf", ref _mono);
-        TryAdd("DevDesk.WinForms.Assets.Fonts.JetBrainsMono-Medium.ttf", ref _monoMed);
+        Rebuild();
+    }
 
+    public static void RefreshForCulture() => Rebuild();
+
+    public static void Rebuild()
+    {
         var rtl = false;
         try { rtl = Localization.LocalizationService.Instance.IsRtl; } catch { /* catalog may not be ready */ }
 
         var linePad = rtl ? 1.2f : 1f;
-        PageTitle = New(_sansSemi, 14.25F * linePad, FontStyle.Bold);
-        SectionTitle = New(_sansSemi, 10.5F * linePad, FontStyle.Bold);
-        Body = New(_sans, 9.75F * linePad, FontStyle.Regular);
-        BodySemi = New(_sansSemi, 9.75F * linePad, FontStyle.Bold);
-        Meta = New(_sans, 8.25F * linePad, FontStyle.Regular);
-        Caption = New(_sans, 8.25F * linePad, FontStyle.Regular);
-        Mono = New(_mono, 9F, FontStyle.Regular);
-        MonoTimer = New(_monoMed, 10.5F, FontStyle.Bold);
-        TimerGiant = New(_monoMed, 48F, FontStyle.Bold);
-        TimerReady = New(_monoMed, 36F, FontStyle.Bold);
-        StatValue = New(_monoMed, 18F, FontStyle.Bold);
-        Kbd = New(_mono, 7.5F, FontStyle.Regular);
-    }
-
-    public static void RefreshForCulture()
-    {
-        _initialized = false;
-        Initialize();
+        var s = UiScale.Factor;
+        PageTitle = New(_sansSemi, 14.25F * linePad * s, FontStyle.Bold);
+        SectionTitle = New(_sansSemi, 10.5F * linePad * s, FontStyle.Bold);
+        Body = New(_sans, 9.75F * linePad * s, FontStyle.Regular);
+        BodySemi = New(_sansSemi, 9.75F * linePad * s, FontStyle.Bold);
+        Meta = New(_sans, 8.25F * linePad * s, FontStyle.Regular);
+        Caption = New(_sans, 8.25F * linePad * s, FontStyle.Regular);
+        Mono = New(_mono, 9F * s, FontStyle.Regular);
+        MonoTimer = New(_monoMed, 10.5F * s, FontStyle.Bold);
+        TimerGiant = New(_monoMed, 48F * s, FontStyle.Bold);
+        TimerReady = New(_monoMed, 36F * s, FontStyle.Bold);
+        StatValue = New(_monoMed, 18F * s, FontStyle.Bold);
+        Kbd = New(_mono, 7.5F * s, FontStyle.Regular);
     }
 
     private static Font New(FontFamily family, float size, FontStyle style)

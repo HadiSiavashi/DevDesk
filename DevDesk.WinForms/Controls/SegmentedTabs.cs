@@ -12,9 +12,10 @@ public sealed class SegmentedTabs : Control
 
     public SegmentedTabs()
     {
-        Height = 28;
+        Height = UiMetrics.ControlHeightCompact;
         SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
-        ThemeManager.Instance.ThemeChanged += (_, _) => Invalidate();
+        ThemeManager.Instance.Attach(this, (_, _) => Invalidate());
+        UiScale.Attach(this, (_, _) => { Height = UiMetrics.ControlHeightCompact; Invalidate(); });
         Cursor = Cursors.Hand;
     }
 
@@ -61,7 +62,7 @@ public sealed class SegmentedTabs : Control
             var pos = 0;
             for (var i = 0; i < _items.Length; i++)
             {
-                var w = TextRenderer.MeasureText(_items[i], UiMetrics.SectionTitle).Width + 16;
+                var w = TextRenderer.MeasureText(_items[i], UiMetrics.SectionTitle).Width + UiMetrics.Space16;
                 if (x >= pos && x < pos + w) return i;
                 pos += w + 8;
             }
@@ -81,7 +82,7 @@ public sealed class SegmentedTabs : Control
             var x = 0;
             for (var i = 0; i < _items.Length; i++)
             {
-                var w = TextRenderer.MeasureText(_items[i], UiMetrics.SectionTitle).Width + 16;
+                var w = TextRenderer.MeasureText(_items[i], UiMetrics.SectionTitle).Width + UiMetrics.Space16;
                 var fg = i == _selected ? c.TextPrimary : c.TextMuted;
                 TextRenderer.DrawText(g, _items[i], UiMetrics.SectionTitle, new Rectangle(x, 0, w, Height - 3), fg,
                     TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);

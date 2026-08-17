@@ -23,7 +23,29 @@ public class ModernButton : Button
         Font = UiMetrics.Body;
         SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw | ControlStyles.Opaque, true);
         UpdateStyles();
-        ThemeManager.Instance.ThemeChanged += (_, _) => Invalidate();
+        ThemeManager.Instance.Attach(this, (_, _) => Invalidate());
+        UiScale.Attach(this, (_, _) =>
+        {
+            Font = UiMetrics.Body;
+            if (AutoFit)
+                FitToContents();
+            Invalidate();
+        });
+    }
+
+    public bool AutoFit { get; set; }
+
+    public void FitToContents()
+    {
+        Font = UiMetrics.Body;
+        Height = UiMetrics.ButtonHeight;
+        var flags = TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix;
+        var textW = TextRenderer.MeasureText(Text ?? "", Font, new Size(int.MaxValue, int.MaxValue), flags).Width;
+        var iconW = string.IsNullOrEmpty(Icon) ? 0 : UiMetrics.IconSize + UiMetrics.Space8;
+        var shortcutW = 0;
+        if (!string.IsNullOrEmpty(Shortcut))
+            shortcutW = TextRenderer.MeasureText(Shortcut, UiMetrics.Kbd, new Size(int.MaxValue, int.MaxValue), flags).Width + UiMetrics.Space12;
+        Width = Math.Max(UiMetrics.ButtonHeight, textW + iconW + shortcutW + UiMetrics.Space24);
     }
 
     public bool IsPrimary
@@ -40,6 +62,13 @@ public class ModernButton : Button
 
     public string? Icon { get; set; }
     public string? Shortcut { get; set; }
+
+    protected override void OnTextChanged(EventArgs e)
+    {
+        base.OnTextChanged(e);
+        if (AutoFit)
+            FitToContents();
+    }
 
     protected override void OnMouseEnter(EventArgs e) { _hover = true; Invalidate(); base.OnMouseEnter(e); }
     protected override void OnMouseLeave(EventArgs e) { _hover = false; _pressed = false; Invalidate(); base.OnMouseLeave(e); }
@@ -90,21 +119,28 @@ public class ModernButton : Button
         }
 
         var text = Text ?? "";
-        var iconPad = string.IsNullOrEmpty(Icon) ? 0 : 20;
-        var kbdW = string.IsNullOrEmpty(Shortcut) ? 0 : 28;
-        var content = new Rectangle(4 + iconPad, 0, Math.Max(8, Width - 8 - iconPad - kbdW), Height);
+        var iconSize = UiMetrics.IconSize;
+        var iconPad = string.IsNullOrEmpty(Icon) ? 0 : iconSize + UiMetrics.Space8;
+        var kbdW = 0;
+        if (!string.IsNullOrEmpty(Shortcut))
+            kbdW = TextRenderer.MeasureText(Shortcut, UiMetrics.Kbd, new Size(int.MaxValue, int.MaxValue),
+                TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix).Width + UiMetrics.Space8;
+        var content = new Rectangle(UiMetrics.Space4 + iconPad, 0, Math.Max(8, Width - UiMetrics.Space8 - iconPad - kbdW), Height);
 
         if (!string.IsNullOrEmpty(Icon))
-            UiIcons.Draw(g, Icon, new Rectangle(8, (Height - 16) / 2, 16, 16), fg);
+            UiIcons.Draw(g, Icon, new Rectangle(UiMetrics.Space8, (Height - iconSize) / 2, iconSize, iconSize), fg);
 
-        TextRenderer.DrawText(g, text, Font ?? UiMetrics.Body, content, fg,
-            TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+        var flags = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix;
+        var needed = TextRenderer.MeasureText(text, Font ?? UiMetrics.Body, new Size(int.MaxValue, int.MaxValue), flags).Width;
+        if (needed > content.Width)
+            flags |= TextFormatFlags.EndEllipsis;
+        TextRenderer.DrawText(g, text, Font ?? UiMetrics.Body, content, fg, flags);
 
         if (!string.IsNullOrEmpty(Shortcut))
         {
-            var kr = new Rectangle(Width - 30, (Height - 16) / 2, 22, 16);
+            var kr = new Rectangle(Width - kbdW - UiMetrics.Space4, (Height - UiMetrics.LineMeta) / 2, kbdW - UiMetrics.Space4, UiMetrics.LineMeta);
             using var kb = new SolidBrush(DrawingUtil.WithAlpha(Color.Black, 40));
-            DrawingUtil.FillRounded(g, kb, kr, 3);
+            DrawingUtil.FillRounded(g, kb, kr, UiMetrics.RadiusSm);
             TextRenderer.DrawText(g, Shortcut, UiMetrics.Kbd, kr, fg,
                 TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
         }

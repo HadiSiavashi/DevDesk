@@ -27,6 +27,8 @@ public sealed class MainForm : Form, INavigationHost
     private readonly Panel _content = new() { Dock = DockStyle.Fill, Tag = "no-theme" };
 
     private UserControl? _currentView;
+    private object? _lastNavParam;
+    private bool _applyingScale;
     private bool _sidebarCollapsed;
     private WindowStateStore.SavedWindowState _savedState = new();
     private System.Windows.Forms.Timer? _notificationTimer;
@@ -74,6 +76,11 @@ public sealed class MainForm : Form, INavigationHost
         ApplyThemeAndLocale();
         ThemeManager.Instance.ThemeChanged += (_, _) => ApplyThemeAndLocale();
         LocalizationService.Instance.LanguageChanged += (_, _) => ApplyThemeAndLocale();
+        UiScale.Attach(this, (_, _) =>
+        {
+            if (!IsHandleCreated) return;
+            BeginInvoke(ApplyUiScale);
+        });
 
         FormClosing += OnFormClosing;
         Resize += (_, _) =>
@@ -234,6 +241,7 @@ public sealed class MainForm : Form, INavigationHost
     public void Navigate(string viewKey, object? parameter = null)
     {
         CurrentViewKey = viewKey;
+        _lastNavParam = parameter;
         _currentView?.Dispose();
         _content.Controls.Clear();
         _currentView = _navigation.CreateView(viewKey, parameter);
@@ -259,6 +267,25 @@ public sealed class MainForm : Form, INavigationHost
             if (!IsDisposed)
                 _sidebar.Collapsed = collapsed;
         });
+    }
+
+    private void ApplyUiScale()
+    {
+        if (_applyingScale || IsDisposed) return;
+        _applyingScale = true;
+        try
+        {
+            MinimumSize = new Size(UiMetrics.MinWindowWidth, UiMetrics.MinWindowHeight);
+            _sidebar.ApplyScale();
+            _topBar.ApplyScale();
+            _toast.Width = UiMetrics.ToastWidth;
+            if (CurrentViewKey is not null)
+                Navigate(CurrentViewKey, _lastNavParam);
+        }
+        finally
+        {
+            _applyingScale = false;
+        }
     }
 
     private void ApplyThemeAndLocale()

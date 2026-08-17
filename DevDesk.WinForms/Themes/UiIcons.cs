@@ -5,8 +5,10 @@ namespace DevDesk.WinForms.Themes;
 /// <summary>Material-style outlined icons painted with GDI+ (variable-font TTFs are unreliable in WinForms).</summary>
 public static class UiIcons
 {
-    public static void Draw(Graphics g, string name, Rectangle bounds, Color color, float stroke = 1.5f)
+    public static void Draw(Graphics g, string name, Rectangle bounds, Color color, float stroke = 0f)
     {
+        if (stroke <= 0f)
+            stroke = UiScale.Stroke();
         g.SmoothingMode = SmoothingMode.AntiAlias;
         g.PixelOffsetMode = PixelOffsetMode.HighQuality;
         using var pen = new Pen(color, stroke) { StartCap = LineCap.Round, EndCap = LineCap.Round, LineJoin = LineJoin.Round };

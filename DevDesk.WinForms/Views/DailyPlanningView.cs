@@ -12,27 +12,28 @@ public sealed class DailyPlanningView : ViewBase, ISaveableView
     private readonly TextField _goal2 = new() { Dock = DockStyle.Top };
     private readonly TextField _goal3 = new() { Dock = DockStyle.Top };
     private readonly NumericUpDown _available = new() { Minimum = 60, Maximum = 960, Value = 480, Dock = DockStyle.Top, Height = UiMetrics.InputHeight };
-    private readonly Label _warning = new() { Dock = DockStyle.Top, Height = 28 };
-    private readonly ModernButton _save = new() { Height = UiMetrics.ButtonHeight, Text = "Save", Width = 88 };
+    private readonly Label _warning = new() { Dock = DockStyle.Top, Height = UiMetrics.LineBody };
+    private readonly ModernButton _save = new() { Text = "Save", AutoFit = true };
 
     public DailyPlanningView(IServiceScopeFactory scopeFactory, NavigationService navigation) : base(scopeFactory, navigation)
     {
         var header = new PageHeader { TitleText = T("nav.dailyplan"), SubtitleText = DateTime.Today.ToString("dddd, MMMM d") };
         header.Actions.Controls.Add(_save);
+        _save.FitToContents();
         _save.Click += async (_, _) => await SaveAsync();
 
-        var goals = new CardPanel { Dock = DockStyle.Top, Height = 180 };
+        var goals = new CardPanel { Dock = DockStyle.Top, Height = UiScale.Px(220) };
         goals.Controls.Add(_goal3);
-        goals.Controls.Add(new Label { Text = "Goal 3", Dock = DockStyle.Top, Height = 18, Font = UiMetrics.Meta });
+        goals.Controls.Add(new Label { Text = "Goal 3", Dock = DockStyle.Top, Height = UiMetrics.LineMeta, Font = UiMetrics.Meta });
         goals.Controls.Add(_goal2);
-        goals.Controls.Add(new Label { Text = "Goal 2", Dock = DockStyle.Top, Height = 18, Font = UiMetrics.Meta });
+        goals.Controls.Add(new Label { Text = "Goal 2", Dock = DockStyle.Top, Height = UiMetrics.LineMeta, Font = UiMetrics.Meta });
         goals.Controls.Add(_goal1);
-        goals.Controls.Add(new Label { Text = T("dailyplan.goals"), Dock = DockStyle.Top, Height = 24, Font = UiMetrics.SectionTitle });
+        goals.Controls.Add(new Label { Text = T("dailyplan.goals"), Dock = DockStyle.Top, Height = UiMetrics.LineTitle, Font = UiMetrics.SectionTitle });
 
-        var cap = new CardPanel { Dock = DockStyle.Top, Height = 120 };
+        var cap = new CardPanel { Dock = DockStyle.Top, Height = UiScale.Px(140) };
         cap.Controls.Add(_warning);
         cap.Controls.Add(_available);
-        cap.Controls.Add(new Label { Text = "Available minutes", Dock = DockStyle.Top, Height = 20, Font = UiMetrics.Meta });
+        cap.Controls.Add(new Label { Text = "Available minutes", Dock = DockStyle.Top, Height = UiMetrics.LineMeta, Font = UiMetrics.Meta });
 
         ContentPanel.Controls.Add(cap);
         ContentPanel.Controls.Add(goals);

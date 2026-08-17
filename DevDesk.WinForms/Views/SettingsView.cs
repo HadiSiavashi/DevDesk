@@ -13,6 +13,8 @@ namespace DevDesk.WinForms.Views;
 
 public sealed class SettingsView : ViewBase
 {
+    private static int LastTab;
+    private int _scaleVersion;
     private AppPreferencesDto _prefs = new();
     private string? _culture;
     private bool _minimizeToTray;
@@ -28,7 +30,7 @@ public sealed class SettingsView : ViewBase
     private void BuildTabs()
     {
         ContentPanel.Controls.Clear();
-        var nav = new SettingsNavList { Dock = DockStyle.Left, Width = 220 };
+        var nav = new SettingsNavList { Dock = DockStyle.Left, Width = UiMetrics.SettingsNavWidth };
         var host = new Panel { Dock = DockStyle.Fill, AutoScroll = true, Padding = new Padding(16, 8, 8, 8), Tag = "no-theme" };
         var builders = new Func<Panel>[]
         {
@@ -56,8 +58,15 @@ public sealed class SettingsView : ViewBase
             page.Dock = DockStyle.Fill;
             host.Controls.Add(page);
         }
-        nav.SelectedIndexChanged += (_, i) => Show(i);
-        Show(0);
+        nav.SelectedIndexChanged += (_, i) =>
+        {
+            LastTab = i;
+            Show(i);
+        };
+        if (LastTab == 0)
+            Show(0);
+        else
+            nav.SelectedIndex = Math.Clamp(LastTab, 0, builders.Length - 1);
         var header = new PageHeader { TitleText = T("nav.settings"), SubtitleText = "System configuration" };
         ContentPanel.Controls.Add(host);
         ContentPanel.Controls.Add(nav);
@@ -98,7 +107,8 @@ public sealed class SettingsView : ViewBase
     {
         var page = new TabPage(T("settings.general"));
         var name = new TextField { Text = _prefs.DisplayName, Dock = DockStyle.Top };
-        var save = new ModernButton { Text = T("common.save"), Width = 96, Height = 32, Dock = DockStyle.Top };
+        var save = new ModernButton { Text = T("common.save"), AutoFit = true, Dock = DockStyle.Top };
+        save.FitToContents();
         save.Click += async (_, _) =>
         {
             _prefs.DisplayName = name.Text;
@@ -168,7 +178,7 @@ public sealed class SettingsView : ViewBase
         page.Controls.Add(alwaysOnTop);
         page.Controls.Add(minimizeTray);
         page.Controls.Add(name);
-        page.Controls.Add(new Label { Text = T("settings.displayName"), Dock = DockStyle.Top, Height = 20 });
+        page.Controls.Add(new Label { Text = T("settings.displayName"), Dock = DockStyle.Top, Height = UiMetrics.LineMeta });
         return page;
     }
 
@@ -188,8 +198,69 @@ public sealed class SettingsView : ViewBase
                 await GetService<ISettingsService>(scope).SavePreferencesAsync(_prefs);
             }
         };
+
+        var scaleValue = new Label
+        {
+            Text = $"{UiScale.Percent}%",
+            Dock = DockStyle.Top,
+            Height = UiScale.Px(28),
+            Font = UiMetrics.SectionTitle,
+            TextAlign = ContentAlignment.MiddleLeft
+        };
+        var scale = new TrackBar
+        {
+            Minimum = UiScale.MinPercent,
+            Maximum = UiScale.MaxPercent,
+            TickFrequency = 25,
+            SmallChange = 5,
+            LargeChange = 25,
+            Value = UiScale.Percent,
+            Dock = DockStyle.Top,
+            Height = UiScale.Px(56),
+            BackColor = ThemeManager.Instance.Current.Surface
+        };
+        scale.ValueChanged += async (_, _) =>
+        {
+            var snapped = UiScale.Parse(scale.Value.ToString());
+            if (snapped != scale.Value)
+            {
+                scale.Value = snapped;
+                return;
+            }
+
+            scaleValue.Text = $"{snapped}%";
+            var version = ++_scaleVersion;
+            await Task.Delay(280);
+            if (version != _scaleVersion || IsDisposed) return;
+            if (snapped == UiScale.Percent) return;
+
+            LastTab = 1;
+            UiScale.SetPercent(snapped);
+            using var scope = ScopeFactory.CreateScope();
+            await GetService<ISettingsService>(scope).SetSettingAsync(UiScale.SettingKey, snapped.ToString());
+        };
+
+        var scaleHint = new Label
+        {
+            Text = T("settings.uiScale.hint"),
+            Dock = DockStyle.Top,
+            Height = UiScale.Px(40),
+            Font = UiMetrics.Meta
+        };
+        var scaleLabel = new Label
+        {
+            Text = T("settings.uiScale"),
+            Dock = DockStyle.Top,
+            Height = UiScale.Px(22),
+            Font = UiMetrics.Meta
+        };
+
         page.Controls.Add(theme);
-        page.Controls.Add(new Label { Text = T("settings.theme"), Dock = DockStyle.Top, Height = 20 });
+        page.Controls.Add(new Label { Text = T("settings.theme"), Dock = DockStyle.Top, Height = UiScale.Px(22), Font = UiMetrics.Meta });
+        page.Controls.Add(scale);
+        page.Controls.Add(scaleValue);
+        page.Controls.Add(scaleHint);
+        page.Controls.Add(scaleLabel);
         return page;
     }
 
@@ -217,7 +288,7 @@ public sealed class SettingsView : ViewBase
         var page = new TabPage(T("settings.notifications"));
         var enabled = new CheckBox { Text = "Enabled", Checked = _prefs.NotificationsEnabled, Dock = DockStyle.Top };
         enabled.CheckedChanged += (_, _) => _prefs.NotificationsEnabled = enabled.Checked;
-        var save = new ModernButton { Text = T("common.save"), Dock = DockStyle.Bottom, Height = 36 };
+        var save = new ModernButton { Text = T("common.save"), Dock = DockStyle.Bottom, Height = UiMetrics.ButtonHeight };
         save.Click += async (_, _) =>
         {
             using var scope = ScopeFactory.CreateScope();
@@ -241,7 +312,7 @@ public sealed class SettingsView : ViewBase
             Dock = DockStyle.Top
         };
         target.ValueChanged += (_, _) => _prefs.TargetFocusMinutesPerDay = (int)target.Value;
-        var save = new ModernButton { Text = T("common.save"), Dock = DockStyle.Bottom, Height = 36 };
+        var save = new ModernButton { Text = T("common.save"), Dock = DockStyle.Bottom, Height = UiMetrics.ButtonHeight };
         save.Click += async (_, _) =>
         {
             using var s = ScopeFactory.CreateScope();
@@ -258,7 +329,7 @@ public sealed class SettingsView : ViewBase
         var page = new TabPage(T("settings.pomodoro"));
         var work = new NumericUpDown { Minimum = 5, Maximum = 90, Value = _prefs.PomodoroWorkMinutes, Dock = DockStyle.Top };
         work.ValueChanged += (_, _) => _prefs.PomodoroWorkMinutes = (int)work.Value;
-        var save = new ModernButton { Text = T("common.save"), Dock = DockStyle.Bottom, Height = 36 };
+        var save = new ModernButton { Text = T("common.save"), Dock = DockStyle.Bottom, Height = UiMetrics.ButtonHeight };
         save.Click += async (_, _) =>
         {
             using var scope = ScopeFactory.CreateScope();
@@ -297,7 +368,7 @@ public sealed class SettingsView : ViewBase
     private TabPage BuildDataTab()
     {
         var page = new TabPage(T("settings.data"));
-        var export = new ModernButton { Text = T("settings.export"), Dock = DockStyle.Top, Height = 36 };
+        var export = new ModernButton { Text = T("settings.export"), Dock = DockStyle.Top, Height = UiMetrics.ButtonHeight };
         export.Click += async (_, _) =>
         {
             using var scope = ScopeFactory.CreateScope();
@@ -308,7 +379,7 @@ public sealed class SettingsView : ViewBase
             await fs.WriteTextAsync(path, json);
             MessageBox.Show($"Exported to {path}");
         };
-        var import = new ModernButton { Text = T("settings.import"), Dock = DockStyle.Top, Height = 36, IsPrimary = false };
+        var import = new ModernButton { Text = T("settings.import"), Dock = DockStyle.Top, Height = UiMetrics.ButtonHeight, IsPrimary = false };
         import.Click += async (_, _) =>
         {
             using var dlg = new OpenFileDialog { Filter = "JSON|*.json" };
@@ -319,7 +390,7 @@ public sealed class SettingsView : ViewBase
             var result = await GetService<IImportExportService>(scope).ImportJsonAsync(json);
             MessageBox.Show(result.Message);
         };
-        var backup = new ModernButton { Text = T("settings.backup"), Dock = DockStyle.Top, Height = 36, IsPrimary = false };
+        var backup = new ModernButton { Text = T("settings.backup"), Dock = DockStyle.Top, Height = UiMetrics.ButtonHeight, IsPrimary = false };
         backup.Click += async (_, _) =>
         {
             using var scope = ScopeFactory.CreateScope();

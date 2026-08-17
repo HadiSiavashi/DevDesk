@@ -17,7 +17,7 @@ public sealed class TasksView : ViewBase
     private readonly IAppEventBus _events;
     private EventHandler<AppEvent>? _eventHandler;
     private readonly PageHeader _header = new();
-    private readonly SegmentedTabs _tabs = new() { Dock = DockStyle.Top, Height = 32, UnderlineStyle = true };
+    private readonly SegmentedTabs _tabs = new() { Dock = DockStyle.Top, UnderlineStyle = true };
     private readonly Panel _listHost = new() { Dock = DockStyle.Fill, AutoScroll = true, Tag = "no-theme" };
     private readonly string[] _keys = ["today", "upcoming", "overdue", "starred", "completed", "all"];
 
@@ -26,7 +26,8 @@ public sealed class TasksView : ViewBase
     {
         _events = events;
         _header.TitleText = T("nav.tasks");
-        var newBtn = new ModernButton { Text = T("tasks.new"), Icon = "add", Shortcut = "N", Width = 120, Height = 32 };
+        var newBtn = new ModernButton { Text = T("tasks.new"), Icon = "add", Shortcut = "N", AutoFit = true };
+        newBtn.FitToContents();
         newBtn.Click += async (_, _) => await CreateTaskAsync();
         _header.Actions.Controls.Add(newBtn);
         _tabs.Items = _keys.Select(k => T($"tasks.filter.{k}")).ToArray();

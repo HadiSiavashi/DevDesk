@@ -128,6 +128,8 @@ static class Program
         ThemeManager.Instance.SetMode(prefs.Theme);
         var culture = await settings.GetSettingAsync("Culture") ?? "en-US";
         LocalizationService.Instance.SetLanguage(culture);
+        UiFonts.Rebuild();
+        UiScale.SetPercent(UiScale.Parse(await settings.GetSettingAsync(UiScale.SettingKey)));
 
         var alwaysOnTop = await settings.GetSettingAsync("AlwaysOnTop");
         var startMinimized = await settings.GetSettingAsync("StartMinimized");

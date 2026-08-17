@@ -1,0 +1,47 @@
+name: Bug report
+description: Something is broken or unexpected in DevDesk
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Clear description of the bug.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to ...
+        2. Click ...
+        3. See ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: dropdown
+    id: language
+    attributes:
+      label: UI language
+      options:
+        - en-US
+        - fa-IR
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: "1.0.0"
+  - type: textarea
+    id: env
+    attributes:
+      label: Environment
+      placeholder: Windows 11, LocalDB, installed via Setup.exe or run from source

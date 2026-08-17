@@ -29,6 +29,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <NoWarn>$(NoWarn);WFO1000</NoWarn>
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
     <AssemblyName>DevDesk</AssemblyName>
     <Product>DevDesk</Product>
     <Version>1.0.0</Version>

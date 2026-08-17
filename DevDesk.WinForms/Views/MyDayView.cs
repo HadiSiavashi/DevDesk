@@ -18,7 +18,7 @@ public sealed class MyDayView : ViewBase
     private readonly Label _goalsBody = new() { Dock = DockStyle.Fill, AutoSize = false };
     private readonly Label _capacityBody = new() { Dock = DockStyle.Fill, AutoSize = false };
     private readonly Panel _board = new() { Dock = DockStyle.Fill, AutoScroll = true, Tag = "no-theme" };
-    private readonly ModernButton _addBtn = new() { Text = "+ Add task", Variant = ButtonVariant.Outline, Width = 120, Height = UiMetrics.ButtonHeight };
+    private readonly ModernButton _addBtn = new() { Text = "+ Add task", Variant = ButtonVariant.Outline, AutoFit = true };
 
     public MyDayView(IServiceScopeFactory scopeFactory, NavigationService navigation, IAppEventBus events)
         : base(scopeFactory, navigation)
@@ -29,20 +29,21 @@ public sealed class MyDayView : ViewBase
             using var form = TaskEditorForm.ForCreate(ScopeFactory, DateTime.Today);
             form.ShowDialog(FindForm());
         };
+        _addBtn.FitToContents();
         var header = new PageHeader { TitleText = T("nav.myday"), SubtitleText = DateTime.Today.ToString("dddd, MMMM d") };
         header.Actions.Controls.Add(_addBtn);
 
-        var goalsCard = new CardPanel { Dock = DockStyle.Top, Height = 140 };
-        var goalsTitle = new Label { Text = "Top Goals for Today", Dock = DockStyle.Top, Height = 22, Font = UiMetrics.Meta };
+        var goalsCard = new CardPanel { Dock = DockStyle.Top, Height = UiScale.Px(160) };
+        var goalsTitle = new Label { Text = "Top Goals for Today", Dock = DockStyle.Top, Height = UiMetrics.LineMeta, Font = UiMetrics.Meta };
         goalsCard.Controls.Add(_goalsBody);
         goalsCard.Controls.Add(goalsTitle);
 
-        var capCard = new CardPanel { Dock = DockStyle.Top, Height = 100 };
-        var capTitle = new Label { Text = "CAPACITY", Dock = DockStyle.Top, Height = 20, Font = UiMetrics.Meta };
+        var capCard = new CardPanel { Dock = DockStyle.Top, Height = UiScale.Px(120) };
+        var capTitle = new Label { Text = "CAPACITY", Dock = DockStyle.Top, Height = UiMetrics.LineMeta, Font = UiMetrics.Meta };
         capCard.Controls.Add(_capacityBody);
         capCard.Controls.Add(capTitle);
 
-        var left = new Panel { Dock = DockStyle.Left, Width = 280, Tag = "no-theme", Padding = new Padding(0, 0, 12, 0) };
+        var left = new Panel { Dock = DockStyle.Left, Width = UiScale.Px(280), Tag = "no-theme", Padding = new Padding(0, 0, UiMetrics.Space12, 0) };
         left.Controls.Add(capCard);
         left.Controls.Add(goalsCard);
 

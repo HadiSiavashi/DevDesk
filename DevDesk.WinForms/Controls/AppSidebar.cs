@@ -9,9 +9,9 @@ public sealed class AppSidebar : Panel
     public event EventHandler<string>? NavigateRequested;
 
     private readonly ToolTip _tip = new();
-    private readonly Panel _header = new() { Dock = DockStyle.Top, Height = 64, Tag = "no-theme" };
+    private readonly Panel _header = new() { Dock = DockStyle.Top, Tag = "no-theme" };
     private readonly Panel _nav = new() { Dock = DockStyle.Fill, Tag = "no-theme", AutoScroll = true };
-    private readonly Panel _settings = new() { Dock = DockStyle.Bottom, Height = 48, Tag = "no-theme" };
+    private readonly Panel _settings = new() { Dock = DockStyle.Bottom, Tag = "no-theme" };
     private string? _active = "dashboard";
     private bool _collapsed;
     private int _hover = -1;
@@ -46,6 +46,7 @@ public sealed class AppSidebar : Panel
         DrawingUtil.EnableDoubleBuffer(_header);
         DrawingUtil.EnableDoubleBuffer(_settings);
         Cursor = Cursors.Hand;
+        ApplyScale();
 
         _header.Paint += PaintHeader;
         _nav.Paint += PaintNav;
@@ -67,7 +68,8 @@ public sealed class AppSidebar : Panel
         Controls.Add(_settings);
         Controls.Add(_header);
 
-        ThemeManager.Instance.ThemeChanged += (_, _) => ApplyTheme();
+        ThemeManager.Instance.Attach(this, (_, _) => ApplyTheme());
+        UiScale.Attach(this, (_, _) => ApplyScale());
         LocalizationService.Instance.LanguageChanged += (_, _) =>
         {
             Dock = LocalizationService.Instance.IsRtl ? DockStyle.Right : DockStyle.Left;
@@ -84,7 +86,7 @@ public sealed class AppSidebar : Panel
         {
             _collapsed = value;
             Width = value ? UiMetrics.SidebarCollapsedWidth : UiMetrics.SidebarExpandedWidth;
-            _header.Height = value ? 48 : 64;
+            ApplyScale();
             ApplyTheme();
         }
     }
@@ -100,6 +102,17 @@ public sealed class AppSidebar : Panel
             "productivity" or "reports" => "analytics",
             _ => viewKey.Split('-')[0]
         };
+        _nav.Invalidate();
+        _settings.Invalidate();
+    }
+
+    public void ApplyScale()
+    {
+        Width = _collapsed ? UiMetrics.SidebarCollapsedWidth : UiMetrics.SidebarExpandedWidth;
+        _header.Height = _collapsed ? UiMetrics.SidebarHeaderCollapsedHeight : UiMetrics.SidebarHeaderHeight;
+        _settings.Height = UiMetrics.Space8 + UiMetrics.SidebarRowHeight + UiMetrics.Space8;
+        UpdateNavScroll();
+        _header.Invalidate();
         _nav.Invalidate();
         _settings.Invalidate();
     }
@@ -121,14 +134,16 @@ public sealed class AppSidebar : Panel
 
     private void UpdateNavScroll()
     {
-        var contentH = 8 + Destinations.Length * (UiMetrics.SidebarRowHeight + 2) + 8;
+        var pad = UiMetrics.Space8;
+        var contentH = pad + Destinations.Length * (UiMetrics.SidebarRowHeight + 2) + pad;
         _nav.AutoScrollMinSize = new Size(0, contentH);
     }
 
     private Rectangle ItemRect(int index)
     {
-        var y = 8 + index * (UiMetrics.SidebarRowHeight + 2) - _nav.VerticalScroll.Value;
-        return new Rectangle(8, y, Math.Max(8, _nav.ClientSize.Width - 16), UiMetrics.SidebarRowHeight);
+        var pad = UiMetrics.Space8;
+        var y = pad + index * (UiMetrics.SidebarRowHeight + 2) - _nav.VerticalScroll.Value;
+        return new Rectangle(pad, y, Math.Max(8, _nav.ClientSize.Width - pad * 2), UiMetrics.SidebarRowHeight);
     }
 
     private void OnNavMove(object? sender, MouseEventArgs e)
@@ -163,11 +178,11 @@ public sealed class AppSidebar : Panel
         g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
         if (!_collapsed)
         {
-            TextRenderer.DrawText(g, "DevDesk", UiMetrics.PageTitle, new Rectangle(16, 10, _header.Width - 24, 26), c.TextPrimary);
-            TextRenderer.DrawText(g, "Productivity Engine", UiMetrics.Meta, new Rectangle(16, 34, _header.Width - 24, 18), c.TextMuted);
+            TextRenderer.DrawText(g, "DevDesk", UiMetrics.PageTitle, new Rectangle(UiMetrics.Space16, UiMetrics.Space8, _header.Width - UiMetrics.Space24, UiScale.Px(26)), c.TextPrimary);
+            TextRenderer.DrawText(g, "Productivity Engine", UiMetrics.Meta, new Rectangle(UiMetrics.Space16, UiScale.Px(34), _header.Width - UiMetrics.Space24, UiScale.Px(18)), c.TextMuted);
         }
         else
-            UiIcons.Draw(g, "terminal", new Rectangle(16, 14, 20, 20), c.Accent);
+            UiIcons.Draw(g, "terminal", new Rectangle(UiMetrics.Space16, UiMetrics.Space12, UiMetrics.IconSize, UiMetrics.IconSize), c.Accent);
         using var pen = new Pen(c.Border);
         g.DrawLine(pen, 12, _header.Height - 1, _header.Width - 12, _header.Height - 1);
     }
@@ -192,7 +207,7 @@ public sealed class AppSidebar : Panel
         g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
         using (var pen = new Pen(c.Border))
             g.DrawLine(pen, 12, 0, _settings.Width - 12, 0);
-        var r = new Rectangle(8, 8, Math.Max(8, _settings.Width - 16), UiMetrics.SidebarRowHeight);
+        var r = new Rectangle(UiMetrics.Space8, UiMetrics.Space8, Math.Max(8, _settings.Width - UiMetrics.Space16), UiMetrics.SidebarRowHeight);
         PaintItem(g, c, r, "settings", LocalizationService.Instance.Get("nav.settings"),
             _active == "settings", _hover == Destinations.Length, LocalizationService.Instance.IsRtl);
     }
@@ -214,11 +229,13 @@ public sealed class AppSidebar : Panel
             DrawingUtil.FillRounded(g, bg, r, UiMetrics.RadiusSm);
         }
 
-        var iconRect = new Rectangle(r.X + 10, r.Y + (r.Height - 18) / 2, 18, 18);
+        var iconSize = UiMetrics.IconSize;
+        var iconRect = new Rectangle(r.X + 10, r.Y + (r.Height - iconSize) / 2, iconSize, iconSize);
         UiIcons.Draw(g, icon, iconRect, active || hover ? c.TextPrimary : c.TextSecondary);
         if (!_collapsed)
         {
-            TextRenderer.DrawText(g, label, UiMetrics.Body, new Rectangle(r.X + 36, r.Y, r.Width - 44, r.Height),
+            var textX = r.X + 10 + iconSize + UiMetrics.Space8;
+            TextRenderer.DrawText(g, label, UiMetrics.Body, new Rectangle(textX, r.Y, Math.Max(8, r.Right - textX - UiMetrics.Space8), r.Height),
                 active || hover ? c.TextPrimary : c.TextSecondary,
                 TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPadding);
         }

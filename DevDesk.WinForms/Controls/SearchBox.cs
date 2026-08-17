@@ -29,7 +29,14 @@ public sealed class SearchBox : UserControl
             TextChangedDebounced?.Invoke(this, _input.Text);
         };
         Controls.Add(_input);
-        ThemeManager.Instance.ThemeChanged += (_, _) => ApplyTheme();
+        ThemeManager.Instance.Attach(this, (_, _) => ApplyTheme());
+        UiScale.Attach(this, (_, _) =>
+        {
+            Height = UiMetrics.ControlHeightCompact;
+            MinimumSize = new Size(UiScale.Px(180), UiMetrics.ControlHeightCompact);
+            ApplyTheme();
+            LayoutInput();
+        });
         Resize += (_, _) => LayoutInput();
         ApplyTheme();
         LayoutInput();
@@ -42,8 +49,8 @@ public sealed class SearchBox : UserControl
 
     private void LayoutInput()
     {
-        _input.Location = new Point(28, 5);
-        _input.Size = new Size(Math.Max(40, Width - 80), Height - 10);
+        _input.Location = new Point(UiScale.Px(28), Math.Max(2, (Height - _input.PreferredHeight) / 2));
+        _input.Size = new Size(Math.Max(40, Width - UiScale.Px(80)), _input.PreferredHeight);
     }
 
     private void ApplyTheme()
@@ -66,7 +73,7 @@ public sealed class SearchBox : UserControl
             DrawingUtil.FillRounded(g, bg, rect, UiMetrics.RadiusSm);
         using (var pen = new Pen(_focused ? c.Accent : c.Border))
             DrawingUtil.DrawRounded(g, pen, rect, UiMetrics.RadiusSm);
-        UiIcons.Draw(g, "search", new Rectangle(8, (Height - 16) / 2, 16, 16), c.TextMuted);
+        UiIcons.Draw(g, "search", new Rectangle(UiMetrics.Space8, (Height - UiMetrics.IconSize) / 2, UiMetrics.IconSize, UiMetrics.IconSize), c.TextMuted);
 
         var chips = _hint.Split('+');
         var x = Width - 8;

@@ -10,8 +10,8 @@ public sealed class InventoryRow : CardPanel
 
     public InventoryRow()
     {
-        Height = 48;
-        Padding = new Padding(12, 4, 12, 4);
+        Height = UiMetrics.TaskRowHeight;
+        Padding = new Padding(UiMetrics.Space12, UiMetrics.Space4, UiMetrics.Space12, UiMetrics.Space4);
         Cursor = Cursors.Hand;
         Controls.Add(_title);
         Controls.Add(_meta);
@@ -20,7 +20,13 @@ public sealed class InventoryRow : CardPanel
         DoubleClick += (_, _) => Activated?.Invoke(this, EventArgs.Empty);
         _title.DoubleClick += (_, _) => Activated?.Invoke(this, EventArgs.Empty);
         ApplyRowTheme();
-        ThemeManager.Instance.ThemeChanged += (_, _) => ApplyRowTheme();
+        ThemeManager.Instance.Attach(this, (_, _) => ApplyRowTheme());
+        UiScale.Attach(this, (_, _) =>
+        {
+            Height = UiMetrics.TaskRowHeight;
+            Padding = new Padding(UiMetrics.Space12, UiMetrics.Space4, UiMetrics.Space12, UiMetrics.Space4);
+            ApplyRowTheme();
+        });
     }
 
     public object? Item { get; set; }

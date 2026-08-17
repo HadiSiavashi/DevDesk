@@ -60,9 +60,9 @@ public sealed class AnalyticsView : ViewBase
         {
             _title = title;
             _points = points;
-            Width = 720;
-            Height = 56 + Math.Max(1, points.Count) * 28;
-            Margin = new Padding(0, 0, 0, 12);
+            Width = Math.Max(UiScale.Px(640), Parent?.ClientSize.Width - 24 ?? UiScale.Px(720));
+            Height = UiScale.Px(48) + Math.Max(1, points.Count) * UiScale.Px(32);
+            Margin = new Padding(0, 0, 0, UiMetrics.Space12);
             Paint += OnChartPaint;
             Resize += (_, _) => Invalidate();
         }
@@ -71,30 +71,29 @@ public sealed class AnalyticsView : ViewBase
         {
             var c = ThemeManager.Instance.Current;
             var g = e.Graphics;
-            TextRenderer.DrawText(g, _title, UiMetrics.SectionTitle, new Rectangle(16, 12, Width - 32, 22), c.TextPrimary);
+            TextRenderer.DrawText(g, _title, UiMetrics.SectionTitle, new Rectangle(UiMetrics.Space16, UiMetrics.Space12, Width - UiMetrics.Space32, UiMetrics.LineTitle), c.TextPrimary);
             if (_points.Count == 0)
             {
-                TextRenderer.DrawText(g, "No data", UiMetrics.Meta, new Rectangle(16, 40, Width - 32, 20), c.TextMuted);
+                TextRenderer.DrawText(g, "No data", UiMetrics.Meta, new Rectangle(UiMetrics.Space16, UiScale.Px(40), Width - UiMetrics.Space32, UiMetrics.LineBody), c.TextMuted);
                 return;
             }
 
             var max = Math.Max(1, _points.Max(p => p.Value));
-            var labelW = 120;
-            var barLeft = 16 + labelW;
-            var barMax = Math.Max(40, Width - barLeft - 48);
-            var y = 42;
+            var labelW = UiScale.Px(140);
+            var barLeft = UiMetrics.Space16 + labelW;
+            var barMax = Math.Max(UiScale.Px(40), Width - barLeft - UiScale.Px(48));
+            var y = UiScale.Px(44);
+            var rowH = UiScale.Px(28);
             foreach (var p in _points)
             {
-                var row = new Rectangle(16, y, Width - 32, 24);
-                TextRenderer.DrawText(g, $"{p.Label}: {p.Value:F0}", UiMetrics.Meta, new Rectangle(16, y, labelW, 24), c.TextSecondary,
+                TextRenderer.DrawText(g, $"{p.Label}: {p.Value:F0}", UiMetrics.Meta, new Rectangle(UiMetrics.Space16, y, labelW, rowH), c.TextSecondary,
                     TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPadding);
                 var w = Math.Max(p.Value <= 0 ? 2 : 8, (int)(barMax * (p.Value / max)));
-                var bar = new Rectangle(barLeft, y + 7, w, 10);
+                var bar = new Rectangle(barLeft, y + (rowH - UiMetrics.ProgressHeight) / 2, w, UiMetrics.ProgressHeight);
                 using var fill = new SolidBrush(c.Accent);
-                DrawingUtil.FillRounded(g, fill, bar, 3);
-                y += 28;
+                DrawingUtil.FillRounded(g, fill, bar, UiMetrics.RadiusSm);
+                y += rowH + UiMetrics.Space4;
             }
-            _ = y;
         }
     }
 }

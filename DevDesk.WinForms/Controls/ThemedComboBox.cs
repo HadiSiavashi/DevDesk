@@ -9,29 +9,45 @@ public sealed class ThemedComboBox : ComboBox
         DropDownStyle = ComboBoxStyle.DropDownList;
         DrawMode = DrawMode.OwnerDrawFixed;
         IntegralHeight = false;
-        ItemHeight = 26;
+        ItemHeight = UiMetrics.ComboItemHeight;
         FlatStyle = FlatStyle.Flat;
         Height = UiMetrics.InputHeight;
         DrawItem += OnDrawItemCore;
-        DropDown += (_, _) => DrawingUtil.ApplyComboDropDownTheme(this);
-        HandleCreated += (_, _) => DrawingUtil.ApplyWindowChrome(this);
-        ThemeManager.Instance.ThemeChanged += (_, _) => ApplyTheme();
+        DropDown += (_, _) =>
+        {
+            if (!IsDisposed && IsHandleCreated)
+                DrawingUtil.ApplyComboDropDownTheme(this);
+        };
+        HandleCreated += (_, _) =>
+        {
+            if (!IsDisposed)
+                DrawingUtil.ApplyWindowChrome(this);
+        };
+        ThemeManager.Instance.Attach(this, (_, _) => ApplyTheme());
+        UiScale.Attach(this, (_, _) => ApplyTheme());
         ApplyTheme();
     }
 
     private void ApplyTheme()
     {
+        if (IsDisposed || Disposing) return;
+
         var c = ThemeManager.Instance.Current;
         BackColor = c.InputBg;
         ForeColor = c.TextPrimary;
         Font = UiMetrics.Body;
-        Invalidate();
+        Height = UiMetrics.InputHeight;
+        ItemHeight = UiMetrics.ComboItemHeight;
         if (IsHandleCreated)
+        {
+            Invalidate();
             DrawingUtil.ApplyWindowChrome(this);
+        }
     }
 
     private void OnDrawItemCore(object? sender, DrawItemEventArgs e)
     {
+        if (IsDisposed) return;
         var c = ThemeManager.Instance.Current;
         var selected = (e.State & DrawItemState.Selected) != 0;
         using var bg = new SolidBrush(selected ? c.SelectedBg : c.InputBg);

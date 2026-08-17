@@ -8,7 +8,7 @@ public sealed class ProgressBarControl : Control
 
     public ProgressBarControl()
     {
-        Height = 6;
+        Height = UiMetrics.ProgressHeight;
         SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw | ControlStyles.SupportsTransparentBackColor, true);
         BackColor = Color.Transparent;
         ThemeManager.Instance.ThemeChanged += (_, _) => Invalidate();

@@ -11,10 +11,11 @@ public sealed class EnvironmentsView : ViewBase
 {
     private readonly FlowLayoutPanel _list = new() { Dock = DockStyle.Fill, AutoScroll = true, FlowDirection = FlowDirection.TopDown, WrapContents = false };
     private readonly ThemedComboBox _projects = new() { Dock = DockStyle.Top };
-    private readonly ModernButton _add = new() { Height = 36, Text = "Add Environment", Width = 160 };
+    private readonly ModernButton _add = new() { Text = "Add Environment", AutoFit = true };
 
     public EnvironmentsView(IServiceScopeFactory scopeFactory, NavigationService navigation) : base(scopeFactory, navigation)
     {
+        _add.FitToContents();
         _projects.SelectedIndexChanged += async (_, _) => await LoadEnvsAsync();
         _add.Click += async (_, _) =>
         {

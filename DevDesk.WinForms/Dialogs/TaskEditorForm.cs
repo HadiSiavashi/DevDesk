@@ -84,12 +84,13 @@ public sealed class TaskEditorForm : ModalForm
     private void BuildLayout()
     {
         var y = UiMetrics.Space16;
-        void Place(Control c, int height = UiMetrics.InputHeight)
+        void Place(Control c, int? height = null)
         {
+            var h = height ?? UiMetrics.InputHeight;
             c.Width = ClientSize.Width - UiMetrics.Space32;
-            c.Height = height;
+            c.Height = h;
             Controls.Add(c);
-            y += height + UiMetrics.Space8;
+            y += h + UiMetrics.Space8;
         }
 
         Place(_heading, 24);

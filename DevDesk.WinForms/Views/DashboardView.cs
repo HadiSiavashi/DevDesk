@@ -14,8 +14,8 @@ public sealed class DashboardView : ViewBase
     private readonly IAppEventBus _events;
     private EventHandler<AppEvent>? _eventHandler;
 
-    private readonly Label _greeting = new() { AutoSize = false, Height = 28 };
-    private readonly Label _date = new() { AutoSize = false, Height = 20 };
+    private readonly Label _greeting = new() { AutoSize = false };
+    private readonly Label _date = new() { AutoSize = false };
     private readonly StatCard _completed = new();
     private readonly StatCard _focus = new();
     private readonly StatCard _open = new();
@@ -24,14 +24,14 @@ public sealed class DashboardView : ViewBase
     private readonly CardPanel _focusCard = new();
     private readonly CardPanel _scoreCard = new();
     private readonly Panel _taskList = new() { Dock = DockStyle.Fill, AutoScroll = true, Tag = "no-theme" };
-    private readonly Label _focusTitle = new() { AutoSize = false, Height = 22, TextAlign = ContentAlignment.MiddleCenter };
-    private readonly Label _focusBody = new() { AutoSize = false, Height = 18, TextAlign = ContentAlignment.MiddleCenter };
-    private readonly ModernButton _startFocus = new() { Text = "Start focusing", Icon = "play_arrow", Width = 140, Height = 32 };
-    private readonly Label _scoreValue = new() { AutoSize = false, Height = 32 };
-    private readonly ProgressBarControl _completionBar = new() { Height = 6 };
-    private readonly ProgressBarControl _focusBar = new() { Height = 6 };
-    private readonly Label _completionLbl = new() { AutoSize = false, Height = 16 };
-    private readonly Label _focusLbl = new() { AutoSize = false, Height = 16 };
+    private readonly Label _focusTitle = new() { AutoSize = false, TextAlign = ContentAlignment.MiddleCenter };
+    private readonly Label _focusBody = new() { AutoSize = false, TextAlign = ContentAlignment.MiddleCenter };
+    private readonly ModernButton _startFocus = new() { Text = "Start focusing", Icon = "play_arrow", AutoFit = true };
+    private readonly Label _scoreValue = new() { AutoSize = false };
+    private readonly ProgressBarControl _completionBar = new();
+    private readonly ProgressBarControl _focusBar = new();
+    private readonly Label _completionLbl = new() { AutoSize = false };
+    private readonly Label _focusLbl = new() { AutoSize = false };
 
     public DashboardView(IServiceScopeFactory scopeFactory, NavigationService navigation, IAppEventBus events)
         : base(scopeFactory, navigation)
@@ -47,7 +47,9 @@ public sealed class DashboardView : ViewBase
     private void BuildLayout()
     {
         ContentPanel.Controls.Clear();
-        var header = new Panel { Dock = DockStyle.Top, Height = 56, Tag = "no-theme" };
+        _greeting.Height = UiMetrics.LinePage;
+        _date.Height = UiMetrics.LineBody;
+        var header = new Panel { Dock = DockStyle.Top, Height = _greeting.Height + _date.Height + UiMetrics.Space8, Tag = "no-theme" };
         _greeting.Dock = DockStyle.Top;
         _date.Dock = DockStyle.Top;
         header.Controls.Add(_date);
@@ -56,7 +58,7 @@ public sealed class DashboardView : ViewBase
         var stats = new TableLayoutPanel
         {
             Dock = DockStyle.Top,
-            Height = 80,
+            Height = UiMetrics.StatCardHeight + UiMetrics.Space8,
             ColumnCount = 4,
             RowCount = 1,
             Tag = "no-theme"
@@ -68,7 +70,7 @@ public sealed class DashboardView : ViewBase
         foreach (var card in new[] { _completed, _focus, _open, _projects })
         {
             card.Dock = DockStyle.Fill;
-            card.Margin = new Padding(0, 0, 8, 0);
+            card.Margin = new Padding(0, 0, UiMetrics.Space8, 0);
         }
         _projects.Margin = new Padding(0);
         _projects.AccentLeft = true;
@@ -86,10 +88,10 @@ public sealed class DashboardView : ViewBase
         };
         grid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 66));
         grid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 34));
-        grid.Padding = new Padding(0, 12, 0, 0);
+        grid.Padding = new Padding(0, UiMetrics.Space12, 0, 0);
 
-        var pHeader = new Panel { Dock = DockStyle.Top, Height = 40, Tag = "no-theme" };
-        var pTitle = new Label { Text = "Priority Tasks", Dock = DockStyle.Left, Width = 200, TextAlign = ContentAlignment.MiddleLeft };
+        var pHeader = new Panel { Dock = DockStyle.Top, Height = UiMetrics.LineTitle + UiMetrics.Space8, Tag = "no-theme" };
+        var pTitle = new Label { Text = "Priority Tasks", Dock = DockStyle.Left, Width = UiScale.Px(220), TextAlign = ContentAlignment.MiddleLeft };
         var viewAll = new LinkLabel { Text = "View All", AutoSize = true, LinkColor = ThemeManager.Instance.Current.Accent, Dock = DockStyle.Right };
         viewAll.Click += (_, _) => Navigation.Navigate("tasks");
         pHeader.Controls.Add(viewAll);
@@ -99,16 +101,25 @@ public sealed class DashboardView : ViewBase
         pTitle.Font = UiMetrics.SectionTitle;
         pTitle.ForeColor = ThemeManager.Instance.Current.TextPrimary;
 
-        var right = new Panel { Dock = DockStyle.Fill, Tag = "no-theme" };
-        _focusCard.Dock = DockStyle.Top;
-        _focusCard.Height = 180;
-        _scoreCard.Dock = DockStyle.Fill;
+        var right = new TableLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            ColumnCount = 1,
+            RowCount = 2,
+            Tag = "no-theme"
+        };
+        right.RowStyles.Add(new RowStyle(SizeType.Percent, 42));
+        right.RowStyles.Add(new RowStyle(SizeType.Percent, 58));
         BuildFocusCard();
         BuildScoreCard();
-        right.Controls.Add(_scoreCard);
-        right.Controls.Add(_focusCard);
+        _focusCard.Dock = DockStyle.Fill;
+        _focusCard.Margin = new Padding(0, 0, 0, UiMetrics.Space12);
+        _scoreCard.Dock = DockStyle.Fill;
+        _scoreCard.Margin = new Padding(0);
+        right.Controls.Add(_focusCard, 0, 0);
+        right.Controls.Add(_scoreCard, 0, 1);
         _priorityCard.Dock = DockStyle.Fill;
-        _priorityCard.Margin = new Padding(0, 0, 12, 0);
+        _priorityCard.Margin = new Padding(0, 0, UiMetrics.Space12, 0);
         grid.Controls.Add(_priorityCard, 0, 0);
         grid.Controls.Add(right, 1, 0);
 
@@ -121,14 +132,23 @@ public sealed class DashboardView : ViewBase
     private void BuildFocusCard()
     {
         _focusCard.Controls.Clear();
+        _focusTitle.Height = UiMetrics.LineTitle;
+        _focusBody.Height = UiMetrics.LineBody;
+        _startFocus.FitToContents();
         var wrap = new Panel { Dock = DockStyle.Fill, Tag = "no-theme" };
         _focusTitle.Dock = DockStyle.Top;
         _focusBody.Dock = DockStyle.Top;
         var btnHost = new Panel { Dock = DockStyle.Fill, Tag = "no-theme" };
         _startFocus.Anchor = AnchorStyles.None;
         btnHost.Controls.Add(_startFocus);
-        btnHost.Resize += (_, _) =>
-            _startFocus.Location = new Point((btnHost.Width - _startFocus.Width) / 2, 8);
+        void CenterBtn()
+        {
+            _startFocus.FitToContents();
+            _startFocus.Location = new Point(
+                Math.Max(0, (btnHost.ClientSize.Width - _startFocus.Width) / 2),
+                Math.Max(UiMetrics.Space8, (btnHost.ClientSize.Height - _startFocus.Height) / 2));
+        }
+        btnHost.Resize += (_, _) => CenterBtn();
         wrap.Controls.Add(btnHost);
         wrap.Controls.Add(_focusBody);
         wrap.Controls.Add(_focusTitle);
@@ -138,26 +158,52 @@ public sealed class DashboardView : ViewBase
     private void BuildScoreCard()
     {
         _scoreCard.Controls.Clear();
-        var top = new Panel { Dock = DockStyle.Top, Height = 40, Tag = "no-theme" };
-        var title = new Label { Text = "Productivity Score", Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft, Font = UiMetrics.SectionTitle };
+        var stack = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            FlowDirection = FlowDirection.TopDown,
+            WrapContents = false,
+            AutoScroll = true,
+            Tag = "no-theme"
+        };
+        stack.Resize += (_, _) =>
+        {
+            var w = Math.Max(40, stack.ClientSize.Width - 4);
+            foreach (Control c in stack.Controls)
+                c.Width = w;
+        };
+
+        var top = new Panel { Height = UiMetrics.LinePage, Tag = "no-theme" };
+        var title = new Label
+        {
+            Text = "Productivity Score",
+            Dock = DockStyle.Fill,
+            TextAlign = ContentAlignment.MiddleLeft,
+            Font = UiMetrics.SectionTitle
+        };
         _scoreValue.Dock = DockStyle.Right;
-        _scoreValue.Width = 90;
+        _scoreValue.Width = UiScale.Px(72);
         _scoreValue.TextAlign = ContentAlignment.MiddleRight;
         _scoreValue.Font = UiMetrics.StatValue;
         top.Controls.Add(title);
         top.Controls.Add(_scoreValue);
-        var bars = new Panel { Dock = DockStyle.Fill, Tag = "no-theme", Padding = new Padding(0, 8, 0, 0) };
-        _completionLbl.Dock = DockStyle.Top;
-        _completionBar.Dock = DockStyle.Top;
-        _focusLbl.Dock = DockStyle.Top;
-        _focusBar.Dock = DockStyle.Top;
-        _focusBar.Margin = new Padding(0, 8, 0, 0);
-        bars.Controls.Add(_focusBar);
-        bars.Controls.Add(_focusLbl);
-        bars.Controls.Add(_completionBar);
-        bars.Controls.Add(_completionLbl);
-        _scoreCard.Controls.Add(bars);
-        _scoreCard.Controls.Add(top);
+
+        _completionLbl.Height = UiMetrics.LineMeta;
+        _focusLbl.Height = UiMetrics.LineMeta;
+        _completionBar.Height = UiMetrics.ProgressHeight;
+        _focusBar.Height = UiMetrics.ProgressHeight;
+        _completionBar.Margin = new Padding(0, UiMetrics.Space4, 0, UiMetrics.Space12);
+        _focusBar.Margin = new Padding(0, UiMetrics.Space4, 0, 0);
+        _completionLbl.Margin = new Padding(0);
+        _focusLbl.Margin = new Padding(0);
+        top.Margin = new Padding(0, 0, 0, UiMetrics.Space8);
+
+        stack.Controls.Add(top);
+        stack.Controls.Add(_completionLbl);
+        stack.Controls.Add(_completionBar);
+        stack.Controls.Add(_focusLbl);
+        stack.Controls.Add(_focusBar);
+        _scoreCard.Controls.Add(stack);
     }
 
     protected override async Task LoadAsync()
@@ -208,12 +254,14 @@ public sealed class DashboardView : ViewBase
             _focusTitle.Text = session.IsPaused ? "Paused" : "Focusing";
             _focusBody.Text = session.TaskTitle ?? session.ProjectName ?? "Session";
             _startFocus.Text = "Open Focus";
+            _startFocus.FitToContents();
         }
         else
         {
             _focusTitle.Text = "Ready to dive in?";
             _focusBody.Text = "No active focus session.";
             _startFocus.Text = "Start focusing";
+            _startFocus.FitToContents();
         }
         _focusTitle.Font = UiMetrics.SectionTitle;
         _focusTitle.ForeColor = c.TextPrimary;

@@ -20,15 +20,17 @@ public sealed class CalendarView : ViewBase
     private readonly Panel _grid = new() { Dock = DockStyle.Fill, Tag = "no-theme" };
     private readonly ListBox _dayList = new() { Dock = DockStyle.Fill, IntegralHeight = false, BorderStyle = BorderStyle.None };
     private readonly PageHeader _header = new();
-    private readonly SegmentedTabs _modes = new() { Width = 180, Height = 28 };
+    private readonly SegmentedTabs _modes = new() { Width = UiScale.Px(220) };
 
     public CalendarView(IServiceScopeFactory scopeFactory, NavigationService navigation) : base(scopeFactory, navigation)
     {
         _header.TitleText = T("nav.calendar");
         var prev = new IconButton { Icon = "chevron_left" };
         var next = new IconButton { Icon = "chevron_right" };
-        var today = new ModernButton { Text = "Today", Variant = ButtonVariant.Outline, Width = 72, Height = 28 };
-        var add = new ModernButton { Text = "New Event", Icon = "add", Shortcut = "N", Width = 120, Height = 28 };
+        var today = new ModernButton { Text = "Today", Variant = ButtonVariant.Outline, AutoFit = true };
+        var add = new ModernButton { Text = "New Event", Icon = "add", Shortcut = "N", AutoFit = true };
+        today.FitToContents();
+        add.FitToContents();
         prev.Click += async (_, _) => { Shift(-1); await LoadEventsAsync(); };
         next.Click += async (_, _) => { Shift(1); await LoadEventsAsync(); };
         today.Click += async (_, _) => { _cursor = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1); _selected = DateTime.Today; await LoadEventsAsync(); };
@@ -54,14 +56,16 @@ public sealed class CalendarView : ViewBase
         _dayList.ForeColor = c.TextPrimary;
         _dayList.Font = UiMetrics.Body;
 
-        var edit = new ModernButton { Text = T("common.edit"), Variant = ButtonVariant.Outline, Width = 88, Height = 32 };
-        var del = new ModernButton { Text = T("common.delete"), Variant = ButtonVariant.Ghost, Width = 88, Height = 32 };
+        var edit = new ModernButton { Text = T("common.edit"), Variant = ButtonVariant.Outline, AutoFit = true };
+        var del = new ModernButton { Text = T("common.delete"), Variant = ButtonVariant.Ghost, AutoFit = true };
+        edit.FitToContents();
+        del.FitToContents();
         edit.Click += async (_, _) => await EditEventAsync();
         del.Click += async (_, _) => await DeleteEventAsync();
         var footer = new FlowLayoutPanel
         {
             Dock = DockStyle.Bottom,
-            Height = 44,
+            Height = UiMetrics.ButtonHeight + UiMetrics.Space16,
             FlowDirection = FlowDirection.LeftToRight,
             WrapContents = false,
             Padding = new Padding(8, 6, 8, 6),

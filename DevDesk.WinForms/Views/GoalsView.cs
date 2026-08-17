@@ -1,6 +1,7 @@
 using DevDesk.Application.Interfaces;
 using DevDesk.WinForms.Controls;
 using DevDesk.WinForms.Services;
+using DevDesk.WinForms.Themes;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DevDesk.WinForms.Views;
@@ -8,14 +9,16 @@ namespace DevDesk.WinForms.Views;
 public sealed class GoalsView : ViewBase
 {
     private readonly FlowLayoutPanel _list = new() { Dock = DockStyle.Fill, AutoScroll = true, FlowDirection = FlowDirection.TopDown, WrapContents = false };
-    private readonly TrackBar _progress = new() { Dock = DockStyle.Bottom, Height = 40, Minimum = 0, Maximum = 100 };
-    private readonly ModernButton _add = new() { Height = 36, Text = "Add Goal" };
-    private readonly ModernButton _delete = new() { Height = 36, IsPrimary = false };
+    private readonly TrackBar _progress = new() { Dock = DockStyle.Bottom, Height = UiScale.Px(40), Minimum = 0, Maximum = 100 };
+    private readonly ModernButton _add = new() { Text = "Add Goal", AutoFit = true };
+    private readonly ModernButton _delete = new() { IsPrimary = false, AutoFit = true };
     private Application.Dtos.GoalDto? _selected;
 
     public GoalsView(IServiceScopeFactory scopeFactory, NavigationService navigation) : base(scopeFactory, navigation)
     {
         _delete.Text = T("common.delete");
+        _add.FitToContents();
+        _delete.FitToContents();
         _add.Click += async (_, _) =>
         {
             var title = Dialogs.InputDialog.Show(T("common.create"), "Goal:");

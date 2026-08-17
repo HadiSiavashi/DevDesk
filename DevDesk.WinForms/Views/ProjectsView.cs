@@ -15,7 +15,8 @@ public sealed class ProjectsView : ViewBase
     public ProjectsView(IServiceScopeFactory scopeFactory, NavigationService navigation) : base(scopeFactory, navigation)
     {
         var header = new PageHeader { TitleText = T("nav.projects") };
-        var add = new ModernButton { Text = "New Project", Icon = "add", Width = 130, Height = 32 };
+        var add = new ModernButton { Text = "New Project", Icon = "add", AutoFit = true };
+        add.FitToContents();
         add.Click += async (_, _) =>
         {
             var name = InputDialog.Show(T("common.create"), "Name:");
