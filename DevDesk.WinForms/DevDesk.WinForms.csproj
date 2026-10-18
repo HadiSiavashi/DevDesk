@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
     <ProjectReference Include="..\DevDesk.Application\DevDesk.Application.csproj" />
@@ -32,7 +32,7 @@
     <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
     <AssemblyName>DevDesk</AssemblyName>
     <Product>DevDesk</Product>
-    <Version>1.0.0</Version>
+    <Version>1.1.0</Version>
     <ApplicationTitle>DevDesk</ApplicationTitle>
   </PropertyGroup>
 

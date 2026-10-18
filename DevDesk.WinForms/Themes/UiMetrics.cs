@@ -16,7 +16,7 @@ public static class UiMetrics
     public static int ControlHeightCompact => UiScale.Px(28);
     public static int ButtonHeight => UiScale.Px(32);
     public static int InputHeight => UiScale.Px(32);
-    public static int TaskRowHeight => UiScale.Px(48);
+    public static int TaskRowHeight => UiScale.Px(56);
     public static int SidebarRowHeight => UiScale.Px(36);
     public static int TopBarHeight => UiScale.Px(48);
     public static int ToastWidth => UiScale.Px(320);

@@ -117,4 +117,39 @@ public class QuickAddParserTests
         var act = () => QuickAddParser.Parse("#CRM !high tomorrow", Today);
         act.Should().Throw<FormatException>();
     }
+
+    [Fact]
+    public void Parses_persian_keywords_and_priorities()
+    {
+        // "اصلاح باگ احراز هویت #بک‌اند !فوری فردا ۴۵دقیقه"
+        var result = QuickAddParser.Parse("اصلاح باگ احراز هویت #Auth !فوری فردا ۴۵دقیقه", Today);
+
+        result.Title.Should().Be("اصلاح باگ احراز هویت");
+        result.ProjectName.Should().Be("Auth");
+        result.Priority.Should().Be(TaskPriority.Critical);
+        result.DueDate.Should().Be(Today.AddDays(1));
+        result.EstimatedMinutes.Should().Be(45);
+    }
+
+    [Fact]
+    public void Parses_persian_weekdays_and_durations()
+    {
+        // Today is Sunday 2026-08-09 -> next دوشنبه is 2026-08-10
+        var result = QuickAddParser.Parse("بررسی کدها !مهم دوشنبه ۲ساعت", Today);
+
+        result.Title.Should().Be("بررسی کدها");
+        result.Priority.Should().Be(TaskPriority.High);
+        result.DueDate.Should().Be(new DateOnly(2026, 8, 10));
+        result.EstimatedMinutes.Should().Be(120);
+    }
+
+    [Fact]
+    public void Parses_jalali_date()
+    {
+        // 1405-05-18 is 2026-08-09
+        var result = QuickAddParser.Parse("انتشار نسخه جدید 1405-05-18", Today);
+
+        result.Title.Should().Be("انتشار نسخه جدید");
+        result.DueDate.Should().Be(new DateOnly(2026, 8, 9));
+    }
 }

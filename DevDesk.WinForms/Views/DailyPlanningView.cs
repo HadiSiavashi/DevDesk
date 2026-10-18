@@ -1,5 +1,6 @@
 using DevDesk.Application.Interfaces;
 using DevDesk.WinForms.Controls;
+using DevDesk.WinForms.Localization;
 using DevDesk.WinForms.Services;
 using DevDesk.WinForms.Themes;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,27 +14,43 @@ public sealed class DailyPlanningView : ViewBase, ISaveableView
     private readonly TextField _goal3 = new() { Dock = DockStyle.Top };
     private readonly NumericUpDown _available = new() { Minimum = 60, Maximum = 960, Value = 480, Dock = DockStyle.Top, Height = UiMetrics.InputHeight };
     private readonly Label _warning = new() { Dock = DockStyle.Top, Height = UiMetrics.LineBody };
-    private readonly ModernButton _save = new() { Text = "Save", AutoFit = true };
+    private readonly ModernButton _save = new() { AutoFit = true };
 
     public DailyPlanningView(IServiceScopeFactory scopeFactory, NavigationService navigation) : base(scopeFactory, navigation)
     {
-        var header = new PageHeader { TitleText = T("nav.dailyplan"), SubtitleText = DateTime.Today.ToString("dddd, MMMM d") };
-        header.Actions.Controls.Add(_save);
+        _save.Text = T("common.save");
         _save.FitToContents();
         _save.Click += async (_, _) => await SaveAsync();
 
-        var goals = new CardPanel { Dock = DockStyle.Top, Height = UiScale.Px(220) };
-        goals.Controls.Add(_goal3);
-        goals.Controls.Add(new Label { Text = "Goal 3", Dock = DockStyle.Top, Height = UiMetrics.LineMeta, Font = UiMetrics.Meta });
-        goals.Controls.Add(_goal2);
-        goals.Controls.Add(new Label { Text = "Goal 2", Dock = DockStyle.Top, Height = UiMetrics.LineMeta, Font = UiMetrics.Meta });
-        goals.Controls.Add(_goal1);
-        goals.Controls.Add(new Label { Text = T("dailyplan.goals"), Dock = DockStyle.Top, Height = UiMetrics.LineTitle, Font = UiMetrics.SectionTitle });
+        var isRtl = LocalizationService.Instance.IsRtl;
+        var header = new PageHeader
+        {
+            TitleText = T("nav.dailyplan"),
+            SubtitleText = DateFormatter.FormatLongDate(DateTime.Today)
+        };
+        header.Actions.Controls.Add(_save);
 
-        var cap = new CardPanel { Dock = DockStyle.Top, Height = UiScale.Px(140) };
+        var goals = new CardPanel { Dock = DockStyle.Top, Height = UiScale.Px(230), Margin = new Padding(0, 0, 0, UiMetrics.Space12) };
+        var lblG3 = new Label { Text = T("dailyplan.goal3"), Dock = DockStyle.Top, Height = UiMetrics.LineMeta, Font = UiMetrics.Meta, TextAlign = isRtl ? ContentAlignment.MiddleRight : ContentAlignment.MiddleLeft };
+        var lblG2 = new Label { Text = T("dailyplan.goal2"), Dock = DockStyle.Top, Height = UiMetrics.LineMeta, Font = UiMetrics.Meta, TextAlign = isRtl ? ContentAlignment.MiddleRight : ContentAlignment.MiddleLeft };
+        var lblG1 = new Label { Text = T("dailyplan.goal1"), Dock = DockStyle.Top, Height = UiMetrics.LineMeta, Font = UiMetrics.Meta, TextAlign = isRtl ? ContentAlignment.MiddleRight : ContentAlignment.MiddleLeft };
+        var lblTitle = new Label { Text = T("dailyplan.goals"), Dock = DockStyle.Top, Height = UiMetrics.LineTitle, Font = UiMetrics.SectionTitle, TextAlign = isRtl ? ContentAlignment.MiddleRight : ContentAlignment.MiddleLeft };
+
+        goals.Controls.Add(_goal3);
+        goals.Controls.Add(lblG3);
+        goals.Controls.Add(_goal2);
+        goals.Controls.Add(lblG2);
+        goals.Controls.Add(_goal1);
+        goals.Controls.Add(lblG1);
+        goals.Controls.Add(lblTitle);
+
+        var cap = new CardPanel { Dock = DockStyle.Top, Height = UiScale.Px(140), Margin = new Padding(0, 0, 0, UiMetrics.Space12) };
+        _warning.TextAlign = isRtl ? ContentAlignment.MiddleRight : ContentAlignment.MiddleLeft;
+        var lblCap = new Label { Text = T("dailyplan.availableMinutes"), Dock = DockStyle.Top, Height = UiMetrics.LineMeta, Font = UiMetrics.Meta, TextAlign = isRtl ? ContentAlignment.MiddleRight : ContentAlignment.MiddleLeft };
+
         cap.Controls.Add(_warning);
         cap.Controls.Add(_available);
-        cap.Controls.Add(new Label { Text = "Available minutes", Dock = DockStyle.Top, Height = UiMetrics.LineMeta, Font = UiMetrics.Meta });
+        cap.Controls.Add(lblCap);
 
         ContentPanel.Controls.Add(cap);
         ContentPanel.Controls.Add(goals);

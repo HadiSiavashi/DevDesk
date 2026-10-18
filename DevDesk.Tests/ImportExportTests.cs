@@ -190,4 +190,69 @@ public class ImportExportTests
         (await db.Projects.CountAsync()).Should().Be(1);
         (await db.Tasks.CountAsync()).Should().Be(0);
     }
+
+    [Fact]
+    public async Task Export_import_round_trip_preserves_nested_checklists_and_environments()
+    {
+        var dbName = Guid.NewGuid().ToString();
+        var (sourceDb, clock, exportService) = TestDbFactory.CreateImportExportService(dbName);
+        var projId = Guid.NewGuid();
+        var taskId = Guid.NewGuid();
+
+        await using (sourceDb)
+        {
+            var proj = new Project
+            {
+                Id = projId,
+                Name = "Portal",
+                CreatedAt = clock.UtcNow,
+                UpdatedAt = clock.UtcNow
+            };
+            proj.Environments.Add(new ProjectEnvironment
+            {
+                Id = Guid.NewGuid(),
+                ProjectId = projId,
+                Name = "Staging",
+                EnvironmentType = EnvironmentType.Staging,
+                BaseUrl = "https://staging.portal.dev",
+                CreatedAt = clock.UtcNow,
+                UpdatedAt = clock.UtcNow
+            });
+            sourceDb.Projects.Add(proj);
+
+            var task = new WorkTask
+            {
+                Id = taskId,
+                Title = "Deploy staging",
+                ProjectId = projId,
+                CreatedAt = clock.UtcNow,
+                UpdatedAt = clock.UtcNow
+            };
+            task.ChecklistItems.Add(new TaskChecklistItem
+            {
+                Id = Guid.NewGuid(),
+                TaskId = taskId,
+                Title = "Run migrations",
+                IsCompleted = true,
+                OrderNo = 1
+            });
+            sourceDb.Tasks.Add(task);
+            await sourceDb.SaveChangesAsync();
+
+            var json = await exportService.ExportJsonAsync();
+
+            var (targetDb, _, importService) = TestDbFactory.CreateImportExportService();
+            await using (targetDb)
+            {
+                var result = await importService.ImportJsonAsync(json, merge: true);
+                result.Success.Should().BeTrue();
+
+                var importedProject = await targetDb.Projects.Include(p => p.Environments).SingleAsync();
+                importedProject.Environments.Should().ContainSingle(e => e.Name == "Staging" && e.BaseUrl == "https://staging.portal.dev");
+
+                var importedTask = await targetDb.Tasks.Include(t => t.ChecklistItems).SingleAsync();
+                importedTask.ChecklistItems.Should().ContainSingle(c => c.Title == "Run migrations" && c.IsCompleted);
+            }
+        }
+    }
 }

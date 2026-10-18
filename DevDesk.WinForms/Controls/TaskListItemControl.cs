@@ -42,6 +42,12 @@ public sealed class TaskListItemControl : Panel
         DrawingUtil.EnableDoubleBuffer(this);
         _themeHandler = (_, _) => Invalidate();
         ThemeManager.Instance.ThemeChanged += _themeHandler;
+        UiScale.Attach(this, (_, _) =>
+        {
+            Height = UiMetrics.TaskRowHeight;
+            MinimumSize = new Size(200, UiMetrics.TaskRowHeight);
+            Invalidate();
+        });
         MouseEnter += (_, _) => { _hover = true; Invalidate(); };
         MouseLeave += (_, _) => { _hover = false; Invalidate(); };
         MouseClick += OnClick;
@@ -77,20 +83,47 @@ public sealed class TaskListItemControl : Panel
         });
     }
 
+    private Rectangle GetCheckRect()
+    {
+        var isRtl = Localization.LocalizationService.Instance.IsRtl;
+        var size = UiScale.Px(18);
+        return isRtl
+            ? new Rectangle(Width - UiScale.Px(14) - size, (Height - size) / 2, size, size)
+            : new Rectangle(UiScale.Px(14), (Height - size) / 2, size, size);
+    }
+
+    private Rectangle GetEditRect()
+    {
+        var isRtl = Localization.LocalizationService.Instance.IsRtl;
+        var size = UiScale.Px(18);
+        return isRtl
+            ? new Rectangle(UiScale.Px(36), (Height - size) / 2, size, size)
+            : new Rectangle(Width - UiScale.Px(52), (Height - size) / 2, size, size);
+    }
+
+    private Rectangle GetStarRect()
+    {
+        var isRtl = Localization.LocalizationService.Instance.IsRtl;
+        var size = UiScale.Px(18);
+        return isRtl
+            ? new Rectangle(UiScale.Px(12), (Height - size) / 2, size, size)
+            : new Rectangle(Width - UiScale.Px(28), (Height - size) / 2, size, size);
+    }
+
     private void OnClick(object? sender, MouseEventArgs e)
     {
-        var check = new Rectangle(12, (Height - 18) / 2, 18, 18);
-        if (check.Contains(e.Location))
+        if (GetCheckRect().Contains(e.Location))
         {
             if (!_done) CompleteClicked?.Invoke(this, _id);
             return;
         }
+        if (_hover || _starred)
+        {
+            if (GetStarRect().Contains(e.Location)) { StarClicked?.Invoke(this, _id); return; }
+        }
         if (_hover)
         {
-            var edit = new Rectangle(Width - 52, (Height - 20) / 2, 20, 20);
-            var more = new Rectangle(Width - 28, (Height - 20) / 2, 20, 20);
-            if (edit.Contains(e.Location)) { EditClicked?.Invoke(this, _id); return; }
-            if (more.Contains(e.Location)) { StarClicked?.Invoke(this, _id); return; }
+            if (GetEditRect().Contains(e.Location)) { EditClicked?.Invoke(this, _id); return; }
         }
         ItemClicked?.Invoke(this, _id);
     }
@@ -99,7 +132,9 @@ public sealed class TaskListItemControl : Panel
     {
         var c = ThemeManager.Instance.Current;
         var g = e.Graphics;
+        var isRtl = Localization.LocalizationService.Instance.IsRtl;
         g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
         var bg = _flashColor.A > 0 ? _flashColor : _selected ? c.SelectedBg : _hover ? c.HoverBg : c.Surface;
         using (var brush = new SolidBrush(bg))
             DrawingUtil.FillRounded(g, brush, new Rectangle(0, 0, Width - 1, Height - 1), UiMetrics.RadiusSm);
@@ -109,49 +144,107 @@ public sealed class TaskListItemControl : Panel
             DrawingUtil.DrawRounded(g, pen, new Rectangle(0, 0, Width - 1, Height - 1), UiMetrics.RadiusSm);
         }
 
-        var check = new Rectangle(12, (Height - 16) / 2, 16, 16);
+        var check = GetCheckRect();
         using (var cp = new Pen(_hover ? c.Accent : c.OutlineVariant))
             DrawingUtil.DrawRounded(g, cp, check, 3);
         if (_done)
             UiIcons.Draw(g, "check", check, c.Accent, 1.6f);
 
         var titleColor = _done ? c.TextMuted : c.TextPrimary;
-        var titleRect = new Rectangle(36, 6, Width - 140, 20);
-        var flags = TextFormatFlags.EndEllipsis | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding;
+        var titleTop = UiScale.Px(8);
+        var titleH = UiScale.Px(22);
+        var titleRect = isRtl
+            ? new Rectangle(UiScale.Px(64), titleTop, Width - UiScale.Px(110), titleH)
+            : new Rectangle(UiScale.Px(40), titleTop, Width - UiScale.Px(110), titleH);
+
+        var flags = (isRtl ? TextFormatFlags.Right : TextFormatFlags.Left)
+                  | TextFormatFlags.EndEllipsis
+                  | TextFormatFlags.Top;
+
         var font = _done ? new Font(UiMetrics.Body, FontStyle.Strikeout) : UiMetrics.Body;
         TextRenderer.DrawText(g, _title, font, titleRect, titleColor, flags);
         if (_done) font.Dispose();
 
-        var metaX = 36;
-        var metaY = 26;
-        if (_priority is TaskPriority.High or TaskPriority.Critical)
+        var metaY = UiScale.Px(32);
+        var metaH = UiScale.Px(16);
+
+        if (!isRtl)
         {
-            var badge = "HIGH";
-            var bw = TextRenderer.MeasureText(badge, UiMetrics.Kbd).Width + 6;
-            var br = new Rectangle(metaX, metaY, bw, 14);
-            using var bb = new SolidBrush(DrawingUtil.WithAlpha(c.Error, 60));
-            DrawingUtil.FillRounded(g, bb, br, 3);
-            TextRenderer.DrawText(g, badge, UiMetrics.Kbd, br, c.Error, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
-            metaX += bw + 8;
+            var metaX = UiScale.Px(40);
+            if (_priority is TaskPriority.High or TaskPriority.Critical)
+            {
+                var badge = _priority == TaskPriority.Critical ? "CRIT" : "HIGH";
+                var bw = TextRenderer.MeasureText(badge, UiMetrics.Kbd).Width + UiScale.Px(8);
+                var br = new Rectangle(metaX, metaY, bw, metaH);
+                using var bb = new SolidBrush(DrawingUtil.WithAlpha(c.Error, 50));
+                DrawingUtil.FillRounded(g, bb, br, 3);
+                TextRenderer.DrawText(g, badge, UiMetrics.Kbd, br, c.Error, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+                metaX += bw + UiScale.Px(8);
+            }
+            if (!string.IsNullOrEmpty(_due))
+            {
+                var dueColor = _overdue ? c.Error : c.AccentSoft;
+                var dw = TextRenderer.MeasureText(_due, UiMetrics.Meta).Width;
+                var dr = new Rectangle(metaX, metaY, dw, metaH);
+                TextRenderer.DrawText(g, _due, UiMetrics.Meta, dr, dueColor, TextFormatFlags.VerticalCenter);
+                metaX += dw + UiScale.Px(8);
+            }
+            var projectW = Math.Max(40, Width - metaX - UiScale.Px(80));
+            var pr = new Rectangle(metaX, metaY, projectW, metaH);
+            TextRenderer.DrawText(g, _project, UiMetrics.Meta, pr, c.TextMuted, TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
+
+            if (!string.IsNullOrEmpty(_checklist))
+            {
+                var cw = TextRenderer.MeasureText(_checklist, UiMetrics.Meta).Width;
+                var cr = new Rectangle(Width - UiScale.Px(80) - cw, metaY, cw, metaH);
+                TextRenderer.DrawText(g, _checklist, UiMetrics.Meta, cr, c.TextMuted, TextFormatFlags.VerticalCenter);
+            }
         }
-        if (!string.IsNullOrEmpty(_due))
+        else
         {
-            var dueColor = _overdue ? c.Error : c.AccentSoft;
-            TextRenderer.DrawText(g, _due, UiMetrics.Meta, new Point(metaX, metaY), dueColor);
-            metaX += TextRenderer.MeasureText(_due, UiMetrics.Meta).Width + 8;
-        }
-        TextRenderer.DrawText(g, _project, UiMetrics.Meta, new Point(metaX, metaY), c.TextMuted);
-        if (!string.IsNullOrEmpty(_checklist))
-        {
-            var cw = TextRenderer.MeasureText(_checklist, UiMetrics.Meta).Width;
-            TextRenderer.DrawText(g, _checklist, UiMetrics.Meta, new Point(Width - 90 - cw, metaY), c.TextMuted);
+            var metaX = Width - UiScale.Px(42);
+            if (_priority is TaskPriority.High or TaskPriority.Critical)
+            {
+                var badge = _priority == TaskPriority.Critical ? "بحرانی" : "بالا";
+                var bw = TextRenderer.MeasureText(badge, UiMetrics.Kbd).Width + UiScale.Px(8);
+                metaX -= bw;
+                var br = new Rectangle(metaX, metaY, bw, metaH);
+                using var bb = new SolidBrush(DrawingUtil.WithAlpha(c.Error, 50));
+                DrawingUtil.FillRounded(g, bb, br, 3);
+                TextRenderer.DrawText(g, badge, UiMetrics.Kbd, br, c.Error, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+                metaX -= UiScale.Px(8);
+            }
+            if (!string.IsNullOrEmpty(_due))
+            {
+                var dueColor = _overdue ? c.Error : c.AccentSoft;
+                var dw = TextRenderer.MeasureText(_due, UiMetrics.Meta).Width;
+                metaX -= dw;
+                var dr = new Rectangle(metaX, metaY, dw, metaH);
+                TextRenderer.DrawText(g, _due, UiMetrics.Meta, dr, dueColor, TextFormatFlags.VerticalCenter);
+                metaX -= UiScale.Px(8);
+            }
+            var pw = TextRenderer.MeasureText(_project, UiMetrics.Meta).Width;
+            metaX -= pw;
+            var pr = new Rectangle(metaX, metaY, pw, metaH);
+            TextRenderer.DrawText(g, _project, UiMetrics.Meta, pr, c.TextMuted, TextFormatFlags.VerticalCenter);
+
+            if (!string.IsNullOrEmpty(_checklist))
+            {
+                var cr = new Rectangle(UiScale.Px(64), metaY, UiScale.Px(60), metaH);
+                TextRenderer.DrawText(g, _checklist, UiMetrics.Meta, cr, c.TextMuted, TextFormatFlags.VerticalCenter);
+            }
         }
 
         if (_hover || _starred)
         {
-            UiIcons.Draw(g, "star", new Rectangle(Width - 28, (Height - 16) / 2, 16, 16), _starred ? c.Tertiary : c.TextMuted);
+            var starRect = GetStarRect();
+            UiIcons.Draw(g, _starred ? "star" : "star_outline", starRect, _starred ? c.Warning : c.TextMuted);
+
             if (_hover)
-                UiIcons.Draw(g, "edit", new Rectangle(Width - 52, (Height - 16) / 2, 16, 16), c.TextMuted);
+            {
+                var editRect = GetEditRect();
+                UiIcons.Draw(g, "edit", editRect, c.TextMuted);
+            }
         }
     }
 

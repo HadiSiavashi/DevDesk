@@ -1,5 +1,6 @@
 using DevDesk.Application.Interfaces;
 using DevDesk.WinForms.Controls;
+using DevDesk.WinForms.Localization;
 using DevDesk.WinForms.Services;
 using DevDesk.WinForms.Themes;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,12 +13,19 @@ public sealed class DailyReviewView : ViewBase
     private readonly TextBox _notWell = new() { Dock = DockStyle.Fill, Multiline = true, BorderStyle = BorderStyle.None };
     private readonly TextBox _lessons = new() { Dock = DockStyle.Fill, Multiline = true, BorderStyle = BorderStyle.None };
     private readonly TextBox _tomorrow = new() { Dock = DockStyle.Fill, Multiline = true, BorderStyle = BorderStyle.None };
-    private readonly ModernButton _save = new() { Height = UiMetrics.ButtonHeight, Text = "Save", Width = 88 };
+    private readonly ModernButton _save = new() { Height = UiMetrics.ButtonHeight, AutoFit = true };
 
     public DailyReviewView(IServiceScopeFactory scopeFactory, NavigationService navigation) : base(scopeFactory, navigation)
     {
+        _save.Text = T("common.save");
+        _save.FitToContents();
         _save.Click += async (_, _) => await SaveAsync();
-        var header = new PageHeader { TitleText = T("nav.dailyreview"), SubtitleText = DateTime.Today.ToString("dddd, MMMM d") };
+
+        var header = new PageHeader
+        {
+            TitleText = T("nav.dailyreview"),
+            SubtitleText = DateFormatter.FormatLongDate(DateTime.Today)
+        };
         header.Actions.Controls.Add(_save);
 
         var grid = new TableLayoutPanel
@@ -42,10 +50,19 @@ public sealed class DailyReviewView : ViewBase
 
     private static CardPanel MakePromptCard(string title, TextBox input)
     {
-        var card = new CardPanel { Dock = DockStyle.Fill, Margin = new Padding(0, 0, 8, 8) };
+        var isRtl = LocalizationService.Instance.IsRtl;
+        var card = new CardPanel { Dock = DockStyle.Fill, Margin = new Padding(0, 0, UiMetrics.Space8, UiMetrics.Space8) };
         input.Font = UiMetrics.Body;
         card.Controls.Add(input);
-        card.Controls.Add(new Label { Text = title, Dock = DockStyle.Top, Height = 24, Font = UiMetrics.SectionTitle });
+        card.Controls.Add(new Label
+        {
+            Text = title,
+            Dock = DockStyle.Top,
+            Height = UiScale.Px(28),
+            Font = UiMetrics.SectionTitle,
+            ForeColor = ThemeManager.Instance.Current.TextPrimary,
+            TextAlign = isRtl ? ContentAlignment.MiddleRight : ContentAlignment.MiddleLeft
+        });
         return card;
     }
 

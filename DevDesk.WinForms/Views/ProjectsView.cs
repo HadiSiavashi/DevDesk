@@ -57,7 +57,19 @@ public sealed class ProjectsView : ViewBase
                 };
                 _cards.Controls.Add(card);
             }
-            if (projects.Count == 0) ShowEmpty(); else ShowContent();
+            if (projects.Count == 0)
+            {
+                var isRtl = Localization.LocalizationService.Instance.IsRtl;
+                var empty = new EmptyStatePanel
+                {
+                    Dock = DockStyle.Fill,
+                    Message = isRtl
+                        ? "هیچ پروژه‌ای تعریف نشده است.\r\nروی «پروژه جدید» در بالا کلیک کنید."
+                        : "No projects yet.\r\nClick 'New Project' above to create your workspace."
+                };
+                _cards.Controls.Add(empty);
+            }
+            ShowContent();
         }
         catch (Exception ex) { ShowError(ex); }
     }

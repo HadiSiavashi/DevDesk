@@ -3,6 +3,7 @@ using DevDesk.Application.Interfaces;
 using DevDesk.Domain.Enums;
 using DevDesk.WinForms.Controls;
 using DevDesk.WinForms.Dialogs;
+using DevDesk.WinForms.Localization;
 using DevDesk.WinForms.Services;
 using DevDesk.WinForms.Themes;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,17 +26,18 @@ public sealed class CalendarView : ViewBase
     public CalendarView(IServiceScopeFactory scopeFactory, NavigationService navigation) : base(scopeFactory, navigation)
     {
         _header.TitleText = T("nav.calendar");
+        var isRtl = Localization.LocalizationService.Instance.IsRtl;
         var prev = new IconButton { Icon = "chevron_left" };
         var next = new IconButton { Icon = "chevron_right" };
-        var today = new ModernButton { Text = "Today", Variant = ButtonVariant.Outline, AutoFit = true };
-        var add = new ModernButton { Text = "New Event", Icon = "add", Shortcut = "N", AutoFit = true };
+        var today = new ModernButton { Text = T("calendar.today"), Variant = ButtonVariant.Outline, AutoFit = true };
+        var add = new ModernButton { Text = T("calendar.newEvent"), Icon = "add", Shortcut = "N", AutoFit = true };
         today.FitToContents();
         add.FitToContents();
         prev.Click += async (_, _) => { Shift(-1); await LoadEventsAsync(); };
         next.Click += async (_, _) => { Shift(1); await LoadEventsAsync(); };
         today.Click += async (_, _) => { _cursor = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1); _selected = DateTime.Today; await LoadEventsAsync(); };
         add.Click += async (_, _) => await AddEventAsync();
-        _modes.Items = ["Month", "Week", "Day"];
+        _modes.Items = [T("calendar.month"), T("calendar.week"), T("calendar.day")];
         _modes.SelectedIndexChanged += async (_, i) =>
         {
             _mode = (ViewMode)i;
@@ -73,7 +75,7 @@ public sealed class CalendarView : ViewBase
         };
         footer.Controls.Add(edit);
         footer.Controls.Add(del);
-        var side = new Panel { Dock = DockStyle.Right, Width = 280, Tag = "no-theme", Padding = new Padding(8, 0, 0, 0) };
+        var side = new Panel { Dock = isRtl ? DockStyle.Left : DockStyle.Right, Width = UiScale.Px(280), Tag = "no-theme", Padding = isRtl ? new Padding(0, 0, UiMetrics.Space8, 0) : new Padding(UiMetrics.Space8, 0, 0, 0) };
         _dayList.Dock = DockStyle.Fill;
         side.Controls.Add(_dayList);
         side.Controls.Add(footer);
@@ -127,9 +129,9 @@ public sealed class CalendarView : ViewBase
             _events = await GetService<ICalendarService>(scope).GetRangeAsync(from, to);
             _header.SubtitleText = _mode switch
             {
-                ViewMode.Week => $"{_selected.Date.AddDays(-(int)_selected.DayOfWeek):MMM d} – {_selected.Date.AddDays(6 - (int)_selected.DayOfWeek):MMM d, yyyy}",
-                ViewMode.Day => _selected.ToString("dddd, MMMM d"),
-                _ => _cursor.ToString("MMMM yyyy")
+                ViewMode.Week => $"{DateFormatter.FormatLongDate(_selected.Date.AddDays(-(int)_selected.DayOfWeek))} – {DateFormatter.FormatLongDate(_selected.Date.AddDays(6 - (int)_selected.DayOfWeek))}",
+                ViewMode.Day => DateFormatter.FormatLongDate(_selected),
+                _ => DateFormatter.FormatMonthYear(_cursor)
             };
             RefreshDayList();
             _grid.Invalidate();
@@ -187,7 +189,7 @@ public sealed class CalendarView : ViewBase
         var g = e.Graphics;
         g.Clear(c.Background);
         g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-        var names = new[] { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
+        var names = DateFormatter.GetDayHeaderNames();
         var colW = _grid.Width / 7f;
         for (var i = 0; i < 7; i++)
             TextRenderer.DrawText(g, names[i], UiMetrics.Meta, new Rectangle((int)(i * colW), 0, (int)colW, 24), c.TextMuted,
@@ -226,17 +228,20 @@ public sealed class CalendarView : ViewBase
     {
         var c = ThemeManager.Instance.Current;
         var g = e.Graphics;
+        var isRtl = Localization.LocalizationService.Instance.IsRtl;
         g.Clear(c.Background);
         g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
         var start = _selected.Date.AddDays(-(int)_selected.DayOfWeek);
         var colW = _grid.Width / 7f;
         var hours = 12;
         var hourH = (_grid.Height - 28) / (float)hours;
+        var names = DateFormatter.GetDayHeaderNames();
         for (var i = 0; i < 7; i++)
         {
             var day = start.AddDays(i);
             var header = new Rectangle((int)(i * colW), 0, (int)colW, 28);
-            TextRenderer.DrawText(g, day.ToString("ddd d"), UiMetrics.Meta, header,
+            var headerText = isRtl ? $"{names[i]} {day.Day}" : day.ToString("ddd d");
+            TextRenderer.DrawText(g, headerText, UiMetrics.Meta, header,
                 day.Date == DateTime.Today ? c.Accent : c.TextMuted,
                 TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
             var colRect = new Rectangle((int)(i * colW) + 1, 28, (int)colW - 2, _grid.Height - 30);

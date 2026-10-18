@@ -24,6 +24,8 @@ public sealed class EmptyStatePanel : Panel
     }
 
     public string Message { get => _label.Text; set => _label.Text = value; }
+    public string TitleText { get => Message; set => Message = value; }
+    public string Icon { get; set; } = "check_circle";
 
     private void ApplyTheme()
     {
@@ -43,6 +45,6 @@ public sealed class EmptyStatePanel : Panel
         var rect = Rectangle.Inflate(ClientRectangle, -24, -24);
         using var pen = new Pen(c.Border) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash };
         DrawingUtil.DrawRounded(g, pen, rect, UiMetrics.RadiusMd);
-        UiIcons.Draw(g, "check_circle", new Rectangle(Width / 2 - 12, Height / 2 - 40, 24, 24), c.TextMuted);
+        UiIcons.Draw(g, Icon, new Rectangle(Width / 2 - 12, Math.Max(8, Height / 2 - 40), 24, 24), c.TextMuted);
     }
 }

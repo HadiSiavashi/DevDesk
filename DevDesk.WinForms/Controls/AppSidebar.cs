@@ -25,15 +25,11 @@ public sealed class AppSidebar : Panel
         ("projects", "nav.projects", "account_tree"),
         ("calendar", "nav.calendar", "calendar_today"),
         ("notes", "nav.notes", "description"),
-        ("goals", "nav.goals", "emoji_events"),
-        ("habits", "nav.habits", "repeat"),
         ("snippets", "nav.snippets", "code"),
         ("bookmarks", "nav.bookmarks", "bookmark"),
-        ("environments", "nav.environments", "dns"),
-        ("knowledge", "nav.knowledge", "menu_book"),
-        ("analytics", "nav.analytics", "analytics"),
-        ("dailyplan", "nav.dailyplan", "event_note"),
-        ("dailyreview", "nav.dailyreview", "rate_review")
+        ("habits", "nav.habits", "repeat"),
+        ("goals", "nav.goals", "emoji_events"),
+        ("analytics", "nav.analytics", "analytics")
     ];
 
     public AppSidebar()
@@ -96,9 +92,10 @@ public sealed class AppSidebar : Panel
         _active = viewKey switch
         {
             "task-detail" => "tasks",
-            "project-detail" => "projects",
-            "note-editor" => "notes",
+            "project-detail" or "environments" => "projects",
+            "note-editor" or "knowledge" => "notes",
             "snippet-editor" => "snippets",
+            "dailyplan" or "dailyreview" => "myday",
             "productivity" or "reports" => "analytics",
             _ => viewKey.Split('-')[0]
         };
@@ -176,13 +173,20 @@ public sealed class AppSidebar : Panel
         var g = e.Graphics;
         g.Clear(c.SidebarBg);
         g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+        var rtl = LocalizationService.Instance.IsRtl;
         if (!_collapsed)
         {
-            TextRenderer.DrawText(g, "DevDesk", UiMetrics.PageTitle, new Rectangle(UiMetrics.Space16, UiMetrics.Space8, _header.Width - UiMetrics.Space24, UiScale.Px(26)), c.TextPrimary);
-            TextRenderer.DrawText(g, "Productivity Engine", UiMetrics.Meta, new Rectangle(UiMetrics.Space16, UiScale.Px(34), _header.Width - UiMetrics.Space24, UiScale.Px(18)), c.TextMuted);
+            var textFlags = (rtl ? TextFormatFlags.Right : TextFormatFlags.Left) | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding;
+            var headerRect = new Rectangle(UiMetrics.Space16, UiMetrics.Space8, _header.Width - UiMetrics.Space32, UiScale.Px(26));
+            var subRect = new Rectangle(UiMetrics.Space16, UiScale.Px(34), _header.Width - UiMetrics.Space32, UiScale.Px(18));
+            TextRenderer.DrawText(g, "DevDesk", UiMetrics.PageTitle, headerRect, c.TextPrimary, textFlags);
+            TextRenderer.DrawText(g, rtl ? "موتور بهره‌وری توسعه‌دهنده" : "Productivity Engine", UiMetrics.Meta, subRect, c.TextMuted, textFlags);
         }
         else
-            UiIcons.Draw(g, "terminal", new Rectangle(UiMetrics.Space16, UiMetrics.Space12, UiMetrics.IconSize, UiMetrics.IconSize), c.Accent);
+        {
+            var iconX = (_header.Width - UiMetrics.IconSize) / 2;
+            UiIcons.Draw(g, "terminal", new Rectangle(iconX, UiMetrics.Space12, UiMetrics.IconSize, UiMetrics.IconSize), c.Accent);
+        }
         using var pen = new Pen(c.Border);
         g.DrawLine(pen, 12, _header.Height - 1, _header.Width - 12, _header.Height - 1);
     }
@@ -230,14 +234,25 @@ public sealed class AppSidebar : Panel
         }
 
         var iconSize = UiMetrics.IconSize;
-        var iconRect = new Rectangle(r.X + 10, r.Y + (r.Height - iconSize) / 2, iconSize, iconSize);
+        var iconX = rtl ? r.Right - 10 - iconSize : r.X + 10;
+        var iconRect = new Rectangle(iconX, r.Y + (r.Height - iconSize) / 2, iconSize, iconSize);
         UiIcons.Draw(g, icon, iconRect, active || hover ? c.TextPrimary : c.TextSecondary);
         if (!_collapsed)
         {
-            var textX = r.X + 10 + iconSize + UiMetrics.Space8;
-            TextRenderer.DrawText(g, label, UiMetrics.Body, new Rectangle(textX, r.Y, Math.Max(8, r.Right - textX - UiMetrics.Space8), r.Height),
-                active || hover ? c.TextPrimary : c.TextSecondary,
-                TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPadding);
+            if (!rtl)
+            {
+                var textX = r.X + 10 + iconSize + UiMetrics.Space8;
+                TextRenderer.DrawText(g, label, UiMetrics.Body, new Rectangle(textX, r.Y, Math.Max(8, r.Right - textX - UiMetrics.Space8), r.Height),
+                    active || hover ? c.TextPrimary : c.TextSecondary,
+                    TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPadding);
+            }
+            else
+            {
+                var textW = Math.Max(8, iconX - r.X - UiMetrics.Space8);
+                TextRenderer.DrawText(g, label, UiMetrics.Body, new Rectangle(r.X + UiMetrics.Space8, r.Y, textW, r.Height),
+                    active || hover ? c.TextPrimary : c.TextSecondary,
+                    TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPadding);
+            }
         }
     }
 

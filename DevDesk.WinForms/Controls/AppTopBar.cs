@@ -11,6 +11,7 @@ public sealed class AppTopBar : Panel
     public event EventHandler? FocusRequested;
     public event EventHandler? CollapseRequested;
     public event EventHandler? StopFocusRequested;
+    public event EventHandler? NotificationsRequested;
 
     private readonly IconButton _collapse = new();
     private readonly SearchBox _search = new();
@@ -36,7 +37,7 @@ public sealed class AppTopBar : Panel
         _chip.Click += (_, _) => FocusRequested?.Invoke(this, EventArgs.Empty);
         _chip.StopClicked += (_, _) => StopFocusRequested?.Invoke(this, EventArgs.Empty);
         _timer.Click += (_, _) => FocusRequested?.Invoke(this, EventArgs.Empty);
-        _bell.Click += (_, _) => SearchRequested?.Invoke(this, EventArgs.Empty);
+        _bell.Click += (_, _) => NotificationsRequested?.Invoke(this, EventArgs.Empty);
         _newTask.Click += (_, _) => QuickAddRequested?.Invoke(this, EventArgs.Empty);
         _search.Placeholder = LocalizationService.Instance.Get("search.placeholder");
         _search.Hint = "Ctrl+K";
@@ -51,6 +52,7 @@ public sealed class AppTopBar : Panel
         Resize += (_, _) => LayoutBar();
         ThemeManager.Instance.Attach(this, (_, _) => ApplyTheme());
         UiScale.Attach(this, (_, _) => ApplyScale());
+        LocalizationService.Instance.LanguageChanged += (_, _) => { ApplyTheme(); LayoutBar(); };
         ApplyScale();
         ApplyTheme();
         LayoutBar();
@@ -100,18 +102,40 @@ public sealed class AppTopBar : Panel
     {
         var ctrl = Math.Max(1, _collapse.Height);
         var y = (Height - ctrl) / 2;
-        _collapse.Location = new Point(UiMetrics.Space8, y);
-        _search.Location = new Point(UiScale.Px(44), y);
-        _search.Width = Math.Clamp(Width / 3, UiScale.Px(220), UiScale.Px(520));
+        var isRtl = LocalizationService.Instance.IsRtl;
 
-        _newTask.Location = new Point(Width - _newTask.Width - UiMetrics.Space12, y);
-        _bell.Location = new Point(_newTask.Left - UiScale.Px(40), y);
-        _timer.Location = new Point(_bell.Left - UiScale.Px(36), y);
-
-        if (_chip.Visible)
+        if (!isRtl)
         {
-            _chip.Width = Math.Min(UiScale.Px(240), Math.Max(UiScale.Px(160), _timer.Left - _search.Right - UiMetrics.Space24));
-            _chip.Location = new Point(_search.Right + UiMetrics.Space12, y);
+            _collapse.Location = new Point(UiMetrics.Space8, y);
+            _search.Location = new Point(UiScale.Px(44), y);
+            _search.Width = Math.Clamp(Width / 3, UiScale.Px(220), UiScale.Px(520));
+
+            _newTask.Location = new Point(Width - _newTask.Width - UiMetrics.Space12, y);
+            _bell.Location = new Point(_newTask.Left - UiScale.Px(40), y);
+            _timer.Location = new Point(_bell.Left - UiScale.Px(36), y);
+
+            if (_chip.Visible)
+            {
+                _chip.Width = Math.Min(UiScale.Px(240), Math.Max(UiScale.Px(160), _timer.Left - _search.Right - UiMetrics.Space24));
+                _chip.Location = new Point(_search.Right + UiMetrics.Space12, y);
+            }
+        }
+        else
+        {
+            _collapse.Location = new Point(Width - UiMetrics.Space8 - ctrl, y);
+            var searchW = Math.Clamp(Width / 3, UiScale.Px(220), UiScale.Px(520));
+            _search.Width = searchW;
+            _search.Location = new Point(_collapse.Left - UiMetrics.Space8 - searchW, y);
+
+            _newTask.Location = new Point(UiMetrics.Space12, y);
+            _bell.Location = new Point(_newTask.Right + UiScale.Px(8), y);
+            _timer.Location = new Point(_bell.Right + UiScale.Px(8), y);
+
+            if (_chip.Visible)
+            {
+                _chip.Width = Math.Min(UiScale.Px(240), Math.Max(UiScale.Px(160), _search.Left - _timer.Right - UiMetrics.Space24));
+                _chip.Location = new Point(_timer.Right + UiMetrics.Space12, y);
+            }
         }
     }
 
@@ -122,6 +146,7 @@ public sealed class AppTopBar : Panel
         using var pen = new Pen(c.Border);
         e.Graphics.DrawLine(pen, 0, Height - 1, Width, Height - 1);
         using var div = new Pen(c.OutlineVariant);
-        e.Graphics.DrawLine(div, _bell.Right + 4, 14, _bell.Right + 4, Height - 14);
+        var divX = LocalizationService.Instance.IsRtl ? _bell.Left - 4 : _bell.Right + 4;
+        e.Graphics.DrawLine(div, divX, 14, divX, Height - 14);
     }
 }

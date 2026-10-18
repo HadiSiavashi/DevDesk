@@ -38,5 +38,22 @@ public class DevDeskDbContext : DbContext, IDevDeskDbContext
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(DevDeskDbContext).Assembly);
         base.OnModelCreating(modelBuilder);
+
+        if (Database.IsSqlite())
+        {
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                foreach (var property in entityType.GetProperties())
+                {
+                    var colType = property.GetColumnType();
+                    if (string.Equals(colType, "nvarchar(max)", StringComparison.OrdinalIgnoreCase) ||
+                        string.Equals(colType, "datetime2", StringComparison.OrdinalIgnoreCase) ||
+                        string.Equals(colType, "date", StringComparison.OrdinalIgnoreCase))
+                    {
+                        property.SetColumnType("TEXT");
+                    }
+                }
+            }
+        }
     }
 }

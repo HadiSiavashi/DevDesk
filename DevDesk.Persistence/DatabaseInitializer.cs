@@ -18,7 +18,12 @@ public class DatabaseInitializer
     {
         try
         {
-            if (autoMigrate)
+            if (_context.Database.IsSqlite())
+            {
+                _logger.LogInformation("Ensuring SQLite database schema exists...");
+                await _context.Database.EnsureCreatedAsync(cancellationToken);
+            }
+            else if (autoMigrate)
             {
                 _logger.LogInformation("Applying database migrations...");
                 await _context.Database.MigrateAsync(cancellationToken);
