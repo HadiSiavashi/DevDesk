@@ -1,3 +1,4 @@
+using DevDesk.WinForms.Localization;
 using DevDesk.WinForms.Themes;
 
 namespace DevDesk.WinForms.Controls;
@@ -10,6 +11,7 @@ public class CardPanel : Panel
         Padding = new Padding(UiMetrics.Space16);
         DrawingUtil.EnableDoubleBuffer(this);
         ThemeManager.Instance.ThemeChanged += (_, _) => ApplyTheme();
+        LocalizationService.Instance.LanguageChanged += (_, _) => Invalidate();
         ApplyTheme();
     }
 
@@ -28,17 +30,23 @@ public class CardPanel : Panel
     {
         var c = ThemeManager.Instance.Current;
         var g = e.Graphics;
+        var isRtl = LocalizationService.Instance.IsRtl;
         g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
         var rect = new Rectangle(0, 0, Width - 1, Height - 1);
         using (var bg = new SolidBrush(c.Surface))
             DrawingUtil.FillRounded(g, bg, rect, CornerRadius);
+
         using (var pen = new Pen(c.Border))
             DrawingUtil.DrawRounded(g, pen, rect, CornerRadius);
+
         if (AccentLeft)
         {
             using var accent = new SolidBrush(AccentColor ?? c.Tertiary);
-            g.FillRectangle(accent, 0, 8, 2, Height - 16);
+            var accentX = isRtl ? Width - 3 : 0;
+            g.FillRectangle(accent, accentX, 8, 3, Height - 16);
         }
+
         base.OnPaint(e);
     }
 

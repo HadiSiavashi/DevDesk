@@ -138,7 +138,7 @@ public sealed class ImportExportService(
             }
 
             var now = clock.UtcNow;
-            db.Projects.Add(new Project
+            var projEntity = new Project
             {
                 Id = project.Id == Guid.Empty ? Guid.NewGuid() : project.Id,
                 Name = project.Name,
@@ -150,7 +150,46 @@ public sealed class ImportExportService(
                 IsArchived = project.IsArchived,
                 CreatedAt = project.CreatedAt == default ? now : project.CreatedAt,
                 UpdatedAt = project.UpdatedAt == default ? now : project.UpdatedAt
-            });
+            };
+
+            if (project.Milestones is { Count: > 0 })
+            {
+                foreach (var m in project.Milestones)
+                {
+                    projEntity.Milestones.Add(new Milestone
+                    {
+                        Id = m.Id == Guid.Empty ? Guid.NewGuid() : m.Id,
+                        ProjectId = projEntity.Id,
+                        Title = m.Title,
+                        Description = m.Description,
+                        DueDate = m.DueDate,
+                        IsCompleted = m.IsCompleted,
+                        OrderNo = m.OrderNo
+                    });
+                }
+            }
+
+            if (project.Environments is { Count: > 0 })
+            {
+                foreach (var env in project.Environments)
+                {
+                    projEntity.Environments.Add(new ProjectEnvironment
+                    {
+                        Id = env.Id == Guid.Empty ? Guid.NewGuid() : env.Id,
+                        ProjectId = projEntity.Id,
+                        Name = env.Name,
+                        EnvironmentType = env.EnvironmentType,
+                        BaseUrl = env.BaseUrl,
+                        DatabaseServer = env.DatabaseServer,
+                        DatabaseName = env.DatabaseName,
+                        Notes = env.Notes,
+                        CreatedAt = env.CreatedAt == default ? now : env.CreatedAt,
+                        UpdatedAt = env.UpdatedAt == default ? now : env.UpdatedAt
+                    });
+                }
+            }
+
+            db.Projects.Add(projEntity);
             result = result with { ProjectsImported = result.ProjectsImported + 1 };
         }
 
@@ -171,7 +210,7 @@ public sealed class ImportExportService(
             }
 
             var now = clock.UtcNow;
-            db.Tasks.Add(new WorkTask
+            var taskEntity = new WorkTask
             {
                 Id = task.Id == Guid.Empty ? Guid.NewGuid() : task.Id,
                 Title = task.Title,
@@ -186,7 +225,38 @@ public sealed class ImportExportService(
                 CreatedAt = task.CreatedAt == default ? now : task.CreatedAt,
                 UpdatedAt = task.UpdatedAt == default ? now : task.UpdatedAt,
                 CompletedAt = task.CompletedAt
-            });
+            };
+
+            if (task.ChecklistItems is { Count: > 0 })
+            {
+                foreach (var c in task.ChecklistItems)
+                {
+                    taskEntity.ChecklistItems.Add(new TaskChecklistItem
+                    {
+                        Id = c.Id == Guid.Empty ? Guid.NewGuid() : c.Id,
+                        TaskId = taskEntity.Id,
+                        Title = c.Title,
+                        IsCompleted = c.IsCompleted,
+                        OrderNo = c.OrderNo
+                    });
+                }
+            }
+
+            if (task.Tags is { Count: > 0 })
+            {
+                foreach (var tg in task.Tags)
+                {
+                    var existing = await db.Tags.FirstOrDefaultAsync(x => x.Id == tg.Id || x.Name == tg.Name, ct);
+                    if (existing is null)
+                    {
+                        existing = new Tag { Id = tg.Id == Guid.Empty ? Guid.NewGuid() : tg.Id, Name = tg.Name, Color = tg.Color };
+                        db.Tags.Add(existing);
+                    }
+                    taskEntity.TaskTags.Add(new TaskTag { TaskId = taskEntity.Id, TagId = existing.Id });
+                }
+            }
+
+            db.Tasks.Add(taskEntity);
             result = result with { TasksImported = result.TasksImported + 1 };
         }
 
@@ -199,7 +269,7 @@ public sealed class ImportExportService(
             }
 
             var now = clock.UtcNow;
-            db.Notes.Add(new Note
+            var noteEntity = new Note
             {
                 Id = note.Id == Guid.Empty ? Guid.NewGuid() : note.Id,
                 Title = note.Title,
@@ -210,7 +280,23 @@ public sealed class ImportExportService(
                 KnowledgeCategory = note.KnowledgeCategory,
                 CreatedAt = note.CreatedAt == default ? now : note.CreatedAt,
                 UpdatedAt = note.UpdatedAt == default ? now : note.UpdatedAt
-            });
+            };
+
+            if (note.Tags is { Count: > 0 })
+            {
+                foreach (var tg in note.Tags)
+                {
+                    var existing = await db.Tags.FirstOrDefaultAsync(x => x.Id == tg.Id || x.Name == tg.Name, ct);
+                    if (existing is null)
+                    {
+                        existing = new Tag { Id = tg.Id == Guid.Empty ? Guid.NewGuid() : tg.Id, Name = tg.Name, Color = tg.Color };
+                        db.Tags.Add(existing);
+                    }
+                    noteEntity.NoteTags.Add(new NoteTag { NoteId = noteEntity.Id, TagId = existing.Id });
+                }
+            }
+
+            db.Notes.Add(noteEntity);
             result = result with { NotesImported = result.NotesImported + 1 };
         }
 
@@ -223,7 +309,7 @@ public sealed class ImportExportService(
             }
 
             var now = clock.UtcNow;
-            db.Goals.Add(new Goal
+            var goalEntity = new Goal
             {
                 Id = goal.Id == Guid.Empty ? Guid.NewGuid() : goal.Id,
                 Title = goal.Title,
@@ -234,7 +320,26 @@ public sealed class ImportExportService(
                 IsCompleted = goal.IsCompleted,
                 CreatedAt = goal.CreatedAt == default ? now : goal.CreatedAt,
                 UpdatedAt = goal.UpdatedAt == default ? now : goal.UpdatedAt
-            });
+            };
+
+            if (goal.Milestones is { Count: > 0 })
+            {
+                foreach (var m in goal.Milestones)
+                {
+                    goalEntity.Milestones.Add(new Milestone
+                    {
+                        Id = m.Id == Guid.Empty ? Guid.NewGuid() : m.Id,
+                        GoalId = goalEntity.Id,
+                        Title = m.Title,
+                        Description = m.Description,
+                        DueDate = m.DueDate,
+                        IsCompleted = m.IsCompleted,
+                        OrderNo = m.OrderNo
+                    });
+                }
+            }
+
+            db.Goals.Add(goalEntity);
             result = result with { GoalsImported = result.GoalsImported + 1 };
         }
 
@@ -246,7 +351,7 @@ public sealed class ImportExportService(
                 continue;
             }
 
-            db.Habits.Add(new Habit
+            var habitEntity = new Habit
             {
                 Id = habit.Id == Guid.Empty ? Guid.NewGuid() : habit.Id,
                 Name = habit.Name,
@@ -254,7 +359,23 @@ public sealed class ImportExportService(
                 Frequency = habit.Frequency,
                 IsActive = habit.IsActive,
                 CreatedAt = habit.CreatedAt == default ? clock.UtcNow : habit.CreatedAt
-            });
+            };
+
+            if (habit.RecentRecords is { Count: > 0 })
+            {
+                foreach (var r in habit.RecentRecords)
+                {
+                    habitEntity.Records.Add(new HabitRecord
+                    {
+                        Id = r.Id == Guid.Empty ? Guid.NewGuid() : r.Id,
+                        HabitId = habitEntity.Id,
+                        Date = r.Date,
+                        IsCompleted = r.IsCompleted
+                    });
+                }
+            }
+
+            db.Habits.Add(habitEntity);
             result = result with { HabitsImported = result.HabitsImported + 1 };
         }
 

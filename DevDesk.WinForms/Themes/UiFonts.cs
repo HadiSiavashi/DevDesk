@@ -52,20 +52,29 @@ public static class UiFonts
         var rtl = false;
         try { rtl = Localization.LocalizationService.Instance.IsRtl; } catch { /* catalog may not be ready */ }
 
-        var linePad = rtl ? 1.2f : 1f;
+        var linePad = rtl ? 1.05f : 1f;
         var s = UiScale.Factor;
-        PageTitle = New(_sansSemi, 14.25F * linePad * s, FontStyle.Bold);
-        SectionTitle = New(_sansSemi, 10.5F * linePad * s, FontStyle.Bold);
-        Body = New(_sans, 9.75F * linePad * s, FontStyle.Regular);
-        BodySemi = New(_sansSemi, 9.75F * linePad * s, FontStyle.Bold);
-        Meta = New(_sans, 8.25F * linePad * s, FontStyle.Regular);
-        Caption = New(_sans, 8.25F * linePad * s, FontStyle.Regular);
+        var sansFamily = rtl ? GetRtlFontFamily() : _sans;
+        var sansSemiFamily = rtl ? GetRtlFontFamily() : _sansSemi;
+
+        PageTitle = New(sansSemiFamily, 14.25F * linePad * s, FontStyle.Bold);
+        SectionTitle = New(sansSemiFamily, 10.5F * linePad * s, FontStyle.Bold);
+        Body = New(sansFamily, 9.75F * linePad * s, FontStyle.Regular);
+        BodySemi = New(sansSemiFamily, 9.75F * linePad * s, FontStyle.Bold);
+        Meta = New(sansFamily, 8.25F * linePad * s, FontStyle.Regular);
+        Caption = New(sansFamily, 8.25F * linePad * s, FontStyle.Regular);
         Mono = New(_mono, 9F * s, FontStyle.Regular);
         MonoTimer = New(_monoMed, 10.5F * s, FontStyle.Bold);
         TimerGiant = New(_monoMed, 48F * s, FontStyle.Bold);
         TimerReady = New(_monoMed, 36F * s, FontStyle.Bold);
         StatValue = New(_monoMed, 18F * s, FontStyle.Bold);
         Kbd = New(_mono, 7.5F * s, FontStyle.Regular);
+    }
+
+    private static FontFamily GetRtlFontFamily()
+    {
+        try { return new FontFamily("Segoe UI"); }
+        catch { return FontFamily.GenericSansSerif; }
     }
 
     private static Font New(FontFamily family, float size, FontStyle style)

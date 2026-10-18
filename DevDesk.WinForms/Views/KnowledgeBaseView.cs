@@ -3,6 +3,7 @@ using DevDesk.Application.Interfaces;
 using DevDesk.Domain.Common;
 using DevDesk.WinForms.Controls;
 using DevDesk.WinForms.Services;
+using DevDesk.WinForms.Themes;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DevDesk.WinForms.Views;
@@ -18,10 +19,18 @@ public sealed class KnowledgeBaseView : ViewBase
         foreach (var c in KnowledgeCategories.All) _category.Items.Add(c);
         _category.SelectedIndex = 0;
         _category.SelectedIndexChanged += async (_, _) => await FilterAsync();
+
         var header = new PageHeader { TitleText = T("nav.knowledge") };
         ContentPanel.Controls.Add(_list);
         ContentPanel.Controls.Add(_category);
         ContentPanel.Controls.Add(header);
+
+        _list.Resize += (_, _) =>
+        {
+            var targetW = Math.Max(UiScale.Px(320), _list.ClientSize.Width - UiScale.Px(16));
+            foreach (Control c in _list.Controls)
+                c.Width = targetW;
+        };
     }
 
     protected override async Task LoadAsync()
@@ -50,12 +59,41 @@ public sealed class KnowledgeBaseView : ViewBase
         var filtered = cat is null or "All" or "همه"
             ? notes
             : notes.Where(n => n.KnowledgeCategory == cat).ToList();
+
         _list.Controls.Clear();
+        var targetW = Math.Max(UiScale.Px(320), _list.ClientSize.Width - UiScale.Px(16));
+
+        if (filtered.Count == 0)
+        {
+            var empty = new EmptyStatePanel
+            {
+                TitleText = T("common.noData"),
+                Icon = "menu_book",
+                Width = targetW,
+                Height = UiScale.Px(200)
+            };
+            _list.Controls.Add(empty);
+            return;
+        }
+
         foreach (var n in filtered)
         {
-            var row = new InventoryRow { Width = Math.Max(280, _list.ClientSize.Width - 8), Margin = new Padding(0, 0, 0, 8) };
+            var row = new InventoryRow
+            {
+                Width = targetW,
+                Margin = new Padding(0, 0, 0, UiMetrics.Space8),
+                Item = n
+            };
             row.Bind(n.Title, n.KnowledgeCategory);
             row.Activated += (_, _) => Navigation.Navigate("note-editor", n.Id);
+            row.Click += (_, _) =>
+            {
+                foreach (Control c in _list.Controls)
+                {
+                    if (c is InventoryRow r)
+                        r.Selected = ReferenceEquals(r.Item, n);
+                }
+            };
             _list.Controls.Add(row);
         }
     }

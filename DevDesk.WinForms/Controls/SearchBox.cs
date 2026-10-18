@@ -49,8 +49,10 @@ public sealed class SearchBox : UserControl
 
     private void LayoutInput()
     {
-        _input.Location = new Point(UiScale.Px(28), Math.Max(2, (Height - _input.PreferredHeight) / 2));
-        _input.Size = new Size(Math.Max(40, Width - UiScale.Px(80)), _input.PreferredHeight);
+        var padLeft = UiScale.Px(30);
+        var padRight = UiScale.Px(64);
+        _input.Location = new Point(padLeft, Math.Max(2, (Height - _input.PreferredHeight) / 2));
+        _input.Size = new Size(Math.Max(40, Width - padLeft - padRight), _input.PreferredHeight);
     }
 
     private void ApplyTheme()
@@ -75,21 +77,17 @@ public sealed class SearchBox : UserControl
             DrawingUtil.DrawRounded(g, pen, rect, UiMetrics.RadiusSm);
         UiIcons.Draw(g, "search", new Rectangle(UiMetrics.Space8, (Height - UiMetrics.IconSize) / 2, UiMetrics.IconSize, UiMetrics.IconSize), c.TextMuted);
 
-        var chips = _hint.Split('+');
-        var x = Width - 8;
-        for (var i = chips.Length - 1; i >= 0; i--)
+        if (!string.IsNullOrEmpty(_hint))
         {
-            var t = chips[i].Trim();
-            var w = TextRenderer.MeasureText(t, UiMetrics.Kbd).Width + 6;
-            x -= w;
-            var kr = new Rectangle(x, (Height - 16) / 2, w, 16);
+            var hintText = _hint.Replace("+", " ");
+            var hw = Math.Max(UiScale.Px(46), TextRenderer.MeasureText(hintText, UiMetrics.Kbd).Width + UiScale.Px(10));
+            var hr = new Rectangle(Width - hw - UiScale.Px(8), (Height - UiScale.Px(18)) / 2, hw, UiScale.Px(18));
             using var kb = new SolidBrush(c.KbdBg);
-            DrawingUtil.FillRounded(g, kb, kr, 3);
+            DrawingUtil.FillRounded(g, kb, hr, UiMetrics.RadiusSm);
             using var kp = new Pen(c.Border);
-            DrawingUtil.DrawRounded(g, kp, kr, 3);
-            TextRenderer.DrawText(g, t, UiMetrics.Kbd, kr, c.TextMuted,
+            DrawingUtil.DrawRounded(g, kp, hr, UiMetrics.RadiusSm);
+            TextRenderer.DrawText(g, hintText, UiMetrics.Kbd, hr, c.TextMuted,
                 TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
-            x -= 4;
         }
     }
 

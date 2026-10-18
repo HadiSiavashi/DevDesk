@@ -90,16 +90,30 @@ public sealed class DashboardView : ViewBase
         grid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 34));
         grid.Padding = new Padding(0, UiMetrics.Space12, 0, 0);
 
-        var pHeader = new Panel { Dock = DockStyle.Top, Height = UiMetrics.LineTitle + UiMetrics.Space8, Tag = "no-theme" };
-        var pTitle = new Label { Text = "Priority Tasks", Dock = DockStyle.Left, Width = UiScale.Px(220), TextAlign = ContentAlignment.MiddleLeft };
-        var viewAll = new LinkLabel { Text = "View All", AutoSize = true, LinkColor = ThemeManager.Instance.Current.Accent, Dock = DockStyle.Right };
+        var isRtl = Localization.LocalizationService.Instance.IsRtl;
+        var pHeader = new Panel { Dock = DockStyle.Top, Height = UiMetrics.LineTitle + UiMetrics.Space8, Tag = "no-theme", Padding = new Padding(UiMetrics.Space12, UiMetrics.Space8, UiMetrics.Space12, 0) };
+        var pTitle = new Label
+        {
+            Text = isRtl ? "وظایف با اولویت" : "Priority Tasks",
+            Dock = isRtl ? DockStyle.Right : DockStyle.Left,
+            Width = UiScale.Px(220),
+            TextAlign = isRtl ? ContentAlignment.MiddleRight : ContentAlignment.MiddleLeft,
+            Font = UiMetrics.SectionTitle,
+            ForeColor = ThemeManager.Instance.Current.TextPrimary
+        };
+        var viewAll = new LinkLabel
+        {
+            Text = isRtl ? "مشاهده همه" : "View All",
+            AutoSize = true,
+            LinkColor = ThemeManager.Instance.Current.Accent,
+            Dock = isRtl ? DockStyle.Left : DockStyle.Right,
+            TextAlign = isRtl ? ContentAlignment.MiddleLeft : ContentAlignment.MiddleRight
+        };
         viewAll.Click += (_, _) => Navigation.Navigate("tasks");
         pHeader.Controls.Add(viewAll);
         pHeader.Controls.Add(pTitle);
         _priorityCard.Controls.Add(_taskList);
         _priorityCard.Controls.Add(pHeader);
-        pTitle.Font = UiMetrics.SectionTitle;
-        pTitle.ForeColor = ThemeManager.Instance.Current.TextPrimary;
 
         var right = new TableLayoutPanel
         {
@@ -233,34 +247,37 @@ public sealed class DashboardView : ViewBase
     private void Bind(DashboardDto data)
     {
         var c = ThemeManager.Instance.Current;
-        _greeting.Text = data.Greeting;
+        var isRtl = Localization.LocalizationService.Instance.IsRtl;
+
+        _greeting.Text = isRtl ? "روز بخیر" : data.Greeting;
         _greeting.Font = UiMetrics.PageTitle;
         _greeting.ForeColor = c.TextPrimary;
-        _date.Text = data.Today.ToDateTime(TimeOnly.MinValue).ToString("dddd, MMMM d, yyyy");
+
+        _date.Text = Localization.DateFormatter.FormatLongDate(data.Today.ToDateTime(TimeOnly.MinValue));
         _date.Font = UiMetrics.Body;
         _date.ForeColor = c.TextSecondary;
 
-        _completed.Title = "Completed";
+        _completed.Title = T("common.complete");
         _completed.Value = data.CompletedTasksToday.ToString();
-        _focus.Title = "Focus Time";
+        _focus.Title = T("dashboard.focusToday");
         _focus.Value = $"{data.FocusMinutesToday} m";
-        _open.Title = "Open Tasks";
+        _open.Title = T("dashboard.openTasks");
         _open.Value = data.OpenTaskCount.ToString();
-        _projects.Title = "Active Projects";
+        _projects.Title = T("dashboard.projects");
         _projects.Value = data.ActiveProjectCount.ToString();
 
         if (data.ActiveFocusSession is { IsActive: true } session)
         {
-            _focusTitle.Text = session.IsPaused ? "Paused" : "Focusing";
-            _focusBody.Text = session.TaskTitle ?? session.ProjectName ?? "Session";
-            _startFocus.Text = "Open Focus";
+            _focusTitle.Text = session.IsPaused ? (isRtl ? "مکث" : "Paused") : (isRtl ? "در حال تمرکز" : "Focusing");
+            _focusBody.Text = session.TaskTitle ?? session.ProjectName ?? (isRtl ? "نشست فعال" : "Session");
+            _startFocus.Text = isRtl ? "مشاهده نشست" : "Open Focus";
             _startFocus.FitToContents();
         }
         else
         {
-            _focusTitle.Text = "Ready to dive in?";
-            _focusBody.Text = "No active focus session.";
-            _startFocus.Text = "Start focusing";
+            _focusTitle.Text = isRtl ? "آماده برای تمرکز عمیق؟" : "Ready to dive in?";
+            _focusBody.Text = isRtl ? "هیچ نشست فعالی وجود ندارد." : "No active focus session.";
+            _startFocus.Text = isRtl ? "شروع تمرکز" : "Start focusing";
             _startFocus.FitToContents();
         }
         _focusTitle.Font = UiMetrics.SectionTitle;
@@ -271,8 +288,8 @@ public sealed class DashboardView : ViewBase
         var ps = data.ProductivityScore;
         _scoreValue.Text = $"{ps.Total}";
         _scoreValue.ForeColor = c.Accent;
-        _completionLbl.Text = $"Completion    {ps.CompletionScore}%";
-        _focusLbl.Text = $"Focus Quality    {ps.FocusScore}%";
+        _completionLbl.Text = isRtl ? $"تکمیل    {ps.CompletionScore}%" : $"Completion    {ps.CompletionScore}%";
+        _focusLbl.Text = isRtl ? $"کیفیت تمرکز    {ps.FocusScore}%" : $"Focus Quality    {ps.FocusScore}%";
         _completionLbl.Font = _focusLbl.Font = UiMetrics.Meta;
         _completionLbl.ForeColor = _focusLbl.ForeColor = c.TextMuted;
         _completionBar.Value = Math.Clamp(ps.CompletionScore / 100f, 0, 1);
@@ -286,19 +303,34 @@ public sealed class DashboardView : ViewBase
             .Select(g => g.First())
             .Take(8)
             .ToList();
-        foreach (var task in priority)
+
+        if (priority.Count == 0)
         {
-            var item = new TaskListItemControl { Width = Math.Max(180, _taskList.ClientSize.Width - 8) };
-            item.Bind(task);
-            item.ItemClicked += (_, id) => Navigation.Navigate("task-detail", id);
-            item.CompleteClicked += async (_, id) =>
+            var empty = new EmptyStatePanel
             {
-                using var s = ScopeFactory.CreateScope();
-                await GetService<ITaskService>(s).CompleteAsync(id);
+                Dock = DockStyle.Fill,
+                Message = isRtl
+                    ? "هیچ وظیفه با اولویت بالایی برای امروز نیست.\r\nروز آرامی در پیش دارید!"
+                    : "No high priority tasks for today.\r\nYou're all caught up!"
             };
-            _taskList.Controls.Add(item);
+            _taskList.Controls.Add(empty);
         }
-        LayoutTasks();
+        else
+        {
+            foreach (var task in priority)
+            {
+                var item = new TaskListItemControl { Width = Math.Max(180, _taskList.ClientSize.Width - 8) };
+                item.Bind(task);
+                item.ItemClicked += (_, id) => Navigation.Navigate("task-detail", id);
+                item.CompleteClicked += async (_, id) =>
+                {
+                    using var s = ScopeFactory.CreateScope();
+                    await GetService<ITaskService>(s).CompleteAsync(id);
+                };
+                _taskList.Controls.Add(item);
+            }
+            LayoutTasks();
+        }
     }
 
     private void LayoutTasks()

@@ -1,11 +1,14 @@
+using System.Diagnostics;
 using DevDesk.Application.Dtos;
 using DevDesk.Application.Interfaces;
 using DevDesk.Application.Options;
 using DevDesk.Domain.Enums;
+using DevDesk.Persistence;
 using DevDesk.WinForms.Controls;
 using DevDesk.WinForms.Localization;
 using DevDesk.WinForms.Services;
 using DevDesk.WinForms.Themes;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -355,13 +358,163 @@ public sealed class SettingsView : ViewBase
     private TabPage BuildDatabaseTab()
     {
         var page = new TabPage(T("settings.database"));
-        using var scope = ScopeFactory.CreateScope();
-        var dbOpts = scope.ServiceProvider.GetService<IOptions<DatabaseOptions>>()?.Value;
-        page.Controls.Add(new Label
+        var flow = new FlowLayoutPanel
         {
-            Text = $"Auto migrate: {dbOpts?.ApplyMigrationsOnStartup}\nSeed: {dbOpts?.SeedSampleData}",
+            Dock = DockStyle.Fill,
+            FlowDirection = FlowDirection.TopDown,
+            WrapContents = false,
+            AutoScroll = true,
+            Padding = new Padding(12)
+        };
+
+        using var scope = ScopeFactory.CreateScope();
+        var db = scope.ServiceProvider.GetService<DevDeskDbContext>();
+        var dbOpts = scope.ServiceProvider.GetService<IOptions<DatabaseOptions>>()?.Value;
+        var isSqlite = db?.Database.IsSqlite() ?? true;
+
+        var conn = db?.Database.GetDbConnection();
+        var dataSource = conn?.DataSource ?? "";
+
+        // Card 1: Storage Mode & Portability
+        var cardMode = new CardPanel
+        {
+            Width = 600,
+            Height = 180,
+            Margin = new Padding(0, 0, 0, 16),
+            AccentLeft = true,
+            AccentColor = isSqlite ? ThemeManager.Instance.Current.Success : ThemeManager.Instance.Current.Accent
+        };
+
+        var lblEngineTitle = new Label
+        {
+            Text = isSqlite ? "Storage Mode: SQLite (Local & Portable)" : "Storage Mode: Microsoft SQL Server",
+            Font = UiMetrics.SectionTitle,
+            ForeColor = ThemeManager.Instance.Current.TextPrimary,
+            Dock = DockStyle.Top,
+            Height = 28
+        };
+
+        var lblStatusDesc = new Label
+        {
+            Text = isSqlite
+                ? "Running in zero-configuration local mode. No database server or background service required.\r\nYour data is stored completely offline on your device with total privacy."
+                : "Connected to external Microsoft SQL Server database.",
+            Font = UiMetrics.Body,
+            ForeColor = ThemeManager.Instance.Current.TextSecondary,
+            Dock = DockStyle.Top,
+            Height = 44
+        };
+
+        var actionsRow = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Bottom,
+            Height = 38,
+            FlowDirection = FlowDirection.LeftToRight
+        };
+
+        if (isSqlite)
+        {
+            var btnOpenFolder = new ModernButton
+            {
+                Text = "Open DB Folder",
+                Variant = ButtonVariant.Ghost,
+                Width = 140,
+                Height = 32
+            };
+            btnOpenFolder.Click += (_, _) =>
+            {
+                try
+                {
+                    var dir = Path.GetDirectoryName(Path.GetFullPath(dataSource));
+                    if (!string.IsNullOrEmpty(dir) && Directory.Exists(dir))
+                        Process.Start(new ProcessStartInfo("explorer.exe", $"\"{dir}\"") { UseShellExecute = true });
+                }
+                catch { /* ignore */ }
+            };
+
+            var btnBackup = new ModernButton
+            {
+                Text = "Backup Database",
+                Variant = ButtonVariant.Ghost,
+                Width = 150,
+                Height = 32
+            };
+            btnBackup.Click += (_, _) =>
+            {
+                try
+                {
+                    if (File.Exists(dataSource))
+                    {
+                        using var sfd = new SaveFileDialog
+                        {
+                            Filter = "SQLite Database (*.db)|*.db",
+                            FileName = $"devdesk-backup-{DateTime.Now:yyyyMMdd-HHmm}.db"
+                        };
+                        if (sfd.ShowDialog() == DialogResult.OK)
+                        {
+                            File.Copy(dataSource, sfd.FileName, true);
+                            MessageBox.Show("Database backed up successfully!", "DevDesk", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Backup failed: {ex.Message}", "DevDesk", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            };
+
+            actionsRow.Controls.Add(btnOpenFolder);
+            actionsRow.Controls.Add(btnBackup);
+        }
+
+        cardMode.Controls.Add(actionsRow);
+        cardMode.Controls.Add(lblStatusDesc);
+        cardMode.Controls.Add(lblEngineTitle);
+
+        // Card 2: Database Details
+        var cardDetails = new CardPanel
+        {
+            Width = 600,
+            Height = 150,
+            Margin = new Padding(0, 0, 0, 16)
+        };
+
+        var lblDetailsTitle = new Label
+        {
+            Text = "Database Details",
+            Font = UiMetrics.SectionTitle,
+            ForeColor = ThemeManager.Instance.Current.TextPrimary,
+            Dock = DockStyle.Top,
+            Height = 28
+        };
+
+        long fileSize = 0;
+        if (isSqlite && File.Exists(dataSource))
+        {
+            try { fileSize = new FileInfo(dataSource).Length; } catch { }
+        }
+
+        var sizeText = isSqlite && fileSize > 0
+            ? $" · File Size: {fileSize / 1024.0:F1} KB"
+            : "";
+
+        var lblDetails = new Label
+        {
+            Text = $"Data Source: {(string.IsNullOrWhiteSpace(dataSource) ? "(Default Local Application Data)" : dataSource)}{sizeText}\r\n" +
+                   $"Auto Migrate Schema: {dbOpts?.ApplyMigrationsOnStartup ?? true}\r\n" +
+                   $"Seed Starter Data: {dbOpts?.SeedSampleData ?? false}\r\n" +
+                   $"Status: Connected & Operational",
+            Font = UiMetrics.Body,
+            ForeColor = ThemeManager.Instance.Current.TextSecondary,
             Dock = DockStyle.Fill
-        });
+        };
+
+        cardDetails.Controls.Add(lblDetails);
+        cardDetails.Controls.Add(lblDetailsTitle);
+
+        flow.Controls.Add(cardMode);
+        flow.Controls.Add(cardDetails);
+        page.Controls.Add(flow);
         return page;
     }
 

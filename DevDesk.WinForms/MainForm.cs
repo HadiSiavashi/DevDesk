@@ -67,6 +67,17 @@ public sealed class MainForm : Form, INavigationHost
         _topBar.QuickAddRequested += (_, _) => ShowQuickAdd();
         _topBar.FocusRequested += (_, _) => _navigation.Navigate("focus");
         _topBar.StopFocusRequested += (_, _) => _ = StopFocusFromTrayAsync();
+        _topBar.NotificationsRequested += async (_, _) =>
+        {
+            _topBar.SetNotificationBadge(false);
+            try
+            {
+                var notifications = _services.GetRequiredService<INotificationService>();
+                await notifications.ShowPendingDesktopAsync();
+            }
+            catch { /* best effort */ }
+            ShowToast("Notifications reviewed");
+        };
 
         Controls.Add(_content);
         Controls.Add(_sidebar);

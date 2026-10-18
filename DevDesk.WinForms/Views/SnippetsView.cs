@@ -60,6 +60,18 @@ public sealed class SnippetsView : ViewBase
                 row.Click += (_, _) => _selected = s;
                 _list.Controls.Add(row);
             }
+            if (snippets.Count == 0)
+            {
+                var isRtl = Localization.LocalizationService.Instance.IsRtl;
+                var empty = new EmptyStatePanel
+                {
+                    Dock = DockStyle.Fill,
+                    Message = isRtl
+                        ? "هیچ قطعه‌کدی ذخیره نشده است.\r\nروی «افزودن قطعه‌کد» در بالا کلیک کنید."
+                        : "No snippets saved yet.\r\nClick 'Add Snippet' above to store your code."
+                };
+                _list.Controls.Add(empty);
+            }
             ShowContent();
         }
         catch (Exception ex) { ShowError(ex); }

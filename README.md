@@ -17,7 +17,7 @@ Local-first Windows desktop productivity for software engineers. Tasks, projects
 - **Notes, Knowledge Base, snippets, bookmarks, environments**
 - **Goals, habits, calendar, and productivity analytics**
 - **Global search** (`Ctrl+K`) and **Quick Add** (`Ctrl+Shift+Space`)
-- **Local-first** — SQL Server / LocalDB, import/export, SQL backup helpers
+- **Local-first & Zero-Config** — SQLite out-of-the-box (no external DB install required) or SQL Server / LocalDB, JSON import/export, SQL backup helpers
 - **Persian RTL** and English LTR from Settings
 
 ## Screenshots
@@ -42,7 +42,7 @@ More mockups and the design system live in [`docs/design`](docs/design).
 
 Download **DevDesk-Setup.exe** from the [latest GitHub Release](https://github.com/HadiSiavashi/DevDesk/releases/latest).
 
-The installer is self-contained (no .NET SDK required). SQL Server Express LocalDB (or SQL Server) is required at runtime.
+The installer is self-contained (no .NET SDK required). Runs out of the box with zero configuration using local SQLite (no database installation needed). SQL Server and LocalDB are also supported.
 
 ### Run from source
 

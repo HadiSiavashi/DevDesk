@@ -31,7 +31,18 @@ public sealed class MyDayView : ViewBase
         };
         _addBtn.FitToContents();
         var header = new PageHeader { TitleText = T("nav.myday"), SubtitleText = DateTime.Today.ToString("dddd, MMMM d") };
+
+        var planBtn = new ModernButton { Text = T("nav.dailyplan"), Icon = "event_note", Variant = ButtonVariant.Outline, AutoFit = true };
+        planBtn.FitToContents();
+        planBtn.Click += (_, _) => Navigation.Navigate("dailyplan");
+
+        var reviewBtn = new ModernButton { Text = T("nav.dailyreview"), Icon = "rate_review", Variant = ButtonVariant.Outline, AutoFit = true };
+        reviewBtn.FitToContents();
+        reviewBtn.Click += (_, _) => Navigation.Navigate("dailyreview");
+
         header.Actions.Controls.Add(_addBtn);
+        header.Actions.Controls.Add(planBtn);
+        header.Actions.Controls.Add(reviewBtn);
 
         var goalsCard = new CardPanel { Dock = DockStyle.Top, Height = UiScale.Px(160) };
         var goalsTitle = new Label { Text = "Top Goals for Today", Dock = DockStyle.Top, Height = UiMetrics.LineMeta, Font = UiMetrics.Meta };
@@ -43,7 +54,14 @@ public sealed class MyDayView : ViewBase
         capCard.Controls.Add(_capacityBody);
         capCard.Controls.Add(capTitle);
 
-        var left = new Panel { Dock = DockStyle.Left, Width = UiScale.Px(280), Tag = "no-theme", Padding = new Padding(0, 0, UiMetrics.Space12, 0) };
+        var isRtl = Localization.LocalizationService.Instance.IsRtl;
+        var left = new Panel
+        {
+            Dock = isRtl ? DockStyle.Right : DockStyle.Left,
+            Width = UiScale.Px(280),
+            Tag = "no-theme",
+            Padding = isRtl ? new Padding(UiMetrics.Space12, 0, 0, 0) : new Padding(0, 0, UiMetrics.Space12, 0)
+        };
         left.Controls.Add(capCard);
         left.Controls.Add(goalsCard);
 
@@ -88,18 +106,33 @@ public sealed class MyDayView : ViewBase
             var done = tasks.Where(t => t.Status == WorkTaskStatus.Done).ToList();
 
             _board.Controls.Clear();
-            var y = 0;
-            y = AddGroup(_board, "Overdue", overdue, c.Error, y);
-            y = AddGroup(_board, "Due Today", dueToday, c.TextPrimary, y);
-            y = AddGroup(_board, "Later", remaining, c.TextPrimary, y);
-            AddGroup(_board, "Completed Today", done, c.TextMuted, y);
+            var isRtl = Localization.LocalizationService.Instance.IsRtl;
+            if (overdue.Count == 0 && dueToday.Count == 0 && remaining.Count == 0 && done.Count == 0)
+            {
+                var empty = new EmptyStatePanel
+                {
+                    Dock = DockStyle.Fill,
+                    Message = isRtl
+                        ? "هیچ وظیفه‌ای برای امروز برنامه‌ریزی نشده است.\r\nاز کلیدهای بالا برای افزودن وظیفه یا شروع برنامه‌ریزی روزانه استفاده کنید!"
+                        : "No tasks planned for today.\r\nUse QuickAdd (Ctrl+N) or plan your day to get started!"
+                };
+                _board.Controls.Add(empty);
+            }
+            else
+            {
+                var y = 0;
+                y = AddGroup(_board, isRtl ? "عقب‌افتاده" : "Overdue", overdue, c.Error, y, isRtl);
+                y = AddGroup(_board, isRtl ? "موعد امروز" : "Due Today", dueToday, c.TextPrimary, y, isRtl);
+                y = AddGroup(_board, isRtl ? "سایر وظایف" : "Later", remaining, c.TextPrimary, y, isRtl);
+                AddGroup(_board, isRtl ? "تکمیل‌شده‌های امروز" : "Completed Today", done, c.TextMuted, y, isRtl);
+            }
             _highlightId = null;
             ShowContent();
         }
         catch (Exception ex) { ShowError(ex); }
     }
 
-    private int AddGroup(Panel host, string title, List<TaskListItemDto> items, Color titleColor, int y)
+    private int AddGroup(Panel host, string title, List<TaskListItemDto> items, Color titleColor, int y, bool isRtl)
     {
         if (items.Count == 0) return y;
         var lbl = new Label
@@ -111,6 +144,7 @@ public sealed class MyDayView : ViewBase
             Height = 24,
             Font = UiMetrics.SectionTitle,
             ForeColor = titleColor,
+            TextAlign = isRtl ? ContentAlignment.MiddleRight : ContentAlignment.MiddleLeft,
             Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
         };
         host.Controls.Add(lbl);
@@ -132,6 +166,12 @@ public sealed class MyDayView : ViewBase
                 await GetService<ITaskService>(s).CompleteAsync(id);
             };
             item.ItemClicked += (_, id) => Navigation.Navigate("task-detail", id);
+            item.DoubleClick += async (_, _) =>
+            {
+                using var s = ScopeFactory.CreateScope();
+                await GetService<IFocusService>(s).StartAsync(new StartFocusRequest { TaskId = task.Id });
+                Navigation.Navigate("focus");
+            };
             host.Controls.Add(item);
             y += item.Height + 4;
         }

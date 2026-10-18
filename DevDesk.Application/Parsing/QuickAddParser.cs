@@ -12,10 +12,14 @@ public static partial class QuickAddParser
 {
     private static readonly Regex DurationRegex = DurationPattern();
     private static readonly Regex IsoDateRegex = IsoDatePattern();
+    private static readonly Regex JalaliDateRegex = JalaliDatePattern();
+    private static readonly PersianCalendar PersianCal = new();
+
     private static readonly HashSet<string> Weekdays = new(StringComparer.OrdinalIgnoreCase)
     {
         "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday",
-        "mon", "tue", "wed", "thu", "fri", "sat", "sun"
+        "mon", "tue", "wed", "thu", "fri", "sat", "sun",
+        "شنبه", "یکشنبه", "یک‌شنبه", "دوشنبه", "دو‌شنبه", "سه‌شنبه", "چهارشنبه", "چهار‌شنبه", "پنجشنبه", "پنج‌شنبه", "جمعه"
     };
 
     public static QuickAddResult Parse(string input, DateOnly? today = null)
@@ -24,7 +28,8 @@ public static partial class QuickAddParser
             throw new ArgumentException("Input cannot be empty.", nameof(input));
 
         var reference = today ?? DateOnly.FromDateTime(DateTime.UtcNow);
-        var tokens = Tokenize(input.Trim());
+        var normalized = NormalizeDigits(input.Trim());
+        var tokens = Tokenize(normalized);
         var titleParts = new List<string>();
         string? projectName = null;
         TaskPriority? priority = null;
@@ -74,6 +79,21 @@ public static partial class QuickAddParser
         };
     }
 
+    private static string NormalizeDigits(string input)
+    {
+        if (string.IsNullOrEmpty(input)) return input;
+        var chars = input.ToCharArray();
+        for (var i = 0; i < chars.Length; i++)
+        {
+            var ch = chars[i];
+            if (ch is >= '۰' and <= '۹')
+                chars[i] = (char)('0' + (ch - '۰'));
+            else if (ch is >= '٠' and <= '٩')
+                chars[i] = (char)('0' + (ch - '٠'));
+        }
+        return new string(chars);
+    }
+
     private static List<string> Tokenize(string input)
     {
         var tokens = new List<string>();
@@ -110,25 +130,19 @@ public static partial class QuickAddParser
 
     private static bool TryParsePriority(string value, out TaskPriority priority)
     {
-        switch (value.ToLowerInvariant())
+        var clean = value.Trim().ToLowerInvariant().Replace("\u200c", "");
+        switch (clean)
         {
-            case "low":
-            case "l":
+            case "low" or "l" or "پایین" or "کم":
                 priority = TaskPriority.Low;
                 return true;
-            case "medium":
-            case "med":
-            case "m":
+            case "medium" or "med" or "m" or "متوسط" or "معمولی" or "عادی":
                 priority = TaskPriority.Medium;
                 return true;
-            case "high":
-            case "h":
+            case "high" or "h" or "بالا" or "مهم" or "زیاد":
                 priority = TaskPriority.High;
                 return true;
-            case "critical":
-            case "crit":
-            case "c":
-            case "urgent":
+            case "critical" or "crit" or "c" or "urgent" or "فوری" or "بحرانی" or "اضطراری" or "حیاتی":
                 priority = TaskPriority.Critical;
                 return true;
             default:
@@ -140,28 +154,56 @@ public static partial class QuickAddParser
     private static bool TryParseDueDate(string token, DateOnly today, out DateOnly dueDate)
     {
         dueDate = default;
-        var lower = token.ToLowerInvariant();
+        var lower = token.ToLowerInvariant().Replace("\u200c", "");
 
-        if (lower is "today")
+        if (lower is "today" or "امروز")
         {
             dueDate = today;
             return true;
         }
 
-        if (lower is "tomorrow")
+        if (lower is "tomorrow" or "فردا")
         {
             dueDate = today.AddDays(1);
             return true;
         }
 
-        if (Weekdays.Contains(lower))
+        if (lower is "پسفردا" or "پس‌فردا")
+        {
+            dueDate = today.AddDays(2);
+            return true;
+        }
+
+        if (Weekdays.Contains(token) || Weekdays.Contains(lower))
         {
             dueDate = NextWeekday(today, NormalizeWeekday(lower));
             return true;
         }
 
+        var jalaliMatch = JalaliDateRegex.Match(token);
+        if (jalaliMatch.Success)
+        {
+            var year = int.Parse(jalaliMatch.Groups[1].Value, CultureInfo.InvariantCulture);
+            var month = int.Parse(jalaliMatch.Groups[2].Value, CultureInfo.InvariantCulture);
+            var day = int.Parse(jalaliMatch.Groups[3].Value, CultureInfo.InvariantCulture);
+            if (year is >= 1300 and <= 1500 && month is >= 1 and <= 12 && day is >= 1 and <= 31)
+            {
+                try
+                {
+                    var dt = PersianCal.ToDateTime(year, month, day, 0, 0, 0, 0);
+                    dueDate = DateOnly.FromDateTime(dt);
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
+
         if (IsoDateRegex.IsMatch(token) &&
-            DateOnly.TryParseExact(token, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var iso))
+            DateOnly.TryParseExact(token, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var iso) &&
+            iso.Year >= 1900)
         {
             dueDate = iso;
             return true;
@@ -170,15 +212,15 @@ public static partial class QuickAddParser
         return false;
     }
 
-    private static DayOfWeek NormalizeWeekday(string value) => value.ToLowerInvariant() switch
+    private static DayOfWeek NormalizeWeekday(string value) => value switch
     {
-        "mon" or "monday" => DayOfWeek.Monday,
-        "tue" or "tuesday" => DayOfWeek.Tuesday,
-        "wed" or "wednesday" => DayOfWeek.Wednesday,
-        "thu" or "thursday" => DayOfWeek.Thursday,
-        "fri" or "friday" => DayOfWeek.Friday,
-        "sat" or "saturday" => DayOfWeek.Saturday,
-        "sun" or "sunday" => DayOfWeek.Sunday,
+        "mon" or "monday" or "دوشنبه" or "دو‌شنبه" => DayOfWeek.Monday,
+        "tue" or "tuesday" or "سه‌شنبه" or "سه شنبه" => DayOfWeek.Tuesday,
+        "wed" or "wednesday" or "چهارشنبه" or "چهار‌شنبه" => DayOfWeek.Wednesday,
+        "thu" or "thursday" or "پنجشنبه" or "پنج‌شنبه" => DayOfWeek.Thursday,
+        "fri" or "friday" or "جمعه" => DayOfWeek.Friday,
+        "sat" or "saturday" or "شنبه" => DayOfWeek.Saturday,
+        "sun" or "sunday" or "یکشنبه" or "یک‌شنبه" => DayOfWeek.Sunday,
         _ => throw new ArgumentOutOfRangeException(nameof(value))
     };
 
@@ -201,16 +243,19 @@ public static partial class QuickAddParser
         var unit = match.Groups[2].Value.ToLowerInvariant();
         minutes = unit switch
         {
-            "m" or "min" or "mins" or "minute" or "minutes" => amount,
-            "h" or "hr" or "hrs" or "hour" or "hours" => amount * 60,
+            "m" or "min" or "mins" or "minute" or "minutes" or "دقیقه" => amount,
+            "h" or "hr" or "hrs" or "hour" or "hours" or "ساعت" => amount * 60,
             _ => 0
         };
         return minutes > 0;
     }
 
-    [GeneratedRegex(@"^(\d+)(m|min|mins|minute|minutes|h|hr|hrs|hour|hours)$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    [GeneratedRegex(@"^(\d+)(m|min|mins|minute|minutes|h|hr|hrs|hour|hours|دقیقه|ساعت)$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
     private static partial Regex DurationPattern();
 
     [GeneratedRegex(@"^\d{4}-\d{2}-\d{2}$", RegexOptions.CultureInvariant)]
     private static partial Regex IsoDatePattern();
+
+    [GeneratedRegex(@"^(\d{4})[/-](\d{1,2})[/-](\d{1,2})$", RegexOptions.CultureInvariant)]
+    private static partial Regex JalaliDatePattern();
 }

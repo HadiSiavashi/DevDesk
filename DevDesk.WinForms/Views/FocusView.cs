@@ -26,16 +26,24 @@ public sealed class FocusView : ViewBase
         SplitterWidth = 6
     };
 
-    private readonly Panel _left = new() { Dock = DockStyle.Fill, Padding = new Padding(UiMetrics.Space16), Tag = "no-theme" };
+    private readonly Panel _left = new() { Dock = DockStyle.Fill, Tag = "no-theme" };
+    private readonly FlowLayoutPanel _leftFlow = new()
+    {
+        Dock = DockStyle.Fill,
+        FlowDirection = FlowDirection.TopDown,
+        WrapContents = false,
+        AutoScroll = true,
+        Tag = "no-theme",
+        Padding = new Padding(UiMetrics.Space16)
+    };
     private readonly Panel _right = new() { Dock = DockStyle.Fill, Padding = new Padding(UiMetrics.Space12), Tag = "no-theme" };
     private readonly Panel _summary = new() { Dock = DockStyle.Bottom, Height = UiMetrics.StatusBarHeight, Padding = new Padding(UiMetrics.Space16, 0, UiMetrics.Space16, 0), Tag = "no-theme" };
 
-    private readonly Label _headerLeft = new() { Text = "Ready to focus?", Font = UiMetrics.PageTitle, AutoSize = true };
-    private readonly Label _taskTitle = new() { Font = UiMetrics.PageTitle, AutoSize = false, Height = UiMetrics.LinePage };
-    private readonly Label _taskMeta = new() { Font = UiMetrics.Meta, AutoSize = false, Height = UiMetrics.LineMeta };
-    private readonly TimerDisplay _timer = new() { Height = UiScale.Px(120), Font = UiMetrics.Timer };
-    private readonly Label _modeLabel = new() { Font = UiMetrics.Body, AutoSize = true, Text = "Ready" };
-    private readonly FlowLayoutPanel _actions = new() { AutoSize = true, FlowDirection = FlowDirection.TopDown, WrapContents = false };
+    private readonly Label _modeLabel = new() { Font = UiMetrics.SectionTitle, AutoSize = true, Margin = new Padding(0, 0, 0, UiMetrics.Space4) };
+    private readonly Label _taskTitle = new() { Font = UiMetrics.PageTitle, AutoSize = true, Margin = new Padding(0, 0, 0, UiMetrics.Space4) };
+    private readonly Label _taskMeta = new() { Font = UiMetrics.Meta, AutoSize = true, Margin = new Padding(0, 0, 0, UiMetrics.Space16) };
+    private readonly TimerDisplay _timer = new() { Height = UiScale.Px(90), Font = UiMetrics.Timer, Margin = new Padding(0, 0, 0, UiMetrics.Space16) };
+    private readonly FlowLayoutPanel _actions = new() { AutoSize = true, FlowDirection = FlowDirection.TopDown, WrapContents = false, Margin = new Padding(0) };
 
     private readonly Label _headerRight = new() { Text = "Today's Task Board", Font = UiMetrics.SectionTitle, Dock = DockStyle.Top, Height = UiMetrics.LineTitle };
     private readonly Panel _taskList = new() { Dock = DockStyle.Fill, AutoScroll = true, Tag = "no-theme" };
@@ -44,11 +52,11 @@ public sealed class FocusView : ViewBase
     private readonly Label _summaryLabel = new() { Dock = DockStyle.Fill, Font = UiMetrics.Body, TextAlign = ContentAlignment.MiddleLeft };
     private readonly System.Windows.Forms.Timer _tick = new() { Interval = 1000 };
 
-    private readonly ModernButton _btnStart = new() { Text = "Start Focus", Icon = "play_arrow", Width = UiScale.Px(240), Height = UiMetrics.ButtonHeight };
-    private readonly ModernButton _btnPomodoro = new() { Text = "Start Pomodoro", Icon = "timelapse", Shortcut = "25m", Variant = ButtonVariant.Outline, Width = UiScale.Px(240), Height = UiMetrics.ButtonHeight };
-    private readonly ModernButton _btnPause = new() { Text = "Pause", Variant = ButtonVariant.Outline, Width = UiScale.Px(240), Height = UiMetrics.ButtonHeight };
-    private readonly ModernButton _btnResume = new() { Text = "Resume", Variant = ButtonVariant.Outline, Width = UiScale.Px(240), Height = UiMetrics.ButtonHeight };
-    private readonly ModernButton _btnStop = new() { Text = "Stop", Variant = ButtonVariant.Ghost, Width = UiScale.Px(240), Height = UiMetrics.ButtonHeight };
+    private readonly ModernButton _btnStart = new() { Text = "Start Focus", Icon = "play_arrow", Width = UiScale.Px(260), Height = UiMetrics.ButtonHeight, AutoFit = false };
+    private readonly ModernButton _btnPomodoro = new() { Text = "Start Pomodoro", Icon = "timelapse", Shortcut = "25m", Variant = ButtonVariant.Outline, Width = UiScale.Px(260), Height = UiMetrics.ButtonHeight, AutoFit = false };
+    private readonly ModernButton _btnPause = new() { Text = "Pause", Variant = ButtonVariant.Outline, Width = UiScale.Px(260), Height = UiMetrics.ButtonHeight, AutoFit = false };
+    private readonly ModernButton _btnResume = new() { Text = "Resume", Variant = ButtonVariant.Outline, Width = UiScale.Px(260), Height = UiMetrics.ButtonHeight, AutoFit = false };
+    private readonly ModernButton _btnStop = new() { Text = "Stop", Variant = ButtonVariant.Ghost, Width = UiScale.Px(260), Height = UiMetrics.ButtonHeight, AutoFit = false };
 
     private Guid? _selectedTaskId;
 
@@ -57,6 +65,17 @@ public sealed class FocusView : ViewBase
     {
         _events = events;
         _tick.Tick += (_, _) => UpdateTimer();
+
+        _modeLabel.Text = $"●  {T("focus.ready").ToUpperInvariant()}";
+        _taskTitle.Text = T("focus.readyToFocus");
+        _taskMeta.Text = T("focus.startPrompt");
+        _headerRight.Text = T("focus.todayTasks");
+        _addTask.Text = T("focus.addTask");
+        _btnStart.Text = T("focus.startFocus");
+        _btnPomodoro.Text = T("focus.startPomodoro");
+        _btnPause.Text = T("focus.pause");
+        _btnResume.Text = T("focus.resume");
+        _btnStop.Text = T("focus.stop");
 
         _btnStart.Click += async (_, _) => await StartFocusAsync(false);
         _btnPomodoro.Click += async (_, _) => await StartFocusAsync(true);
@@ -131,28 +150,26 @@ public sealed class FocusView : ViewBase
 
     private void BuildLeft()
     {
-        var y = 0;
-        void Add(Control c, int h)
+        foreach (ModernButton btn in new[] { _btnStart, _btnPomodoro, _btnPause, _btnResume, _btnStop })
         {
-            c.Top = y;
-            c.Left = 0;
-            c.Width = Math.Max(200, _left.ClientSize.Width);
-            c.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            if (h > 0) c.Height = h;
-            _left.Controls.Add(c);
-            y += (h > 0 ? h : c.Height) + UiMetrics.Space8;
+            btn.Margin = new Padding(0, 0, 0, UiMetrics.Space8);
+            btn.Width = UiScale.Px(260);
+            btn.Height = UiMetrics.ButtonHeight;
         }
 
-        Add(_headerLeft, 18);
-        Add(_taskTitle, 40);
-        Add(_taskMeta, 22);
-        Add(_timer, 120);
-        Add(_modeLabel, 24);
-        Add(_actions, 160);
+        _leftFlow.Controls.Add(_modeLabel);
+        _leftFlow.Controls.Add(_taskTitle);
+        _leftFlow.Controls.Add(_taskMeta);
+        _leftFlow.Controls.Add(_timer);
+        _leftFlow.Controls.Add(_actions);
+
+        _left.Controls.Add(_leftFlow);
         _left.Resize += (_, _) =>
         {
-            foreach (Control c in _left.Controls)
-                c.Width = Math.Max(180, _left.ClientSize.Width - 4);
+            var availW = Math.Max(UiScale.Px(200), _leftFlow.ClientSize.Width - UiScale.Px(32));
+            _taskTitle.MaximumSize = new Size(availW, 0);
+            _taskMeta.MaximumSize = new Size(availW, 0);
+            _timer.Width = availW;
         };
     }
 
@@ -196,6 +213,18 @@ public sealed class FocusView : ViewBase
         using var scope = ScopeFactory.CreateScope();
         var tasks = await GetService<ITaskService>(scope).GetMyDayTasksAsync(_session?.TaskId);
         _taskList.Controls.Clear();
+        if (tasks.Count == 0)
+        {
+            var empty = new EmptyStatePanel
+            {
+                TitleText = T("focus.noTasksToday"),
+                Icon = "check_circle_outline",
+                Dock = DockStyle.Fill
+            };
+            _taskList.Controls.Add(empty);
+            return;
+        }
+
         foreach (var task in tasks)
         {
             var item = CreateTaskRow(task);
@@ -311,12 +340,11 @@ public sealed class FocusView : ViewBase
         var c = ThemeManager.Instance.Current;
         if (_session is null || !_session.IsActive)
         {
-            _headerLeft.Text = "Ready to focus?";
-            _modeLabel.Text = "Ready";
+            _modeLabel.Text = $"●  {T("focus.ready").ToUpperInvariant()}";
             _modeLabel.ForeColor = c.TextMuted;
             _timer.SetTime(TimeSpan.Zero);
-            _taskTitle.Text = _selectedTaskId is null ? "Select a task to focus" : "Ready to start";
-            _taskMeta.Text = "Start deep work when you're ready";
+            _taskTitle.Text = _selectedTaskId is null ? T("focus.readyToFocus") : T("focus.readyToStart");
+            _taskMeta.Text = T("focus.startPrompt");
             _taskTitle.ForeColor = c.TextPrimary;
             _taskMeta.ForeColor = c.TextMuted;
             UpdateActionButtons();
@@ -325,27 +353,24 @@ public sealed class FocusView : ViewBase
 
         var secs = ComputeElapsedSeconds(_session);
         _timer.SetTime(TimeSpan.FromSeconds(secs));
-        _taskTitle.Text = _session.TaskTitle ?? _session.ProjectName ?? "Focus Session";
-        _taskMeta.Text = _session.SessionType == FocusSessionType.Pomodoro ? "Pomodoro" : "Deep Work";
+        _taskTitle.Text = _session.TaskTitle ?? _session.ProjectName ?? T("nav.focus");
+        _taskMeta.Text = _session.SessionType == FocusSessionType.Pomodoro ? T("focus.pomodoro") : T("focus.deepWork");
         _taskTitle.ForeColor = c.TextPrimary;
         _taskMeta.ForeColor = c.TextSecondary;
 
         if (_session.Pomodoro?.IsBreak == true)
         {
-            _headerLeft.Text = "Take a break";
-            _modeLabel.Text = "Break";
+            _modeLabel.Text = $"●  {T("focus.break").ToUpperInvariant()}";
             _modeLabel.ForeColor = c.Tertiary;
         }
         else if (_session.IsPaused)
         {
-            _headerLeft.Text = "Paused";
-            _modeLabel.Text = "Paused";
+            _modeLabel.Text = $"●  {T("focus.paused").ToUpperInvariant()}";
             _modeLabel.ForeColor = c.Warning;
         }
         else
         {
-            _headerLeft.Text = "Focusing";
-            _modeLabel.Text = "Focusing";
+            _modeLabel.Text = $"●  {T("focus.focusing").ToUpperInvariant()}";
             _modeLabel.ForeColor = c.Accent;
         }
 
@@ -590,9 +615,9 @@ public sealed class FocusView : ViewBase
         base.OnThemeChanged();
         var c = ThemeManager.Instance.Current;
         _left.BackColor = c.Surface;
+        _leftFlow.BackColor = c.Surface;
         _right.BackColor = c.Background;
         _summary.BackColor = c.Surface;
-        _headerLeft.ForeColor = c.TextMuted;
         _headerRight.ForeColor = c.TextMuted;
         _taskTitle.ForeColor = c.TextPrimary;
         UpdateTimer();

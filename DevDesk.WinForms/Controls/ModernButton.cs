@@ -120,29 +120,53 @@ public class ModernButton : Button
 
         var text = Text ?? "";
         var iconSize = UiMetrics.IconSize;
-        var iconPad = string.IsNullOrEmpty(Icon) ? 0 : iconSize + UiMetrics.Space8;
+        var hasIcon = !string.IsNullOrEmpty(Icon);
+        var iconPad = hasIcon ? iconSize + UiMetrics.Space8 : 0;
         var kbdW = 0;
         if (!string.IsNullOrEmpty(Shortcut))
             kbdW = TextRenderer.MeasureText(Shortcut, UiMetrics.Kbd, new Size(int.MaxValue, int.MaxValue),
                 TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix).Width + UiMetrics.Space8;
-        var content = new Rectangle(UiMetrics.Space4 + iconPad, 0, Math.Max(8, Width - UiMetrics.Space8 - iconPad - kbdW), Height);
 
-        if (!string.IsNullOrEmpty(Icon))
-            UiIcons.Draw(g, Icon, new Rectangle(UiMetrics.Space8, (Height - iconSize) / 2, iconSize, iconSize), fg);
+        var isRtl = Localization.LocalizationService.Instance.IsRtl;
+
+        Rectangle content;
+        if (!isRtl)
+        {
+            if (hasIcon)
+                UiIcons.Draw(g, Icon!, new Rectangle(UiMetrics.Space8, (Height - iconSize) / 2, iconSize, iconSize), fg);
+
+            content = new Rectangle(UiMetrics.Space4 + iconPad, 0, Math.Max(8, Width - UiMetrics.Space8 - iconPad - kbdW), Height);
+
+            if (!string.IsNullOrEmpty(Shortcut))
+            {
+                var kr = new Rectangle(Width - kbdW - UiMetrics.Space4, (Height - UiMetrics.LineMeta) / 2, kbdW - UiMetrics.Space4, UiMetrics.LineMeta);
+                using var kb = new SolidBrush(DrawingUtil.WithAlpha(Color.Black, 40));
+                DrawingUtil.FillRounded(g, kb, kr, UiMetrics.RadiusSm);
+                TextRenderer.DrawText(g, Shortcut, UiMetrics.Kbd, kr, fg,
+                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
+            }
+        }
+        else
+        {
+            if (hasIcon)
+                UiIcons.Draw(g, Icon!, new Rectangle(Width - UiMetrics.Space8 - iconSize, (Height - iconSize) / 2, iconSize, iconSize), fg);
+
+            content = new Rectangle(UiMetrics.Space4 + kbdW, 0, Math.Max(8, Width - UiMetrics.Space8 - iconPad - kbdW), Height);
+
+            if (!string.IsNullOrEmpty(Shortcut))
+            {
+                var kr = new Rectangle(UiMetrics.Space4, (Height - UiMetrics.LineMeta) / 2, kbdW - UiMetrics.Space4, UiMetrics.LineMeta);
+                using var kb = new SolidBrush(DrawingUtil.WithAlpha(Color.Black, 40));
+                DrawingUtil.FillRounded(g, kb, kr, UiMetrics.RadiusSm);
+                TextRenderer.DrawText(g, Shortcut, UiMetrics.Kbd, kr, fg,
+                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
+            }
+        }
 
         var flags = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix;
         var needed = TextRenderer.MeasureText(text, Font ?? UiMetrics.Body, new Size(int.MaxValue, int.MaxValue), flags).Width;
         if (needed > content.Width)
             flags |= TextFormatFlags.EndEllipsis;
         TextRenderer.DrawText(g, text, Font ?? UiMetrics.Body, content, fg, flags);
-
-        if (!string.IsNullOrEmpty(Shortcut))
-        {
-            var kr = new Rectangle(Width - kbdW - UiMetrics.Space4, (Height - UiMetrics.LineMeta) / 2, kbdW - UiMetrics.Space4, UiMetrics.LineMeta);
-            using var kb = new SolidBrush(DrawingUtil.WithAlpha(Color.Black, 40));
-            DrawingUtil.FillRounded(g, kb, kr, UiMetrics.RadiusSm);
-            TextRenderer.DrawText(g, Shortcut, UiMetrics.Kbd, kr, fg,
-                TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
-        }
     }
 }

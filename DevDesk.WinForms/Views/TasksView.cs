@@ -96,7 +96,25 @@ public sealed class TasksView : ViewBase
             }
 
             _highlightId = null;
-            if (tasks.Count == 0) ShowEmpty(); else ShowContent();
+            if (tasks.Count == 0)
+            {
+                var isRtl = Localization.LocalizationService.Instance.IsRtl;
+                var emptyMsg = _filter switch
+                {
+                    "overdue" => isRtl ? "عالیه! هیچ وظیفه عقب‌افتاده‌ای ندارید." : "Great job! No overdue tasks.",
+                    "completed" => isRtl ? "هنوز هیچ وظیفه‌ای تکمیل نشده است." : "No completed tasks yet.",
+                    "starred" => isRtl ? "هیچ وظیفه ستاره‌داری وجود ندارد." : "No starred tasks.",
+                    "upcoming" => isRtl ? "هیچ وظیفه برنامه‌ریزی‌شده‌ای برای آینده نیست." : "No upcoming tasks scheduled.",
+                    _ => isRtl ? "هیچ وظیفه‌ای یافت نشد." : "No tasks found."
+                };
+                var empty = new EmptyStatePanel
+                {
+                    Dock = DockStyle.Fill,
+                    Message = emptyMsg
+                };
+                _listHost.Controls.Add(empty);
+            }
+            ShowContent();
         }
         catch (Exception ex) { ShowError(ex); }
     }
